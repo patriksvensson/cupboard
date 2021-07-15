@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.40.1-preview.0.13" />
+    <PackageReference Include="Spectre.Console" Version="0.40.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Spectre.IO" Version="0.3.0" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
