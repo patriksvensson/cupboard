@@ -8,7 +8,7 @@ using Spectre.IO;
 
 namespace Cupboard
 {
-    public sealed class PowerShellProvider : WindowsResourceProvider<PowerShellScript>.Async
+    public sealed class PowerShellProvider : AsyncWindowsResourceProvider<PowerShellScript>
     {
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironment _environment;
@@ -26,7 +26,7 @@ namespace Cupboard
             return new PowerShellScript(name);
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, PowerShellScript resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, PowerShellScript resource)
         {
             if (resource.ScriptPath == null)
             {

@@ -28,7 +28,7 @@ namespace Cupboard
             return new Exec(name);
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, Exec resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, Exec resource)
         {
             var args = resource.Args ?? string.Empty;
 

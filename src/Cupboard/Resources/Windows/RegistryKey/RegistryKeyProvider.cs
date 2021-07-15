@@ -7,7 +7,7 @@ using Win32RegistryKey = Microsoft.Win32.RegistryKey;
 
 namespace Cupboard
 {
-    public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>.Sync
+    public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>
     {
         private readonly ICupboardLogger _logger;
 

@@ -32,7 +32,7 @@ namespace Cupboard
             return new Download(name);
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, Download resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, Download resource)
         {
             if (resource.Url == null)
             {

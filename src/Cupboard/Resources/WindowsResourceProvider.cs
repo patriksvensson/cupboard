@@ -1,22 +1,20 @@
 namespace Cupboard
 {
-    public sealed class WindowsResourceProvider<TResource>
+    public abstract class WindowsResourceProvider<TResource> : ResourceProvider<TResource>
         where TResource : Resource
     {
-        public abstract class Sync : ResourceProvider<TResource>
+        public override bool CanRun(FactCollection facts)
         {
-            public override bool CanRun(FactCollection facts)
-            {
-                return facts.IsWindows();
-            }
+            return facts.IsWindows();
         }
+    }
 
-        public abstract class Async : AsyncResourceProvider<TResource>
+    public abstract class AsyncWindowsResourceProvider<TResource> : AsyncResourceProvider<TResource>
+        where TResource : Resource
+    {
+        public override bool CanRun(FactCollection facts)
         {
-            public override bool CanRun(FactCollection facts)
-            {
-                return facts.IsWindows();
-            }
+            return facts.IsWindows();
         }
     }
 }

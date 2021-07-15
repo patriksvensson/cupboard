@@ -33,7 +33,7 @@ namespace Cupboard
             };
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, VSCodeExtension resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, VSCodeExtension resource)
         {
             var state = await IsPackageInstalled(resource.Package).ConfigureAwait(false);
             if (state == VSCodeExtensionState.Error)

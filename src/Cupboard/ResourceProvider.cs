@@ -3,28 +3,14 @@ using System.Threading.Tasks;
 
 namespace Cupboard
 {
-    public abstract class ResourceProvider<TResource> : IResourceProvider
+    public abstract class ResourceProvider<TResource> : AsyncResourceProvider<TResource>
         where TResource : Resource
     {
-        public Type ResourceType => typeof(TResource);
-
-        public virtual bool CanRun(FactCollection facts)
-        {
-            return true;
-        }
-
-        public abstract TResource Create(string name);
-
         public abstract ResourceState Run(IExecutionContext context, TResource resource);
 
-        ResourceState IResourceProvider.Run(IExecutionContext context, Resource resource)
+        public sealed override Task<ResourceState> RunAsync(IExecutionContext context, TResource resource)
         {
-            return Run(context, (TResource)resource);
-        }
-
-        Resource IResourceProvider.Create(string name)
-        {
-            return Create(name);
+            return Task.FromResult(Run(context, resource));
         }
     }
 
@@ -40,11 +26,11 @@ namespace Cupboard
 
         public abstract TResource Create(string name);
 
-        public abstract Task<ResourceState> Run(IExecutionContext context, TResource resource);
+        public abstract Task<ResourceState> RunAsync(IExecutionContext context, TResource resource);
 
-        ResourceState IResourceProvider.Run(IExecutionContext context, Resource resource)
+        Task<ResourceState> IResourceProvider.RunAsync(IExecutionContext context, Resource resource)
         {
-            return Run(context, (TResource)resource).GetAwaiter().GetResult();
+            return RunAsync(context, (TResource)resource);
         }
 
         Resource IResourceProvider.Create(string name)

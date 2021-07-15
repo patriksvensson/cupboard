@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Spectre.Console.Cli;
 
 namespace Cupboard.Internal
@@ -28,7 +29,7 @@ namespace Cupboard.Internal
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Report Run(IRemainingArguments args, IStatusUpdater status, bool dryRun)
+        public async Task<Report> Run(IRemainingArguments args, IStatusUpdater status, bool dryRun)
         {
             var facts = _factBuilder.Build(args);
             var ctx = new CatalogContext(facts);
@@ -59,10 +60,10 @@ namespace Cupboard.Internal
                 return new Report(Array.Empty<ReportItem>(), dryRun);
             }
 
-            return ExecutePlan(plan, facts, status, dryRun);
+            return await ExecutePlan(plan, facts, status, dryRun).ConfigureAwait(false);
         }
 
-        private Report ExecutePlan(ExecutionPlan plan, FactCollection facts, IStatusUpdater status, bool dryRun)
+        private async Task<Report> ExecutePlan(ExecutionPlan plan, FactCollection facts, IStatusUpdater status, bool dryRun)
         {
             // Make sure we're running with elevated permissions
             if (!SecurityUtilities.IsAdministrator())
@@ -94,7 +95,7 @@ namespace Cupboard.Internal
                 {
                     status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
 
-                    var state = node.Provider.Run(context, node.Resource);
+                    var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
                     results.Add(new ReportItem(node.Provider, node.Resource, state));
 
                     if (state.IsError() && node.Resource.OnError != ErrorHandling.Ignore)

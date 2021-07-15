@@ -6,7 +6,7 @@ using Cupboard.Internal;
 
 namespace Cupboard
 {
-    public sealed class ChocolateyPackageProvider : WindowsResourceProvider<ChocolateyPackage>.Async
+    public sealed class ChocolateyPackageProvider : AsyncWindowsResourceProvider<ChocolateyPackage>
     {
         private readonly ICupboardLogger _logger;
         private string? _cachedOutput;
@@ -33,7 +33,7 @@ namespace Cupboard
             };
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, ChocolateyPackage resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, ChocolateyPackage resource)
         {
             var state = await IsPackageInstalled(resource.Package).ConfigureAwait(false);
             if (state == ChocolateyPackageState.Error)

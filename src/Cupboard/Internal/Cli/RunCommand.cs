@@ -2,13 +2,14 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.IO;
 
 namespace Cupboard.Internal
 {
-    internal sealed class RunCommand : Command<RunCommand.Settings>
+    internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
     {
         private readonly ExecutionEngine _executor;
         private readonly ReportRenderer _renderer;
@@ -76,7 +77,7 @@ namespace Cupboard.Internal
             return ValidationResult.Success();
         }
 
-        public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
             if (context is null)
             {
@@ -102,7 +103,7 @@ namespace Cupboard.Internal
                 _environment.SetWorkingDirectory(settings.WorkingDirectory);
             }
 
-            var report = Run(context, settings);
+            var report = await Run(context, settings).ConfigureAwait(false);
             if (report == null)
             {
                 return -1;
@@ -122,17 +123,17 @@ namespace Cupboard.Internal
             return report.Successful ? 0 : -1;
         }
 
-        private Report? Run(CommandContext context, Settings settings)
+        private async Task<Report?> Run(CommandContext context, Settings settings)
         {
             if (settings.DryRun)
             {
-                return _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true);
+                return await _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true).ConfigureAwait(false);
             }
             else
             {
                 if (!settings.Yes)
                 {
-                    var report = _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true);
+                    var report = await _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true).ConfigureAwait(false);
                     if (report.Items.Count == 0)
                     {
                         return report;
@@ -148,13 +149,13 @@ namespace Cupboard.Internal
                     }
                 }
 
-                return _console.Status().Start("Executing", status =>
+                return await _console.Status().StartAsync("Executing", async status =>
                 {
-                    return _executor.Run(
+                    return await _executor.Run(
                         context.Remaining,
                         new StatusUpdater(status),
-                        dryRun: false);
-                });
+                        dryRun: false).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
     }

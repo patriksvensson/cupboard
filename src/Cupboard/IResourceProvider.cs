@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Cupboard
 {
@@ -9,6 +10,6 @@ namespace Cupboard
         Resource Create(string name);
 
         bool CanRun(FactCollection facts);
-        ResourceState Run(IExecutionContext context, Resource resource);
+        Task<ResourceState> RunAsync(IExecutionContext context, Resource resource);
     }
 }

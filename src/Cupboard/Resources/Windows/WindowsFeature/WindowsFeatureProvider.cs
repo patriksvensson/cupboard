@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using CliWrap;
@@ -6,7 +6,7 @@ using Cupboard.Internal;
 
 namespace Cupboard
 {
-    public sealed class WindowsFeatureProvider : WindowsResourceProvider<WindowsFeature>.Async
+    public sealed class WindowsFeatureProvider : AsyncWindowsResourceProvider<WindowsFeature>
     {
         private readonly ICupboardLogger _logger;
 
@@ -30,7 +30,7 @@ namespace Cupboard
             };
         }
 
-        public override async Task<ResourceState> Run(IExecutionContext context, WindowsFeature resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, WindowsFeature resource)
         {
             var feature = resource.FeatureName;
             if (string.IsNullOrWhiteSpace(feature))
