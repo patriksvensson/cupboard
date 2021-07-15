@@ -5,9 +5,9 @@ using Microsoft.Win32;
 
 namespace Cupboard.Internal
 {
-    internal static class EnvironmentRefresher
+    internal class EnvironmentRefresher : IEnvironmentRefresher
     {
-        public static void RefreshEnvironmentVariables()
+        public void Refresh()
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

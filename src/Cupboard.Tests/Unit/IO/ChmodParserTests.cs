@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Cupboard.Tests.IO
+namespace Cupboard.Tests.Unit.IO
 {
     public sealed class ChmodParserTests
     {

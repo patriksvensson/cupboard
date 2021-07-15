@@ -31,6 +31,9 @@ namespace Cupboard
                     services.AddSingleton<IPlatform, Platform>();
                     services.AddSingleton<IEnvironment, Environment>();
 
+                    services.AddSingleton<IProcessRunner, ProcessRunner>();
+                    services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
+
                     services.AddSingleton<ICupboardLogger, CupboardLogger>();
                     services.AddSingleton<ExecutionEngine>();
                     services.AddSingleton<ReportRenderer>();

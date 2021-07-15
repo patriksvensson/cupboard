@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using CliWrap;
-using Cupboard.Internal;
 using Spectre.IO;
 
 namespace Cupboard
@@ -11,15 +10,18 @@ namespace Cupboard
     {
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironment _environment;
+        private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         public ExecProvider(
             IFileSystem fileSystem,
             IEnvironment environment,
+            IEnvironmentRefresher refresher,
             ICupboardLogger logger)
         {
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -54,9 +56,7 @@ namespace Cupboard
             {
                 if (resource.ValidExitCodes?.Contains(result.ExitCode) == true)
                 {
-                    _logger.Debug("Refreshing environment variables for user");
-                    EnvironmentRefresher.RefreshEnvironmentVariables();
-
+                    _refresher.Refresh();
                     return ResourceState.Changed;
                 }
 

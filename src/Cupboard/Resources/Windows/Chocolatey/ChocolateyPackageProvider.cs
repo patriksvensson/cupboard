@@ -1,13 +1,12 @@
 using System;
-using System.Text;
 using System.Threading.Tasks;
-using CliWrap;
-using Cupboard.Internal;
 
 namespace Cupboard
 {
     public sealed class ChocolateyPackageProvider : AsyncWindowsResourceProvider<ChocolateyPackage>
     {
+        private readonly IProcessRunner _runner;
+        private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
         private string? _cachedOutput;
         private bool _dirty;
@@ -19,8 +18,10 @@ namespace Cupboard
             Error,
         }
 
-        public ChocolateyPackageProvider(ICupboardLogger logger)
+        public ChocolateyPackageProvider(IProcessRunner runner, IEnvironmentRefresher refresher, ICupboardLogger logger)
         {
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
+            _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dirty = true;
         }
@@ -55,6 +56,7 @@ namespace Cupboard
                     if (state == ChocolateyPackageState.Exists)
                     {
                         _logger.Information($"The Chocolatey package [yellow]{resource.Package}[/] was installed");
+                        _refresher.Refresh();
                         return ResourceState.Changed;
                     }
 
@@ -77,8 +79,7 @@ namespace Cupboard
                     if (state == ChocolateyPackageState.Missing)
                     {
                         _logger.Information($"The Chocolatey package [yellow]{resource.Package}[/] was uninstalled");
-                        _logger.Debug("Refreshing environment variables for user");
-                        EnvironmentRefresher.RefreshEnvironmentVariables();
+                        _refresher.Refresh();
 
                         return ResourceState.Changed;
                     }
@@ -96,19 +97,13 @@ namespace Cupboard
         {
             if (_dirty || _cachedOutput == null)
             {
-                var stdout = new StringBuilder();
-                var result = await Cli.Wrap("choco")
-                    .WithArguments("list -lo")
-                    .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                    .WithValidation(CommandResultValidation.None)
-                    .ExecuteAsync();
-
+                var result = await _runner.Run("choco", "list -lo").ConfigureAwait(false);
                 if (result.ExitCode != 0)
                 {
                     return ChocolateyPackageState.Error;
                 }
 
-                _cachedOutput = stdout.ToString();
+                _cachedOutput = result.StandardOut;
                 _dirty = false;
             }
 
@@ -130,13 +125,7 @@ namespace Cupboard
         {
             _logger.Debug($"Installing Chocolatey package [yellow]{package}[/]");
 
-            var stdout = new StringBuilder();
-            var result = await Cli.Wrap("choco")
-                .WithArguments($"install {package} -y")
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                .WithValidation(CommandResultValidation.None)
-                .ExecuteAsync();
-
+            var result = await _runner.Run("choco", $"install {package} -y").ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 return ChocolateyPackageState.Error;
@@ -150,13 +139,7 @@ namespace Cupboard
         {
             _logger.Debug($"Uninstalling Chocolatey package {package}...");
 
-            var stdout = new StringBuilder();
-            var result = await Cli.Wrap("choco")
-                .WithArguments($"uninstall {package}")
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                .WithValidation(CommandResultValidation.None)
-                .ExecuteAsync();
-
+            var result = await _runner.Run("choco", $"uninstall {package}").ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 return ChocolateyPackageState.Error;

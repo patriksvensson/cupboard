@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.EventStream;
-using Cupboard.Internal;
 using Spectre.IO;
 
 namespace Cupboard
@@ -12,13 +11,19 @@ namespace Cupboard
     {
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironment _environment;
+        private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
-        public PowerShellProvider(IFileSystem fileSystem, IEnvironment environment, ICupboardLogger logger)
+        public PowerShellProvider(
+            IFileSystem fileSystem,
+            IEnvironment environment,
+            IEnvironmentRefresher refresher,
+            ICupboardLogger logger)
         {
-            _fileSystem = fileSystem;
-            _environment = environment;
-            _logger = logger;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override PowerShellScript Create(string name)
@@ -60,7 +65,7 @@ namespace Cupboard
                 }
 
                 _logger.Debug("Refreshing environment variables for user");
-                EnvironmentRefresher.RefreshEnvironmentVariables();
+                _refresher.Refresh();
             }
 
             return ResourceState.Unchanged;

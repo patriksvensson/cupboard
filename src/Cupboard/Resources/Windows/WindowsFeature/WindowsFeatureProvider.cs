@@ -2,12 +2,12 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using CliWrap;
-using Cupboard.Internal;
 
 namespace Cupboard
 {
     public sealed class WindowsFeatureProvider : AsyncWindowsResourceProvider<WindowsFeature>
     {
+        private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         private enum WindowsFeatureStatus
@@ -17,8 +17,9 @@ namespace Cupboard
             Error,
         }
 
-        public WindowsFeatureProvider(ICupboardLogger logger)
+        public WindowsFeatureProvider(IEnvironmentRefresher refresher, ICupboardLogger logger)
         {
+            _refresher = refresher;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -65,10 +66,8 @@ namespace Cupboard
                     return ResourceState.Error;
                 }
 
+                _refresher.Refresh();
                 _logger.Verbose($"Enabled Windows feature [yellow]{feature}[/]");
-
-                _logger.Debug("Refreshing environment variables for user");
-                EnvironmentRefresher.RefreshEnvironmentVariables();
 
                 return ResourceState.Changed;
             }
@@ -91,7 +90,9 @@ namespace Cupboard
                     return ResourceState.Error;
                 }
 
+                _refresher.Refresh();
                 _logger.Verbose($"Disabled Windows feature [yellow]{feature}[/]");
+
                 return ResourceState.Changed;
             }
 
