@@ -7,18 +7,15 @@ Currently in preview. Use at own risk.
 
 ## Introduction
 
-In Cupboard, you define `catalogs`, `manifests`, and `resources`.  
+In Cupboard, you define `catalogs`, `manifests`, and `resources`.
 
-* 🍎 **Resources**
+* 🍎 **Resources:**
   A resource describes the desired state for some part of a system.  
   This might be a file, directory, package, etc.
-* 🌳 **Manifests**  
+* 🌳 **Manifests:**  
   A manifest contains one or many resources.
-* 🌍 **Catalogs**  
+* 🌍 **Catalogs:**  
   A catalog contains one or many manifests.
-
-A resource describes something that should be created/updated/deleted
-in an environment.
 
 ### 1. Create a console application
 
@@ -32,9 +29,10 @@ Add a reference to the `Cupboard` NuGet package.
 
 ### 2. Create a manifest
 
-Let's start by creating a manifest that defines what should be run.
+Let's start by creating a manifest that defines what should be run.  
+
 Note that resources don't do anything when they're declared.  
-They describe what **WILL** be done, once the catalog(s) are executed.
+They describe what **WILL** be done when executed.
 
 ```csharp
 public sealed class Chocolatey : Manifest
@@ -66,7 +64,7 @@ public sealed class Chocolatey : Manifest
 
 ### 3. Create a catalog
 
-When we have a `manifest`, we must create a `catalog` containing the manifest.  
+When we have a `Manifest`, we need to create a `Catalog` containing the manifest.  
 We'll also add a condition that excludes non-Windows environments.
 
 ```csharp
