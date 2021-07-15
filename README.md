@@ -20,11 +20,21 @@ In Cupboard, you define `catalogs`, `manifests`, and `resources`.
 A resource describes something that should be created/updated/deleted
 in an environment.
 
-### 1. Creating a manifest
+### 1. Create a console application
+
+Start by creating a new console application targeting `.NET5.0`.  
+Add a reference to the `Cupboard` NuGet package.
+
+```
+> dotnet new console
+> dotnet add package Cupboard
+```
+
+### 2. Create a manifest
 
 Let's start by creating a manifest that defines what should be run.
-Note that resources don't do anything when they're declared. They 
-describe what WILL be done, once the catalog(s) are executed.
+Note that resources don't do anything when they're declared.  
+They describe what **WILL** be done, once the catalog(s) are executed.
 
 ```csharp
 public sealed class Chocolatey : Manifest
@@ -54,7 +64,7 @@ public sealed class Chocolatey : Manifest
     }
 ```
 
-### 2. Creating a catalog
+### 3. Create a catalog
 
 When we have a `manifest`, we must create a `catalog` containing the manifest.  
 We'll also add a condition that excludes non-Windows environments.
@@ -74,7 +84,7 @@ public sealed class MyWindowsComputer : Catalog
 }
 ```
 
-### 3. Creating the entry-point
+### 4. Create the entry-point
 
 To run the application, we need to add an application entry-point and create a `CupboardHost`.  
 We must also explicitly add the catalogs to the `CupboardHostBuilder` instance.
@@ -92,7 +102,7 @@ public static class Program
 }
 ```
 
-### 4. Running the configuration
+### 5. Run the configuration
 
 Now, open up a terminal in administratorr mode and execute the build.
 
