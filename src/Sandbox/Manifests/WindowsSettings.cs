@@ -32,6 +32,19 @@ namespace Sandbox
             context.Resource<RegistryKey>("Disable People in taskbar")
                 .Path(@"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People\PeopleBand")
                 .Ensure(RegistryKeyState.DoNotExist);
+
+            // File Explorer options
+            context.Resource<RegistryKey>("Show file extensions in File Explorer.")
+                .Path(@"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt")
+                .Value(0, RegistryKeyValueKind.DWord);
+
+            context.Resource<RegistryKey>("Show hidden files in File Explorer")
+                .Path(@"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden")
+                .Value(1, RegistryKeyValueKind.DWord);
+
+            context.Resource<RegistryKey>("Show full path in File Explorer title bar")
+                .Path(@"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState\FullPathAddress")
+                .Value(1, RegistryKeyValueKind.DWord);
         }
     }
 }
