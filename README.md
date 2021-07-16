@@ -102,7 +102,7 @@ public static class Program
 
 ### 5. Run the configuration
 
-Now, open up a terminal in administratorr mode and execute the build.
+Now, open up a terminal in administrator mode and execute the build.
 
 ```
 > dotnet run -- --verbosity diagnostic
