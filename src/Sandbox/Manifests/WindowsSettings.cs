@@ -32,7 +32,7 @@ namespace Sandbox
             context.Resource<RegistryKey>("Disable People in taskbar")
                 .Path(@"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People\PeopleBand")
                 .Ensure(RegistryKeyState.DoNotExist);
-            
+
             // File Explorer options
             context.Resource<RegistryKey>("Show file extensions in File Explorer.")
                 .Path(@"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt")
