@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using Shouldly;
-using Xunit;
 
 namespace Cupboard.Tests.Unit.Resources
 {
     public sealed class PowerShellProviderTests
     {
-        [Fact]
+        [WindowsFact]
         public async Task Should_Run_Script()
         {
             // Given
@@ -26,7 +25,7 @@ namespace Cupboard.Tests.Unit.Resources
             result.ShouldBe(ResourceState.Executed);
         }
 
-        [Fact]
+        [WindowsFact]
         public async Task Should_Skip_Running_Skip_If_Condition_Script_Does_Not_Have_Exit_Code_1()
         {
             // Given
@@ -48,7 +47,7 @@ namespace Cupboard.Tests.Unit.Resources
             fixture.Logger.WasLogged("Skipping Powershell script since condition did not evaluate to 0 (zero)").ShouldBeTrue();
         }
 
-        [Fact]
+        [WindowsFact]
         public async Task Should_Return_Error_If_Script_Does_Not_Exist()
         {
             // Given
