@@ -8,14 +8,14 @@ namespace Cupboard
 {
     public sealed class ExecProvider : AsyncResourceProvider<Exec>
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
         private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         public ExecProvider(
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
             IEnvironmentRefresher refresher,
             ICupboardLogger logger)
         {

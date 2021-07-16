@@ -11,7 +11,7 @@ namespace Cupboard
         public async Task<ProcessRunnerResult> Run(string file, string? arguments = null, Action<CommandEvent>? handler = null)
         {
             var cli = Cli.Wrap(file);
-            cli.WithValidation(CommandResultValidation.None);
+            cli = cli.WithValidation(CommandResultValidation.None);
 
             if (arguments != null)
             {

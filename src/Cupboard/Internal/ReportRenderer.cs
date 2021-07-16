@@ -57,6 +57,7 @@ namespace Cupboard.Internal
                         ResourceState.Changed => Color.Green,
                         ResourceState.Unchanged => Color.Grey,
                         ResourceState.Skipped => Color.Yellow,
+                        ResourceState.Executed => Color.Green,
                         ResourceState.Error => Color.Red,
                         _ => Color.Default,
                     };
@@ -120,6 +121,7 @@ namespace Cupboard.Internal
                 ResourceState.Unknown => Color.Grey,
                 ResourceState.Changed => Color.Green,
                 ResourceState.Unchanged => Color.Silver,
+                ResourceState.Executed => Color.Green,
                 ResourceState.Skipped => Color.Yellow,
                 ResourceState.Error => Color.Red,
                 _ => Color.Aqua,

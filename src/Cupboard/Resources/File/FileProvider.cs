@@ -7,13 +7,13 @@ namespace Cupboard
 {
     public sealed class FileProvider : ResourceProvider<File>
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
         private readonly ICupboardLogger _logger;
 
         public FileProvider(
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
             ICupboardLogger logger)
         {
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));

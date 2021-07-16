@@ -1,3 +1,5 @@
+using System;
+
 namespace Cupboard
 {
     public static class ResourceStateExtensions
@@ -11,7 +13,8 @@ namespace Cupboard
                 ResourceState.Unchanged => false,
                 ResourceState.Error => true,
                 ResourceState.Skipped => false,
-                _ => true,
+                ResourceState.Executed => false,
+                _ => throw new InvalidOperationException($"Unknown resource state '{state}'"),
             };
         }
     }

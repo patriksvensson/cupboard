@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Spectre.Console.Cli;
-using Spectre.IO;
 
 namespace Cupboard.Internal
 {
     internal sealed class EnvironmentFacts : IFactProvider
     {
-        private readonly IEnvironment _environment;
+        private readonly ICupboardEnvironment _environment;
 
-        public EnvironmentFacts(IEnvironment environment)
+        public EnvironmentFacts(ICupboardEnvironment environment)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }

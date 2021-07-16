@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using CliWrap;
 using CliWrap.EventStream;
 using Spectre.IO;
 
@@ -9,19 +8,22 @@ namespace Cupboard
 {
     public sealed class PowerShellProvider : AsyncWindowsResourceProvider<PowerShellScript>
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
+        private readonly IProcessRunner _runner;
         private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         public PowerShellProvider(
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
+            IProcessRunner runner,
             IEnvironmentRefresher refresher,
             ICupboardLogger logger)
         {
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
             _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -48,17 +50,17 @@ namespace Cupboard
 
             if (resource.Unless != null)
             {
-                _logger.Debug("Evaluating condition");
+                _logger.Debug("Evaluating 'Unless' condition");
                 if (await RunPowerShell(resource.Unless).ConfigureAwait(false) != 0)
                 {
+                    _logger.Verbose("Skipping Powershell script since condition did not evaluate to 0 (zero)");
                     return ResourceState.Skipped;
                 }
             }
 
             if (!context.DryRun)
             {
-                var content = await GetScriptContent(path).ConfigureAwait(false);
-                if (await RunPowerShell(content).ConfigureAwait(false) != 0)
+                if (await RunPowerShell(path).ConfigureAwait(false) != 0)
                 {
                     _logger.Error("Powershell script exited with an unexpected exit code");
                     return ResourceState.Error;
@@ -68,83 +70,54 @@ namespace Cupboard
                 _refresher.Refresh();
             }
 
-            return ResourceState.Unchanged;
+            return ResourceState.Executed;
         }
 
-        private async Task<string> GetScriptContent(FilePath path)
+        private async Task<int> RunPowerShell(string command)
         {
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            using (var stream = _fileSystem.File.OpenRead(path))
-            using (var reader = new StreamReader(stream))
-            {
-                return await reader.ReadToEndAsync().ConfigureAwait(false);
-            }
-        }
-
-        private async Task<int> RunPowerShell(string content)
-        {
-            // Get temporary location
-            var path = new FilePath(System.IO.Path.GetTempFileName()).ChangeExtension("ps1");
-            using (var stream = _fileSystem.File.OpenWrite(path))
-            using (var writer = new StreamWriter(stream))
-            {
-                writer.Write(content);
-            }
+            var path = _environment.GetTempFilePath().ChangeExtension("ps1");
 
             try
             {
-                // Create file with content
-                var result = Cli.Wrap("powershell.exe")
-                    .WithValidation(CommandResultValidation.None)
-                    .WithArguments($"–noprofile & '{path.FullPath}'");
-
-                var first = true;
-                await foreach (var cmdEvent in result.ListenAsync())
+                // Create file on disk
+                using (var stream = _fileSystem.File.OpenWrite(path))
+                using (var writer = new StreamWriter(stream))
                 {
-                    switch (cmdEvent)
-                    {
-                        case StandardOutputCommandEvent stdOut:
-                            if (first)
-                            {
-                                first = false;
-                                _logger.Verbose("--------------------------------");
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(stdOut.Text))
-                            {
-                                _logger.Verbose(stdOut.Text);
-                            }
-
-                            break;
-                        case StandardErrorCommandEvent stdErr:
-                            if (first)
-                            {
-                                first = false;
-                                _logger.Verbose("--------------------------------");
-                            }
-
-                            _logger.Error(stdErr.Text);
-                            break;
-                        case ExitedCommandEvent exited:
-                            if (!first)
-                            {
-                                _logger.Verbose("--------------------------------");
-                            }
-
-                            return exited.ExitCode;
-                    }
+                    writer.Write(command);
                 }
 
-                throw new InvalidOperationException("An error occured while executing PowerShell script");
+                return await RunPowerShell(path);
             }
             finally
             {
-                _fileSystem.File.Delete(path);
+                if (_fileSystem.Exist(path))
+                {
+                    _fileSystem.File.Delete(path);
+                }
             }
+        }
+
+        private async Task<int> RunPowerShell(FilePath path)
+        {
+            var result = await _runner.Run("powershell.exe", $"–noprofile & '{path.FullPath}'", @event =>
+            {
+                if (@event is StandardOutputCommandEvent output)
+                {
+                    if (!string.IsNullOrWhiteSpace(output.Text))
+                    {
+                        _logger.Verbose($"OUT> {output.Text}");
+                    }
+                }
+                else if (@event is StandardErrorCommandEvent error)
+                {
+                    if (!string.IsNullOrWhiteSpace(error.Text))
+                    {
+                        _logger.Verbose($"ERR> {error.Text}");
+                    }
+                }
+            });
+
+            return result.ExitCode;
         }
     }
 }

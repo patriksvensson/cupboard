@@ -8,10 +8,10 @@ namespace Sandbox
 {
     public sealed class RustFactProvider : IFactProvider
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
 
-        public RustFactProvider(IFileSystem fileSystem, IEnvironment environment)
+        public RustFactProvider(ICupboardFileSystem fileSystem, ICupboardEnvironment environment)
         {
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));

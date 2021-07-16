@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.IO;
-using Environment = Spectre.IO.Environment;
 
 namespace Cupboard
 {
@@ -27,9 +26,9 @@ namespace Cupboard
                     services.RegisterAllOf<Manifest>();
 
                     services.AddSingleton(_console);
-                    services.AddSingleton<IFileSystem, FileSystem>();
                     services.AddSingleton<IPlatform, Platform>();
-                    services.AddSingleton<IEnvironment, Environment>();
+                    services.AddSingleton<ICupboardFileSystem, CupboardFileSystem>();
+                    services.AddSingleton<ICupboardEnvironment, CupboardEnvironment>();
 
                     services.AddSingleton<IProcessRunner, ProcessRunner>();
                     services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();

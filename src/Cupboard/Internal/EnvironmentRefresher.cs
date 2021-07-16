@@ -51,7 +51,6 @@ namespace Cupboard.Internal
             foreach (var envVar in result)
             {
                 System.Environment.SetEnvironmentVariable(envVar.Key, envVar.Value, EnvironmentVariableTarget.Process);
-                System.Environment.SetEnvironmentVariable(envVar.Key, envVar.Value, EnvironmentVariableTarget.User);
             }
         }
     }

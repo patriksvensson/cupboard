@@ -5,6 +5,7 @@ namespace Cupboard
         Unknown = 0,
         Changed,
         Unchanged,
+        Executed,
         Skipped,
         Error,
     }

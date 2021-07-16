@@ -9,20 +9,20 @@ namespace Cupboard
 {
     public sealed class DownloadProvider : AsyncResourceProvider<Download>
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
         private readonly ICupboardLogger _logger;
         private readonly HttpClient _http;
 
         private static readonly Regex _contentDispositionRegex = new("filename=\"(?'filename'.*)\"");
 
         public DownloadProvider(
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
             ICupboardLogger logger)
         {
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            _environment = environment;
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _http = new HttpClient();
         }

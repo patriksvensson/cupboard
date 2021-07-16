@@ -7,17 +7,17 @@ namespace Cupboard
 {
     public sealed class DirectoryProvider : ResourceProvider<Directory>
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
         private readonly ICupboardLogger _logger;
         private readonly IDictionary<DirectoryState, Func<IExecutionContext, Directory, ResourceState>> _map;
 
         public DirectoryProvider(
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
             ICupboardLogger logger)
         {
-            _fileSystem = fileSystem;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 

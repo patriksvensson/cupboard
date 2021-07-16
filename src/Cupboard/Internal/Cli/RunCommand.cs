@@ -14,8 +14,8 @@ namespace Cupboard.Internal
         private readonly ExecutionEngine _executor;
         private readonly ReportRenderer _renderer;
         private readonly ICupboardLogger _logger;
-        private readonly IFileSystem _fileSystem;
-        private readonly IEnvironment _environment;
+        private readonly ICupboardFileSystem _fileSystem;
+        private readonly ICupboardEnvironment _environment;
         private readonly IAnsiConsole _console;
 
         public sealed class Settings : CommandSettings
@@ -51,8 +51,8 @@ namespace Cupboard.Internal
             ExecutionEngine executor,
             ReportRenderer renderer,
             ICupboardLogger logger,
-            IFileSystem fileSystem,
-            IEnvironment environment,
+            ICupboardFileSystem fileSystem,
+            ICupboardEnvironment environment,
             IAnsiConsole console)
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));

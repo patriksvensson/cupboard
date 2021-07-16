@@ -1,4 +1,3 @@
-using System;
 using Cupboard;
 
 namespace Sandbox
