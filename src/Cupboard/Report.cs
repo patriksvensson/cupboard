@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,18 @@ namespace Cupboard
     public sealed class Report : IEnumerable<ReportItem>
     {
         public IReadOnlyList<ReportItem> Items { get; }
-        public int Count => Items.Count;
-        public bool Successful { get; }
+        public FactCollection Facts { get; }
+        public bool RequiresAdministrator { get; }
         public bool DryRun { get; }
 
-        public Report(IEnumerable<ReportItem> items, bool dryRun = false)
+        public int Count => Items.Count;
+        public bool Successful { get; }
+
+        public Report(IEnumerable<ReportItem> items, FactCollection facts, bool requiresAdministrator, bool dryRun)
         {
             Items = items.ToReadOnlyList();
+            Facts = facts ?? throw new ArgumentNullException(nameof(facts));
+            RequiresAdministrator = requiresAdministrator;
             DryRun = dryRun;
 
             // Exclude Unknown states if this is a dry run

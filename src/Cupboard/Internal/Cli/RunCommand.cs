@@ -140,8 +140,18 @@ namespace Cupboard.Internal
                     }
 
                     _renderer.Render(report, _logger.Verbosity);
-
                     _console.WriteLine();
+
+                    if (report.RequiresAdministrator)
+                    {
+                        if (!SecurityUtilities.IsAdministrator())
+                        {
+                            _console.MarkupLine("[red]ERROR:[/] The current execution plan [yellow]require administrative permissions[/].");
+                            _console.MarkupLine("[grey]Restart the application as administrator to execute plan.[/]");
+                            return null;
+                        }
+                    }
+
                     _console.MarkupLine("[yellow]WARNING[/]: This will change the state of the current machine.");
                     if (!_console.Confirm("Are you sure you want to continue?", defaultValue: false))
                     {

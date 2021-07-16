@@ -19,6 +19,11 @@ namespace Cupboard
     {
         public Type ResourceType => typeof(TResource);
 
+        public virtual bool RequireAdministrator(FactCollection facts)
+        {
+            return false;
+        }
+
         public virtual bool CanRun(FactCollection facts)
         {
             return true;

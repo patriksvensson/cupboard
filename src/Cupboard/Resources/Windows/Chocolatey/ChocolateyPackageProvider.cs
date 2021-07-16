@@ -34,6 +34,11 @@ namespace Cupboard
             };
         }
 
+        public override bool RequireAdministrator(FactCollection facts)
+        {
+            return true;
+        }
+
         public override async Task<ResourceState> RunAsync(IExecutionContext context, ChocolateyPackage resource)
         {
             var state = await IsPackageInstalled(resource.Package).ConfigureAwait(false);

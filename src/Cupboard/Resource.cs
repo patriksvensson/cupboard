@@ -7,6 +7,7 @@ namespace Cupboard
         public Type ResourceType => GetType();
 
         public string Name { get; }
+        public bool RequireAdministrator { get; set; }
         public ErrorHandling OnError { get; set; } = ErrorHandling.Abort;
 
         protected Resource(string name)

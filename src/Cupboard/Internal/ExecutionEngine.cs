@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Spectre.Console.Cli;
 
@@ -54,10 +53,10 @@ namespace Cupboard.Internal
             graph.Configurations.ForEach(action => action());
 
             // Build and run the execution plan
-            var plan = BuildExecutionPlan(graph);
+            var plan = BuildExecutionPlan(graph, facts);
             if (plan.Count == 0)
             {
-                return new Report(Array.Empty<ReportItem>(), dryRun);
+                return new Report(Array.Empty<ReportItem>(), facts, plan.RequiresAdministrator, dryRun);
             }
 
             return await ExecutePlan(plan, facts, status, dryRun).ConfigureAwait(false);
@@ -65,16 +64,13 @@ namespace Cupboard.Internal
 
         private async Task<Report> ExecutePlan(ExecutionPlan plan, FactCollection facts, IStatusUpdater status, bool dryRun)
         {
+            // Do we need administrator privileges?
             // Make sure we're running with elevated permissions
-            if (!SecurityUtilities.IsAdministrator())
+            if (plan.RequiresAdministrator)
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (!SecurityUtilities.IsAdministrator() && !dryRun)
                 {
                     throw new InvalidOperationException("Not running as administrator");
-                }
-                else
-                {
-                    throw new InvalidOperationException("Not running as admin");
                 }
             }
 
@@ -89,14 +85,14 @@ namespace Cupboard.Internal
             {
                 if (context.DryRun)
                 {
-                    results.Add(new ReportItem(node.Provider, node.Resource, ResourceState.Unknown));
+                    results.Add(new ReportItem(node.Provider, node.Resource, ResourceState.Unknown, node.RequireAdministrator));
                 }
                 else
                 {
                     status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
 
                     var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
-                    results.Add(new ReportItem(node.Provider, node.Resource, state));
+                    results.Add(new ReportItem(node.Provider, node.Resource, state, node.RequireAdministrator));
 
                     if (state.IsError() && node.Resource.OnError != ErrorHandling.Ignore)
                     {
@@ -107,10 +103,10 @@ namespace Cupboard.Internal
             }
 
             _logger.Debug("Execution done.");
-            return new Report(results, context.DryRun);
+            return new Report(results, facts, plan.RequiresAdministrator, context.DryRun);
         }
 
-        internal ExecutionPlan BuildExecutionPlan(ResourceGraph graph)
+        internal ExecutionPlan BuildExecutionPlan(ResourceGraph graph, FactCollection facts)
         {
             var resources = new List<ExecutionPlanItem>();
 
@@ -130,10 +126,16 @@ namespace Cupboard.Internal
                     throw new InvalidOperationException($"Could not find resource provider for '{node.Name}' ({node.ResourceType.Name}).");
                 }
 
-                resources.Add(new ExecutionPlanItem(provider, resource));
+                // Do we need to be administrator for this resource?
+                var requireAdministrator = resource.RequireAdministrator || provider.RequireAdministrator(facts);
+
+                resources.Add(new ExecutionPlanItem(provider, resource, requireAdministrator));
             }
 
-            return new ExecutionPlan(resources);
+            // Do we need to be administrator for this plan?
+            var requiresAdministrator = resources.Any(item => item.RequireAdministrator);
+
+            return new ExecutionPlan(resources, requiresAdministrator);
         }
     }
 }

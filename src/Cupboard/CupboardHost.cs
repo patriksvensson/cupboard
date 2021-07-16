@@ -33,17 +33,7 @@ namespace Cupboard
             {
                 _console.WriteLine();
                 _console.Write(new Panel("An error occured during execution").BorderColor(Color.Red).RoundedBorder());
-
-                var logger = _host.Services.GetRequiredService<ICupboardLogger>();
-                if (logger.Verbosity == Verbosity.Diagnostic)
-                {
-                    _console.WriteException(ex, ExceptionFormats.ShortenEverything);
-                }
-                else
-                {
-                    _console.WriteLine(ex.Message);
-                    _console.WriteException(ex, ExceptionFormats.ShortenEverything);
-                }
+                _console.WriteException(ex, ExceptionFormats.ShortenEverything);
 
                 return -1;
             }

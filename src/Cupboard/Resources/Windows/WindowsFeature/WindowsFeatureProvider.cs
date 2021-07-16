@@ -31,6 +31,11 @@ namespace Cupboard
             };
         }
 
+        public override bool RequireAdministrator(FactCollection facts)
+        {
+            return true;
+        }
+
         public override async Task<ResourceState> RunAsync(IExecutionContext context, WindowsFeature resource)
         {
             var feature = resource.FeatureName;

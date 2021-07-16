@@ -29,10 +29,16 @@ namespace Cupboard.Internal
             var index = 1;
             foreach (var item in report)
             {
+                var resourceName = "[green]" + item.Provider.ResourceType.Name + "[/]";
+                if (item.RequireAdministrator && report.DryRun)
+                {
+                    resourceName += "[yellow]*[/]";
+                }
+
                 var columns = new List<IRenderable>
                 {
                     new Text(index.ToString(CultureInfo.InvariantCulture), new Style(foreground: Color.Grey)),
-                    new Text(item.Provider.ResourceType.Name, new Style(foreground: Color.Green)),
+                    new Markup(resourceName),
                     new Text(item.Resource.Name, new Style(foreground: Color.Blue)),
                 };
 

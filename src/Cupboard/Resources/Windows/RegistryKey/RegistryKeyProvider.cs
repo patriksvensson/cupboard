@@ -21,6 +21,11 @@ namespace Cupboard
             return new RegistryKey(name);
         }
 
+        public override bool RequireAdministrator(FactCollection facts)
+        {
+            return true;
+        }
+
         public override ResourceState Run(IExecutionContext context, RegistryKey resource)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

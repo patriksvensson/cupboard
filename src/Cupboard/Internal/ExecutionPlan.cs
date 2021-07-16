@@ -7,11 +7,15 @@ namespace Cupboard.Internal
     {
         private readonly IReadOnlyList<ExecutionPlanItem> _resources;
 
+        public bool RequiresAdministrator { get; }
         public int Count => _resources.Count;
 
-        public ExecutionPlan(IEnumerable<ExecutionPlanItem> resources)
+        public ExecutionPlan(
+            IEnumerable<ExecutionPlanItem> resources,
+            bool requiresAdministrator)
         {
             _resources = resources.ToReadOnlyList();
+            RequiresAdministrator = requiresAdministrator;
         }
 
         public IEnumerator<ExecutionPlanItem> GetEnumerator()
