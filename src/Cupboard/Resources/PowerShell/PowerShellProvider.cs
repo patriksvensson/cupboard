@@ -2,11 +2,12 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using CliWrap.EventStream;
+using Spectre.Console;
 using Spectre.IO;
 
 namespace Cupboard
 {
-    public sealed class PowerShellProvider : AsyncWindowsResourceProvider<PowerShellScript>
+    public sealed class PowerShellProvider : AsyncResourceProvider<PowerShellScript>
     {
         private readonly ICupboardFileSystem _fileSystem;
         private readonly ICupboardEnvironment _environment;
@@ -51,7 +52,7 @@ namespace Cupboard
             if (resource.Unless != null)
             {
                 _logger.Debug("Evaluating 'Unless' condition");
-                if (await RunPowerShell(resource.Unless).ConfigureAwait(false) != 0)
+                if (await RunPowerShell(context, resource.Flavor, resource.Unless).ConfigureAwait(false) != 0)
                 {
                     _logger.Verbose("Skipping Powershell script since condition did not evaluate to 0 (zero)");
                     return ResourceState.Skipped;
@@ -60,7 +61,7 @@ namespace Cupboard
 
             if (!context.DryRun)
             {
-                if (await RunPowerShell(path).ConfigureAwait(false) != 0)
+                if (await RunPowerShell(context, resource.Flavor, path).ConfigureAwait(false) != 0)
                 {
                     _logger.Error("Powershell script exited with an unexpected exit code");
                     return ResourceState.Error;
@@ -73,7 +74,7 @@ namespace Cupboard
             return ResourceState.Executed;
         }
 
-        private async Task<int> RunPowerShell(string command)
+        private async Task<int> RunPowerShell(IExecutionContext context, PowerShellFlavor flavor, string command)
         {
             var path = _environment.GetTempFilePath().ChangeExtension("ps1");
 
@@ -86,7 +87,7 @@ namespace Cupboard
                     writer.Write(command);
                 }
 
-                return await RunPowerShell(path);
+                return await RunPowerShell(context, flavor, path);
             }
             finally
             {
@@ -97,27 +98,52 @@ namespace Cupboard
             }
         }
 
-        private async Task<int> RunPowerShell(FilePath path)
+        private async Task<int> RunPowerShell(IExecutionContext context, PowerShellFlavor flavor, FilePath path)
         {
-            var result = await _runner.Run("powershell.exe", $"–noprofile & '{path.FullPath}'", @event =>
+            var executable = GetPowerShellExecutable(context, flavor);
+            var args = flavor switch
+            {
+                PowerShellFlavor.PowerShell => $"–noprofile & '{path.FullPath}'",
+                PowerShellFlavor.PowerShellCore => $"–noprofile \"{path.FullPath}\"",
+                _ => throw new InvalidOperationException($"Unknown PowerShell provider '{flavor}'"),
+            };
+
+            var result = await _runner.Run(executable, args, @event =>
             {
                 if (@event is StandardOutputCommandEvent output)
                 {
                     if (!string.IsNullOrWhiteSpace(output.Text))
                     {
-                        _logger.Verbose($"OUT> {output.Text}");
+                        _logger.Verbose($"OUT> {output.Text.EscapeMarkup()}");
                     }
                 }
                 else if (@event is StandardErrorCommandEvent error)
                 {
                     if (!string.IsNullOrWhiteSpace(error.Text))
                     {
-                        _logger.Verbose($"ERR> {error.Text}");
+                        _logger.Verbose($"ERR> {error.Text.EscapeMarkup()}");
                     }
                 }
             });
 
             return result.ExitCode;
+        }
+
+        private string GetPowerShellExecutable(IExecutionContext context, PowerShellFlavor flavor)
+        {
+            if (context.Facts.IsWindows())
+            {
+                return flavor switch
+                {
+                    PowerShellFlavor.PowerShell => "powershell.exe",
+                    PowerShellFlavor.PowerShellCore => "pwsh.exe",
+                    _ => throw new InvalidOperationException($"Unknown PowerShell provider '{flavor}'"),
+                };
+            }
+            else
+            {
+                return "pwsh";
+            }
         }
     }
 }

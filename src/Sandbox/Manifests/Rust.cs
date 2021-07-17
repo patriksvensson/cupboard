@@ -6,6 +6,10 @@ namespace Sandbox
     {
         public override void Execute(ManifestContext context)
         {
+            // Download directory
+            context.Resource<Directory>("~/Downloads")
+                .Ensure(DirectoryState.Present);
+
             if (context.Facts["rust.installed"])
             {
                 return;
@@ -28,6 +32,7 @@ namespace Sandbox
                 // Download Rust installer script
                 context.Resource<Download>("https://sh.rustup.rs")
                     .Permissions("700")
+                    .After<Directory>("~/Downloads")
                     .ToFile("~/Downloads/rustup.sh");
 
                 // Run Rust installer

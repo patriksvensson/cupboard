@@ -74,7 +74,7 @@ namespace Cupboard.Internal
                 new Panel(table)
                     .Padding(1, 1)
                     .Expand()
-                    .Header(report.DryRun ? "[blue]Plan[/]" : "[blue]Report[/]")
+                    .Header(report.DryRun ? "[blue]Execution plan[/]" : "[blue]Report[/]")
                     .BorderColor(Color.Grey));
 
             if (!report.DryRun)

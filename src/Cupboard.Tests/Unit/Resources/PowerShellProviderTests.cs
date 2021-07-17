@@ -1,6 +1,10 @@
+using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NSubstitute;
 using Shouldly;
+using Spectre.IO;
+using Xunit;
 
 namespace Cupboard.Tests.Unit.Resources
 {
@@ -64,6 +68,45 @@ namespace Cupboard.Tests.Unit.Resources
             fixture.Logger.WasLogged("Script path does not exist").ShouldBeTrue();
         }
 
+        [Fact]
+        public async Task Should_Run_Script_Using_PowerShell_Core_On_Windows_If_Specified()
+        {
+            // Given
+            var fixture = new Fixture();
+            fixture.FileSystem.CreateFile("C:/lol.ps1");
+            fixture.ProcessRunner.Register("pwsh.exe", "–noprofile \"C:/lol.ps1\"", new ProcessRunnerResult(0, "OK"));
+
+            // When
+            var result = await fixture.Run(new PowerShellScript("My Script")
+            {
+                ScriptPath = "C:/lol.ps1",
+                Flavor = PowerShellFlavor.PowerShellCore,
+            });
+
+            // Then
+            result.ShouldBe(ResourceState.Executed);
+        }
+
+        [Theory]
+        [InlineData(PlatformFamily.Linux)]
+        [InlineData(PlatformFamily.MacOs)]
+        public async Task Should_Run_Script_Using_PowerShell_Core_On_Non_Windows_Platforms(PlatformFamily family)
+        {
+            // Given
+            var fixture = new Fixture(family);
+            fixture.FileSystem.CreateFile("/Working/lol.ps1");
+            fixture.ProcessRunner.Register("pwsh", "–noprofile & '/Working/lol.ps1'", new ProcessRunnerResult(0, "OK"));
+
+            // When
+            var result = await fixture.Run(new PowerShellScript("My Script")
+            {
+                ScriptPath = "/Working/lol.ps1",
+            });
+
+            // Then
+            result.ShouldBe(ResourceState.Executed);
+        }
+
         private sealed class Fixture
         {
             public FakeCupboardFileSystem FileSystem { get; }
@@ -72,13 +115,21 @@ namespace Cupboard.Tests.Unit.Resources
             public FakeLogger Logger { get; }
             public FactCollection Facts { get; }
 
-            public Fixture()
+            public Fixture(PlatformFamily family = PlatformFamily.Windows)
             {
-                Environment = FakeCupboardEnvironment.CreateWindowsEnvironment();
+                Environment = new FakeCupboardEnvironment(family);
                 FileSystem = new FakeCupboardFileSystem(Environment);
                 ProcessRunner = new FakeProcessRunner();
                 Logger = new FakeLogger();
                 Facts = new FactCollection();
+
+                Facts.Add("os.platform", family switch
+                {
+                    PlatformFamily.Windows => OSPlatform.Windows,
+                    PlatformFamily.Linux => OSPlatform.Linux,
+                    PlatformFamily.MacOs => OSPlatform.OSX,
+                    _ => throw new InvalidOperationException("Unknown platform family"),
+                });
             }
 
             public async Task<ResourceState> Run(PowerShellScript resource)

@@ -35,7 +35,10 @@ namespace Cupboard.Internal
 
             foreach (var specification in _specifications)
             {
-                specification.Execute(ctx);
+                if (specification.CanRun(facts))
+                {
+                    specification.Execute(ctx);
+                }
             }
 
             var manifests = new List<Manifest>();
@@ -91,6 +94,14 @@ namespace Cupboard.Internal
                 {
                     status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
 
+                    // Abort if we cannot run a provider
+                    if (!node.Provider.CanRun(facts))
+                    {
+                        _logger.Error($"The resource [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/] cannot be run");
+                        break;
+                    }
+
+                    // Run the provider
                     var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
                     results.Add(new ReportItem(node.Provider, node.Resource, state, node.RequireAdministrator));
 

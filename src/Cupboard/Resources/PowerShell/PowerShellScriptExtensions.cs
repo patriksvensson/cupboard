@@ -1,4 +1,4 @@
-﻿using Spectre.IO;
+using Spectre.IO;
 
 namespace Cupboard
 {
@@ -7,6 +7,12 @@ namespace Cupboard
         public static IResourceBuilder<PowerShellScript> Script(this IResourceBuilder<PowerShellScript> builder, FilePath file)
         {
             builder.Configure(res => res.ScriptPath = file);
+            return builder;
+        }
+
+        public static IResourceBuilder<PowerShellScript> Flavor(this IResourceBuilder<PowerShellScript> builder, PowerShellFlavor flavor)
+        {
+            builder.Configure(res => res.Flavor = flavor);
             return builder;
         }
 

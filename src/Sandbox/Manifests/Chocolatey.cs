@@ -24,6 +24,7 @@ namespace Sandbox
             // Install
             context.Resource<PowerShellScript>("Install Chocolatey")
                 .Script("~/install-chocolatey.ps1")
+                .Flavor(PowerShellFlavor.PowerShell)
                 .RequireAdministrator()
                 .Unless("if (Test-Path \"$($env:ProgramData)/chocolatey/choco.exe\") { exit 1 }")
                 .After<RegistryKey>("Set execution policy")
