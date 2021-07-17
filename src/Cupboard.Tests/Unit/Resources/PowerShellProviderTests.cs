@@ -68,7 +68,7 @@ namespace Cupboard.Tests.Unit.Resources
             fixture.Logger.WasLogged("Script path does not exist").ShouldBeTrue();
         }
 
-        [Fact]
+        [WindowsFact]
         public async Task Should_Run_Script_Using_PowerShell_Core_On_Windows_If_Specified()
         {
             // Given
