@@ -37,7 +37,7 @@ namespace Cupboard.Tests
             Verbosity = verbosity;
         }
 
-        public bool WasLogged(string message, Verbosity? verbosity = null, LogLevel? level = null)
+        public void WasLogged(string message, Verbosity? verbosity = null, LogLevel? level = null)
         {
             var messages = _messages.Where(x => x.Message.Equals(message, StringComparison.Ordinal));
 
@@ -51,7 +51,11 @@ namespace Cupboard.Tests
                 messages = messages.Where(x => x.Level == level.Value);
             }
 
-            return messages.Any();
+            if (!messages.Any())
+            {
+                var lol = string.Join("\n", _messages.Select(m => $"* {m.Message}"));
+                throw new InvalidOperationException($"Received no log calls that matched.\nReceived messages:\n\n{lol}");
+            }
         }
     }
 }

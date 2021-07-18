@@ -15,18 +15,37 @@ namespace Cupboard.Tests.Unit.Resources
         {
             // Given
             var fixture = new Fixture();
-
             fixture.FileSystem.CreateFile("C:/lol.ps1");
-            fixture.ProcessRunner.Register("powershell.exe", "–noprofile & 'C:/lol.ps1'", new ProcessRunnerResult(0, "OK"));
+            fixture.ProcessRunner.RegisterDefault(new ProcessRunnerResult(0));
 
             // When
-            var result = await fixture.Run(new PowerShellScript("My Script")
+            var result = await fixture.Run(new PowerShell("My Script")
             {
-                ScriptPath = "C:/lol.ps1",
+                Script = "C:/lol.ps1",
             });
 
             // Then
             result.ShouldBe(ResourceState.Executed);
+            fixture.Logger.WasLogged("Running PowerShell script [yellow]C:/lol.ps1[/]");
+        }
+
+        [WindowsFact]
+        public async Task Should_Run_Command()
+        {
+            // Given
+            var fixture = new Fixture();
+            fixture.FileSystem.CreateDirectory("C:/Temp");
+            fixture.ProcessRunner.RegisterDefault(new ProcessRunnerResult(0));
+
+            // When
+            var result = await fixture.Run(new PowerShell("My Script")
+            {
+                Command = "Not really executed, but must be present",
+            });
+
+            // Then
+            result.ShouldBe(ResourceState.Executed);
+            fixture.Logger.WasLogged("Running PowerShell command: Not really executed, but must be present");
         }
 
         [WindowsFact]
@@ -37,18 +56,18 @@ namespace Cupboard.Tests.Unit.Resources
 
             fixture.FileSystem.CreateDirectory("C:/Temp");
             fixture.FileSystem.CreateFile("C:/lol.ps1");
-            fixture.ProcessRunner.Register("powershell.exe", "–noprofile & 'C:/Temp/fake.ps1'", new ProcessRunnerResult(1));
+            fixture.ProcessRunner.RegisterDefault(new ProcessRunnerResult(1));
 
             // When
-            var result = await fixture.Run(new PowerShellScript("My Script")
+            var result = await fixture.Run(new PowerShell("My Script")
             {
                 Unless = "Not really executed, but must be present",
-                ScriptPath = "C:/lol.ps1",
+                Script = "C:/lol.ps1",
             });
 
             // Then
             result.ShouldBe(ResourceState.Skipped);
-            fixture.Logger.WasLogged("Skipping Powershell script since condition did not evaluate to 0 (zero)").ShouldBeTrue();
+            fixture.Logger.WasLogged("Skipping PowerShell script since condition did not evaluate to 0 (zero)");
         }
 
         [WindowsFact]
@@ -58,14 +77,14 @@ namespace Cupboard.Tests.Unit.Resources
             var fixture = new Fixture();
 
             // When
-            var result = await fixture.Run(new PowerShellScript("My Script")
+            var result = await fixture.Run(new PowerShell("My Script")
             {
-                ScriptPath = "C:/lol.ps1",
+                Script = "C:/lol.ps1",
             });
 
             // Then
             result.ShouldBe(ResourceState.Error);
-            fixture.Logger.WasLogged("Script path does not exist").ShouldBeTrue();
+            fixture.Logger.WasLogged("PowerShell script path does not exist");
         }
 
         [WindowsFact]
@@ -74,17 +93,18 @@ namespace Cupboard.Tests.Unit.Resources
             // Given
             var fixture = new Fixture();
             fixture.FileSystem.CreateFile("C:/lol.ps1");
-            fixture.ProcessRunner.Register("pwsh.exe", "–noprofile \"C:/lol.ps1\"", new ProcessRunnerResult(0, "OK"));
+            fixture.ProcessRunner.RegisterDefault(new ProcessRunnerResult(0));
 
             // When
-            var result = await fixture.Run(new PowerShellScript("My Script")
+            var result = await fixture.Run(new PowerShell("My Script")
             {
-                ScriptPath = "C:/lol.ps1",
+                Script = "C:/lol.ps1",
                 Flavor = PowerShellFlavor.PowerShellCore,
             });
 
             // Then
             result.ShouldBe(ResourceState.Executed);
+            fixture.Logger.WasLogged("Running PowerShell script [yellow]C:/lol.ps1[/]");
         }
 
         [Theory]
@@ -95,16 +115,17 @@ namespace Cupboard.Tests.Unit.Resources
             // Given
             var fixture = new Fixture(family);
             fixture.FileSystem.CreateFile("/Working/lol.ps1");
-            fixture.ProcessRunner.Register("pwsh", "–noprofile & '/Working/lol.ps1'", new ProcessRunnerResult(0, "OK"));
+            fixture.ProcessRunner.RegisterDefault(new ProcessRunnerResult(0));
 
             // When
-            var result = await fixture.Run(new PowerShellScript("My Script")
+            var result = await fixture.Run(new PowerShell("My Script")
             {
-                ScriptPath = "/Working/lol.ps1",
+                Script = "/Working/lol.ps1",
             });
 
             // Then
             result.ShouldBe(ResourceState.Executed);
+            fixture.Logger.WasLogged("Running PowerShell script [yellow]/Working/lol.ps1[/]");
         }
 
         private sealed class Fixture
@@ -132,7 +153,7 @@ namespace Cupboard.Tests.Unit.Resources
                 });
             }
 
-            public async Task<ResourceState> Run(PowerShellScript resource)
+            public async Task<ResourceState> Run(PowerShell resource)
             {
                 var context = new ExecutionContext(Facts);
                 var refresher = Substitute.For<IEnvironmentRefresher>();

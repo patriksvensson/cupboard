@@ -22,21 +22,13 @@ namespace Sandbox
                 .Value("Unrestricted", RegistryKeyValueKind.String);
 
             // Install
-            context.Resource<PowerShellScript>("Install Chocolatey")
+            context.Resource<PowerShell>("Install Chocolatey")
                 .Script("~/install-chocolatey.ps1")
                 .Flavor(PowerShellFlavor.PowerShell)
                 .RequireAdministrator()
                 .Unless("if (Test-Path \"$($env:ProgramData)/chocolatey/choco.exe\") { exit 1 }")
                 .After<RegistryKey>("Set execution policy")
                 .After<Download>("https://chocolatey.org/install.ps1");
-
-            // Install packages
-            foreach (var package in new[] { "screentogif", "repoz" })
-            {
-                context.Resource<ChocolateyPackage>(package)
-                    .Ensure(PackageState.Installed)
-                    .After<PowerShellScript>("Install Chocolatey");
-            }
         }
     }
 }

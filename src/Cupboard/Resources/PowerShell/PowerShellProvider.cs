@@ -7,7 +7,7 @@ using Spectre.IO;
 
 namespace Cupboard
 {
-    public sealed class PowerShellProvider : AsyncResourceProvider<PowerShellScript>
+    public sealed class PowerShellProvider : AsyncResourceProvider<PowerShell>
     {
         private readonly ICupboardFileSystem _fileSystem;
         private readonly ICupboardEnvironment _environment;
@@ -29,41 +29,55 @@ namespace Cupboard
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override PowerShellScript Create(string name)
+        public override PowerShell Create(string name)
         {
-            return new PowerShellScript(name);
+            return new PowerShell(name);
         }
 
-        public override async Task<ResourceState> RunAsync(IExecutionContext context, PowerShellScript resource)
+        public override async Task<ResourceState> RunAsync(IExecutionContext context, PowerShell resource)
         {
-            if (resource.ScriptPath == null)
-            {
-                _logger.Error("Script path has not been set");
-                return ResourceState.Error;
-            }
-
-            var path = resource.ScriptPath.MakeAbsolute(_environment);
-            if (!_fileSystem.Exist(path))
-            {
-                _logger.Error("Script path does not exist");
-                return ResourceState.Error;
-            }
-
             if (resource.Unless != null)
             {
-                _logger.Debug("Evaluating 'Unless' condition");
+                _logger.Debug($"Evaluating PowerShell condition: {resource.Unless}");
                 if (await RunPowerShell(context, resource.Flavor, resource.Unless).ConfigureAwait(false) != 0)
                 {
-                    _logger.Verbose("Skipping Powershell script since condition did not evaluate to 0 (zero)");
+                    _logger.Verbose("Skipping PowerShell script since condition did not evaluate to 0 (zero)");
                     return ResourceState.Skipped;
                 }
             }
 
             if (!context.DryRun)
             {
-                if (await RunPowerShell(context, resource.Flavor, path).ConfigureAwait(false) != 0)
+                if (resource.Script != null)
                 {
-                    _logger.Error("Powershell script exited with an unexpected exit code");
+                    // Script
+                    var path = resource.Script.MakeAbsolute(_environment);
+                    if (!_fileSystem.Exist(path))
+                    {
+                        _logger.Error("PowerShell script path does not exist");
+                        return ResourceState.Error;
+                    }
+
+                    _logger.Debug($"Running PowerShell script [yellow]{path}[/]");
+                    if (await RunPowerShell(context, resource.Flavor, path).ConfigureAwait(false) != 0)
+                    {
+                        _logger.Error("Powershell script exited with an unexpected exit code");
+                        return ResourceState.Error;
+                    }
+                }
+                else if (resource.Command != null)
+                {
+                    // Command
+                    _logger.Debug($"Running PowerShell command: {resource.Command}");
+                    if (await RunPowerShell(context, resource.Flavor, resource.Command).ConfigureAwait(false) != 0)
+                    {
+                        _logger.Error("Powershell script exited with an unexpected exit code");
+                        return ResourceState.Error;
+                    }
+                }
+                else
+                {
+                    _logger.Error("PowerShell Command or script path has not been set");
                     return ResourceState.Error;
                 }
 
@@ -76,7 +90,10 @@ namespace Cupboard
 
         private async Task<int> RunPowerShell(IExecutionContext context, PowerShellFlavor flavor, string command)
         {
-            var path = _environment.GetTempFilePath().ChangeExtension("ps1");
+            var path = _environment
+                .GetTempFilePath()
+                .ChangeExtension("ps1")
+                .MakeAbsolute(_environment);
 
             try
             {

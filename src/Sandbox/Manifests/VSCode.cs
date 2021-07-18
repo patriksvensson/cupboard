@@ -29,7 +29,7 @@ namespace Sandbox
             // VSCode
             context.Resource<ChocolateyPackage>("vscode")
                 .Ensure(PackageState.Installed)
-                .After<PowerShellScript>("Install Chocolatey");
+                .After<PowerShell>("Install Chocolatey");
 
             // Extensions
             foreach (var package in packages)

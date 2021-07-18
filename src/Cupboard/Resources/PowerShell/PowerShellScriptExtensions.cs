@@ -4,19 +4,19 @@ namespace Cupboard
 {
     public static class PowerShellScriptExtensions
     {
-        public static IResourceBuilder<PowerShellScript> Script(this IResourceBuilder<PowerShellScript> builder, FilePath file)
+        public static IResourceBuilder<PowerShell> Script(this IResourceBuilder<PowerShell> builder, FilePath file)
         {
-            builder.Configure(res => res.ScriptPath = file);
+            builder.Configure(res => res.Script = file);
             return builder;
         }
 
-        public static IResourceBuilder<PowerShellScript> Flavor(this IResourceBuilder<PowerShellScript> builder, PowerShellFlavor flavor)
+        public static IResourceBuilder<PowerShell> Flavor(this IResourceBuilder<PowerShell> builder, PowerShellFlavor flavor)
         {
             builder.Configure(res => res.Flavor = flavor);
             return builder;
         }
 
-        public static IResourceBuilder<PowerShellScript> Unless(this IResourceBuilder<PowerShellScript> builder, string script)
+        public static IResourceBuilder<PowerShell> Unless(this IResourceBuilder<PowerShell> builder, string script)
         {
             builder.Configure(res => res.Unless = script);
             return builder;

@@ -17,10 +17,8 @@ namespace Sandbox
     {
         public override void Execute(CatalogContext context)
         {
-            context.UseManifest<Rust>();
             context.UseManifest<Chocolatey>();
-            context.UseManifest<VSCode>();
-            context.UseManifest<WindowsSettings>();
+            context.UseManifest<ChocolateyPackages>();
         }
     }
 }
