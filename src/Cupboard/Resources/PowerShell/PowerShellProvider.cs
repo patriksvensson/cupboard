@@ -68,7 +68,7 @@ namespace Cupboard
                 else if (resource.Command != null)
                 {
                     // Command
-                    _logger.Debug($"Running PowerShell command: {resource.Command}");
+                    _logger.Debug($"Running PowerShell command: [yellow]{resource.Command}[/]");
                     if (await RunPowerShell(context, resource.Flavor, resource.Command).ConfigureAwait(false) != 0)
                     {
                         _logger.Error("Powershell script exited with an unexpected exit code");
@@ -104,7 +104,7 @@ namespace Cupboard
                     writer.Write(command);
                 }
 
-                return await RunPowerShell(context, flavor, path);
+                return await RunPowerShell(context, flavor, path).ConfigureAwait(false);
             }
             finally
             {
@@ -141,12 +141,12 @@ namespace Cupboard
                         _logger.Verbose($"ERR> {error.Text.EscapeMarkup()}");
                     }
                 }
-            });
+            }).ConfigureAwait(false);
 
             return result.ExitCode;
         }
 
-        private string GetPowerShellExecutable(IExecutionContext context, PowerShellFlavor flavor)
+        private static string GetPowerShellExecutable(IExecutionContext context, PowerShellFlavor flavor)
         {
             if (context.Facts.IsWindows())
             {

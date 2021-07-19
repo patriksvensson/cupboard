@@ -16,6 +16,7 @@ namespace Cupboard.Internal
         private readonly ICupboardLogger _logger;
         private readonly ICupboardFileSystem _fileSystem;
         private readonly ICupboardEnvironment _environment;
+        private readonly ISecurityPrincipal _security;
         private readonly IAnsiConsole _console;
 
         public sealed class Settings : CommandSettings
@@ -53,6 +54,7 @@ namespace Cupboard.Internal
             ICupboardLogger logger,
             ICupboardFileSystem fileSystem,
             ICupboardEnvironment environment,
+            ISecurityPrincipal security,
             IAnsiConsole console)
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
@@ -60,6 +62,7 @@ namespace Cupboard.Internal
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _security = security ?? throw new ArgumentNullException(nameof(security));
             _console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
@@ -144,7 +147,7 @@ namespace Cupboard.Internal
 
                     if (report.RequiresAdministrator)
                     {
-                        if (!SecurityUtilities.IsAdministrator())
+                        if (!_security.IsAdministrator())
                         {
                             _console.MarkupLine("[red]ERROR:[/] The current execution plan [yellow]require administrative permissions[/].");
                             _console.MarkupLine("[grey]Restart the application as administrator to execute plan.[/]");

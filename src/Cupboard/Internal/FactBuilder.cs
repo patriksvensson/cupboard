@@ -3,7 +3,7 @@ using Spectre.Console.Cli;
 
 namespace Cupboard.Internal
 {
-    internal sealed class FactBuilder
+    internal sealed class FactBuilder : IFactBuilder
     {
         private readonly IReadOnlyList<IFactProvider> _providers;
 

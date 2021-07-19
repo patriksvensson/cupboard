@@ -8,7 +8,7 @@ namespace Cupboard.Internal
 {
     internal sealed class FactCommand : Command<FactCommand.Settings>
     {
-        private readonly FactBuilder _builder;
+        private readonly IFactBuilder _builder;
         private readonly IAnsiConsole _console;
 
         public sealed class Settings : CommandSettings
@@ -17,7 +17,7 @@ namespace Cupboard.Internal
             public bool Environment { get; set; }
         }
 
-        public FactCommand(FactBuilder builder, IAnsiConsole console)
+        public FactCommand(IFactBuilder builder, IAnsiConsole console)
         {
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
             _console = console ?? throw new ArgumentNullException(nameof(console));

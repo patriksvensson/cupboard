@@ -1,131 +1,121 @@
-using System.Threading.Tasks;
-using Cupboard.Tests.Resources;
-using NSubstitute;
+using Cupboard.Testing;
 using Shouldly;
-using Xunit;
 
 namespace Cupboard.Tests.Unit.Resources
 {
     public sealed class ChocolateyProviderTests
     {
-        public sealed class IfPackageShouldBeInstalled
+        public sealed class Manifests
         {
-            [Fact]
-            public async Task Should_Install_Package_If_Missing()
+            public sealed class Install : Manifest
             {
-                // Given
-                var runner = new FakeProcessRunnerFixture();
-                var logger = Substitute.For<ICupboardLogger>();
-                var refresher = Substitute.For<IEnvironmentRefresher>();
-                var provider = new ChocolateyPackageProvider(runner.Runner, refresher, logger);
-                var package = new ChocolateyPackage("Visual Studio Code")
+                public override void Execute(ManifestContext context)
                 {
-                    Package = "vscode",
-                    Ensure = PackageState.Installed,
-                };
-
-                runner.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."),
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
-
-                runner.Register("choco", "install vscode -y",
-                    new ProcessRunnerResult(0, "Lol installed VSCode"));
-
-                // When
-                var result = await provider.RunAsync(new ExecutionContext(new FactCollection()), package);
-
-                // Then
-                result.ShouldBe(ResourceState.Changed);
-                logger.Received(1).Log(Verbosity.Normal, LogLevel.Information, "The Chocolatey package [yellow]vscode[/] was installed");
+                    context.Resource<ChocolateyPackage>("Visual Studio Code")
+                        .Package("vscode")
+                        .Ensure(PackageState.Installed);
+                }
             }
 
-            [Fact]
-            public async Task Should_Not_Install_Package_If_Present()
+            public sealed class Uninstall : Manifest
             {
-                // Given
-                var runner = new FakeProcessRunnerFixture();
-                var logger = Substitute.For<ICupboardLogger>();
-                var refresher = Substitute.For<IEnvironmentRefresher>();
-                var provider = new ChocolateyPackageProvider(runner.Runner, refresher, logger);
-                var package = new ChocolateyPackage("Visual Studio Code")
+                public override void Execute(ManifestContext context)
                 {
-                    Package = "vscode",
-                    Ensure = PackageState.Installed,
-                };
-
-                runner.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."),
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
-
-                runner.Register("choco", "install vscode -y",
-                    new ProcessRunnerResult(0, "Lol installed VSCode"));
-
-                // When
-                var result = await provider.RunAsync(new ExecutionContext(new FactCollection()), package);
-
-                // Then
-                result.ShouldBe(ResourceState.Unchanged);
-                logger.Received(1).Log(Verbosity.Diagnostic, LogLevel.Debug, "The Chocolatey package [yellow]vscode[/] is already installed");
+                    context.Resource<ChocolateyPackage>("Visual Studio Code")
+                        .Package("vscode")
+                        .Ensure(PackageState.Uninstalled);
+                }
             }
         }
 
-        public sealed class IfPackageShouldNotBeInstalled
+        public sealed class EnsureInstalled
         {
-            [Fact]
-            public async Task Should_Uninstall_Package_If_Present()
+            [WindowsFact]
+            public void Should_Install_Package_If_Missing()
             {
                 // Given
-                var runner = new FakeProcessRunnerFixture();
-                var logger = Substitute.For<ICupboardLogger>();
-                var refresher = Substitute.For<IEnvironmentRefresher>();
-                var provider = new ChocolateyPackageProvider(runner.Runner, refresher, logger);
-                var package = new ChocolateyPackage("Visual Studio Code")
-                {
-                    Package = "vscode",
-                    Ensure = PackageState.Uninstalled,
-                };
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
-                runner.Register("choco", "list -lo",
+                fixture.Process.Register("choco", "list -lo",
+                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."),
+                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
+
+                fixture.Process.Register("choco", "install vscode -y",
+                    new ProcessRunnerResult(0, "Lol installed VSCode"));
+
+                // When
+                var result = fixture.Run("-y");
+
+                // Then
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Changed);
+                fixture.Logger.WasLogged("Installing Chocolatey package [yellow]vscode[/]");
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
+            }
+
+            [WindowsFact]
+            public void Should_Not_Install_Package_If_Present_lol()
+            {
+                // Given
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
+
+                fixture.Process.Register("choco", "list -lo",
+                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
+
+                // When
+                var result = fixture.Run("-y");
+
+                // Then
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Unchanged);
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already installed");
+            }
+        }
+
+        public sealed class EnsureUninstalled
+        {
+            [WindowsFact]
+            public void Should_Uninstall_Package_If_Present()
+            {
+                // Given
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
+
+                fixture.Process.Register("choco", "list -lo",
                     new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."),
                     new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."));
 
-                runner.Register("choco", "uninstall vscode",
-                    new ProcessRunnerResult(0, "Lol uninstalled VSCode"));
+                fixture.Process.Register("choco", "uninstall vscode", new ProcessRunnerResult(0));
 
                 // When
-                var result = await provider.RunAsync(new ExecutionContext(new FactCollection()), package);
+                var result = fixture.Run("-y");
 
                 // Then
-                result.ShouldBe(ResourceState.Changed);
-                logger.Received(1).Log(Verbosity.Normal, LogLevel.Information, "The Chocolatey package [yellow]vscode[/] was uninstalled");
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Changed);
+                fixture.Logger.WasLogged("Uninstalling Chocolatey package vscode...");
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was uninstalled");
             }
 
-            [Fact]
-            public async Task Should_Not_Uninstall_Package_If_Absent()
+            [WindowsFact]
+            public void Should_Not_Uninstall_Package_If_Absent()
             {
                 // Given
-                var runner = new FakeProcessRunnerFixture();
-                var logger = Substitute.For<ICupboardLogger>();
-                var refresher = Substitute.For<IEnvironmentRefresher>();
-                var provider = new ChocolateyPackageProvider(runner.Runner, refresher, logger);
-                var package = new ChocolateyPackage("Visual Studio Code")
-                {
-                    Package = "vscode",
-                    Ensure = PackageState.Uninstalled,
-                };
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
-                runner.Register("choco", "list -lo",
+                fixture.Process.Register("choco", "list -lo",
                     new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."));
 
-                runner.Register("choco", "uninstall vscode",
-                    new ProcessRunnerResult(0, "Lol uninstalled VSCode"));
-
                 // When
-                var result = await provider.RunAsync(new ExecutionContext(new FactCollection()), package);
+                var result = fixture.Run("-y");
 
                 // Then
-                result.ShouldBe(ResourceState.Unchanged);
-                logger.Received(1).Log(Verbosity.Diagnostic, LogLevel.Debug, "The Chocolatey package [yellow]vscode[/] is already uninstalled");
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Unchanged);
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already uninstalled");
             }
         }
     }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cupboard.Tests
+namespace Cupboard.Testing
 {
     public sealed class FakeLogger : ICupboardLogger
     {
@@ -15,6 +15,11 @@ namespace Cupboard.Tests
             public Verbosity Verbosity { get; init; }
             public LogLevel Level { get; init; }
             public string Message { get; init; }
+
+            public LoggedMessage()
+            {
+                Message = string.Empty;
+            }
         }
 
         public FakeLogger()
@@ -53,8 +58,8 @@ namespace Cupboard.Tests
 
             if (!messages.Any())
             {
-                var lol = string.Join("\n", _messages.Select(m => $"* {m.Message}"));
-                throw new InvalidOperationException($"Received no log calls that matched.\nReceived messages:\n\n{lol}");
+                var list = string.Join("\n", _messages.Select(m => $"* {m.Message}"));
+                throw new InvalidOperationException($"Received no log calls that matched.\nReceived messages:\n\n{list}");
             }
         }
     }

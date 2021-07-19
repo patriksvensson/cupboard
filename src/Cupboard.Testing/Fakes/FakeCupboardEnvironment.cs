@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Spectre.IO;
 using Spectre.IO.Testing;
 
-namespace Cupboard.Tests
+namespace Cupboard.Testing
 {
     public sealed class FakeCupboardEnvironment : ICupboardEnvironment
     {
@@ -27,12 +27,12 @@ namespace Cupboard.Tests
             return new FakeCupboardEnvironment(PlatformFamily.Windows, is64Bit);
         }
 
-        public string GetEnvironmentVariable(string variable)
+        public string? GetEnvironmentVariable(string variable)
         {
             return _environment.GetEnvironmentVariable(variable);
         }
 
-        public IDictionary<string, string> GetEnvironmentVariables()
+        public IDictionary<string, string?> GetEnvironmentVariables()
         {
             return _environment.GetEnvironmentVariables();
         }

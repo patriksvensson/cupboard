@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.EventStream;
 
-namespace Cupboard
+namespace Cupboard.Internal
 {
     internal sealed class ProcessRunner : IProcessRunner
     {

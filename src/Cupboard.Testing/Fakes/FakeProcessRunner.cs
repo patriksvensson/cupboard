@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CliWrap.EventStream;
 
-namespace Cupboard.Tests
+namespace Cupboard.Testing
 {
     public sealed class FakeProcessRunner : IProcessRunner
     {
         private readonly Dictionary<string, Queue<ProcessRunnerResult>> _registrations;
         private readonly List<(string File, string Arguments)> _calls;
-        private ProcessRunnerResult _defaultRegistration;
+        private ProcessRunnerResult? _defaultRegistration;
 
         public FakeProcessRunner()
         {
@@ -42,7 +42,7 @@ namespace Cupboard.Tests
             return _calls.Any(c => c.File.Equals(file, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<ProcessRunnerResult> Run(string file, string arguments, Action<CommandEvent> handler = null)
+        public Task<ProcessRunnerResult> Run(string file, string arguments, Action<CommandEvent>? handler = null)
         {
             _calls.Add((file, arguments));
 
@@ -63,7 +63,7 @@ namespace Cupboard.Tests
             throw new InvalidOperationException($"No process registration found for \"{key}\"");
         }
 
-        private string GetKey(string file, string arguments)
+        private static string GetKey(string file, string arguments)
         {
             return $"{file} {arguments}";
         }

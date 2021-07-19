@@ -9,23 +9,29 @@ namespace Cupboard.Internal
     internal sealed class ExecutionEngine
     {
         private readonly ResourceProviderRepository _resourceProviders;
-        private readonly FactBuilder _factBuilder;
+        private readonly IFactBuilder _factBuilder;
+        private readonly ISecurityPrincipal _security;
         private readonly List<Catalog> _specifications;
         private readonly List<Manifest> _manifests;
         private readonly ICupboardLogger _logger;
+        private readonly IReportSubscriber? _subscriber;
 
         public ExecutionEngine(
             ResourceProviderRepository resourceProviders,
-            FactBuilder factBuilder,
+            IFactBuilder factBuilder,
             IEnumerable<Catalog> specifications,
             IEnumerable<Manifest> manifests,
-            ICupboardLogger logger)
+            ISecurityPrincipal security,
+            ICupboardLogger logger,
+            IReportSubscriber? subscriber = null)
         {
             _resourceProviders = resourceProviders ?? throw new ArgumentNullException(nameof(resourceProviders));
             _factBuilder = factBuilder ?? throw new ArgumentNullException(nameof(factBuilder));
+            _security = security ?? throw new ArgumentNullException(nameof(security));
             _specifications = new List<Catalog>(specifications ?? Array.Empty<Catalog>());
             _manifests = new List<Manifest>(manifests ?? Array.Empty<Manifest>());
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _subscriber = subscriber;
         }
 
         public async Task<Report> Run(IRemainingArguments args, IStatusUpdater status, bool dryRun)
@@ -55,14 +61,18 @@ namespace Cupboard.Internal
             var graph = ResourceGraphBuilder.Build(_resourceProviders, manifests, facts);
             graph.Configurations.ForEach(action => action());
 
-            // Build and run the execution plan
+            // Buildthe execution plan
             var plan = BuildExecutionPlan(graph, facts);
             if (plan.Count == 0)
             {
                 return new Report(Array.Empty<ReportItem>(), facts, plan.RequiresAdministrator, dryRun);
             }
 
-            return await ExecutePlan(plan, facts, status, dryRun).ConfigureAwait(false);
+            // Execute the plan
+            var report = await ExecutePlan(plan, facts, status, dryRun).ConfigureAwait(false);
+            _subscriber?.Notify(report);
+
+            return report;
         }
 
         private async Task<Report> ExecutePlan(ExecutionPlan plan, FactCollection facts, IStatusUpdater status, bool dryRun)
@@ -71,7 +81,7 @@ namespace Cupboard.Internal
             // Make sure we're running with elevated permissions
             if (plan.RequiresAdministrator)
             {
-                if (!SecurityUtilities.IsAdministrator() && !dryRun)
+                if (!_security.IsAdministrator() && !dryRun)
                 {
                     throw new InvalidOperationException("Not running as administrator");
                 }
