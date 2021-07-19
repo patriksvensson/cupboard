@@ -42,11 +42,13 @@ namespace Cupboard.Tests.Unit.IO
         [InlineData("HKCU/Foo/Bar/Baz", RegistryKeyRoot.CurrentUser)]
         [InlineData("HKLM/Foo/Bar/Baz", RegistryKeyRoot.LocalMachine)]
         [InlineData("HKU/Foo/Bar/Baz", RegistryKeyRoot.Users)]
+        [InlineData("HKPD/Foo/Bar/Baz", RegistryKeyRoot.PerformanceData)]
         [InlineData("HKCC/Foo/Bar/Baz", RegistryKeyRoot.CurrentConfig)]
         [InlineData("HKCR:/Foo/Bar/Baz", RegistryKeyRoot.ClassesRoot)]
         [InlineData("HKCU:/Foo/Bar/Baz", RegistryKeyRoot.CurrentUser)]
         [InlineData("HKLM:/Foo/Bar/Baz", RegistryKeyRoot.LocalMachine)]
         [InlineData("HKU:/Foo/Bar/Baz", RegistryKeyRoot.Users)]
+        [InlineData("HKPD:/Foo/Bar/Baz", RegistryKeyRoot.PerformanceData)]
         [InlineData("HKCC:/Foo/Bar/Baz", RegistryKeyRoot.CurrentConfig)]
         public void Should_Substitute_Roots(string path, RegistryKeyRoot expected)
         {

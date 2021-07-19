@@ -30,6 +30,8 @@ namespace Cupboard
                     services.AddSingleton<ICupboardFileSystem, CupboardFileSystem>();
                     services.AddSingleton<ICupboardEnvironment, CupboardEnvironment>();
 
+                    services.AddSingleton<IWindowsRegistry, WindowsRegistry>();
+
                     services.AddSingleton<IProcessRunner, ProcessRunner>();
                     services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
                     services.AddSingleton<IFactBuilder, FactBuilder>();

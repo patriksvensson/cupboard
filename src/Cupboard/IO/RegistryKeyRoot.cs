@@ -1,4 +1,4 @@
-﻿namespace Cupboard
+namespace Cupboard
 {
     public enum RegistryKeyRoot
     {
@@ -8,5 +8,6 @@
         LocalMachine = 3,
         Users = 4,
         CurrentConfig = 5,
+        PerformanceData = 6,
     }
 }

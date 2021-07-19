@@ -25,11 +25,13 @@ namespace Cupboard
                 { "HKCU", "HKEY_CURRENT_USER" },
                 { "HKLM", "HKEY_LOCAL_MACHINE" },
                 { "HKU", "HKEY_USERS" },
+                { "HKPD", "HKEY_PERFORMANCE_DATA" },
                 { "HKCC", "HKEY_CURRENT_CONFIG" },
                 { "HKCR:", "HKEY_CLASSES_ROOT" },
                 { "HKCU:", "HKEY_CURRENT_USER" },
                 { "HKLM:", "HKEY_LOCAL_MACHINE" },
                 { "HKU:", "HKEY_USERS" },
+                { "HKPD:", "HKEY_PERFORMANCE_DATA" },
                 { "HKCC:", "HKEY_CURRENT_CONFIG" },
             };
 
@@ -39,6 +41,7 @@ namespace Cupboard
                 { "HKEY_CURRENT_CONFIG", RegistryKeyRoot.CurrentConfig },
                 { "HKEY_CURRENT_USER", RegistryKeyRoot.CurrentUser },
                 { "HKEY_LOCAL_MACHINE", RegistryKeyRoot.LocalMachine },
+                { "HKEY_PERFORMANCE_DATA", RegistryKeyRoot.PerformanceData },
                 { "HKEY_USERS", RegistryKeyRoot.Users },
             };
         }

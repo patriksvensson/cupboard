@@ -1,19 +1,36 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using Cupboard.Internal;
-using Win32Registry = Microsoft.Win32.Registry;
-using Win32RegistryKey = Microsoft.Win32.RegistryKey;
 
 namespace Cupboard
 {
+    public interface IWindowsRegistry
+    {
+        IWindowsRegistryKey ClassesRoot { get; }
+        IWindowsRegistryKey CurrentConfig { get; }
+        IWindowsRegistryKey CurrentUser { get; }
+        IWindowsRegistryKey LocalMachine { get; }
+        IWindowsRegistryKey PerformanceData { get; }
+        IWindowsRegistryKey Users { get; }
+    }
+
+    public interface IWindowsRegistryKey
+    {
+        IWindowsRegistryKey? OpenSubKey(string name, bool writable);
+        IWindowsRegistryKey? CreateSubKey(string name, bool writable);
+        object? GetValue(string name);
+        void SetValue(string name, object value, RegistryKeyValueKind registryValueKind);
+        void DeleteValue(string name);
+    }
+
     public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>
     {
+        private readonly IWindowsRegistry _registry;
         private readonly ICupboardLogger _logger;
 
-        public RegistryKeyProvider(ICupboardLogger logger)
+        public RegistryKeyProvider(IWindowsRegistry registry, ICupboardLogger logger)
         {
-            _logger = logger;
+            _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override RegistryKey Create(string name)
@@ -78,7 +95,7 @@ namespace Cupboard
                     }
                 }
 
-                var value = key.GetValue(resource.Path.Value, null);
+                var value = key.GetValue(resource.Path.Value);
                 if (value != null)
                 {
                     // TODO 2021-07-11: This is good enough for now, but should be properly implemented
@@ -92,7 +109,7 @@ namespace Cupboard
                 if (!context.DryRun)
                 {
                     _logger.Information("Updating registry key");
-                    key.SetValue(resource.Path.Value, resource.Value, resource.ValueKind.ToWin32());
+                    key.SetValue(resource.Path.Value, resource.Value, resource.ValueKind);
                 }
 
                 return ResourceState.Changed;
@@ -113,7 +130,7 @@ namespace Cupboard
                     return ResourceState.Unchanged;
                 }
 
-                var value = key.GetValue(resource.Path.Value, null);
+                var value = key.GetValue(resource.Path.Value);
                 if (value == null)
                 {
                     _logger.Debug("The registry key value does not exist");
@@ -130,12 +147,11 @@ namespace Cupboard
             }
         }
 
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
-        private ResourceState DeleteRegistryKeyValue(Win32RegistryKey key, RegistryKeyPath path)
+        private ResourceState DeleteRegistryKeyValue(IWindowsRegistryKey key, RegistryKeyPath path)
         {
             try
             {
-                key.DeleteValue(path.Value, false);
+                key.DeleteValue(path.Value);
                 return ResourceState.Changed;
             }
             catch (Exception ex)
@@ -145,16 +161,15 @@ namespace Cupboard
             }
         }
 
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
-        private static Win32RegistryKey? GetRegistryKey(RegistryKeyPath path)
+        private IWindowsRegistryKey? GetRegistryKey(RegistryKeyPath path)
         {
             return path.Root switch
             {
-                RegistryKeyRoot.ClassesRoot => Win32Registry.ClassesRoot,
-                RegistryKeyRoot.CurrentUser => Win32Registry.CurrentUser,
-                RegistryKeyRoot.LocalMachine => Win32Registry.LocalMachine,
-                RegistryKeyRoot.Users => Win32Registry.Users,
-                RegistryKeyRoot.CurrentConfig => Win32Registry.CurrentConfig,
+                RegistryKeyRoot.ClassesRoot => _registry.ClassesRoot,
+                RegistryKeyRoot.CurrentUser => _registry.CurrentUser,
+                RegistryKeyRoot.LocalMachine => _registry.LocalMachine,
+                RegistryKeyRoot.Users => _registry.Users,
+                RegistryKeyRoot.CurrentConfig => _registry.CurrentConfig,
                 _ => null,
             };
         }

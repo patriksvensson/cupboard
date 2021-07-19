@@ -21,6 +21,7 @@ namespace Cupboard.Testing
         public FakeEnvironmentRefresher EnvironmentRefresher { get; }
         public FakeCupboardFileSystem FileSystem { get; }
         public FakeCupboardEnvironment Environment { get; }
+        public FakeWindowsRegistry WindowsRegistry { get; }
 
         public FactCollection Facts => _factBuilder.Facts;
 
@@ -37,6 +38,7 @@ namespace Cupboard.Testing
             EnvironmentRefresher = new FakeEnvironmentRefresher();
             Environment = new FakeCupboardEnvironment(family);
             FileSystem = new FakeCupboardFileSystem(Environment);
+            WindowsRegistry = new FakeWindowsRegistry();
 
             switch (family)
             {
@@ -88,6 +90,7 @@ namespace Cupboard.Testing
                 services.Replace(ServiceDescriptor.Singleton<ICupboardFileSystem>(_ => FileSystem));
                 services.Replace(ServiceDescriptor.Singleton<ICupboardEnvironment>(_ => Environment));
                 services.Replace(ServiceDescriptor.Singleton<IEnvironmentRefresher>(_ => EnvironmentRefresher));
+                services.Replace(ServiceDescriptor.Singleton<IWindowsRegistry>(_ => WindowsRegistry));
                 services.Replace(ServiceDescriptor.Singleton<ICupboardLogger>(_ => Logger));
                 services.Replace(ServiceDescriptor.Singleton<IFactBuilder>(_ => _factBuilder));
 
