@@ -1,6 +1,6 @@
 # Cupboard
 
-A tool to provision local environments to a desired state, using the .NET SDK.
+A framework for provisioning local environments to a desired state, using the .NET SDK.
 
 **⚠ Disclaimer:**  
 Currently in preview. Use at own risk.

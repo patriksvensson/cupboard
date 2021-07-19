@@ -14,16 +14,15 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Package Information">
-    <Description>A description.</Description>
-    <Company>Spectre Systems AB</Company>
-    <Copyright>Spectre Systems AB</Copyright>
+    <Description>A framework for provisioning local environments to a desired state, using the .NET SDK.</Description>
+    <Copyright>Patrik Svensson</Copyright>
     <Authors>Patrik Svensson</Authors>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/spectresystems/Cupboard</RepositoryUrl>
+    <RepositoryUrl>https://github.com/patriksvensson/cupboard</RepositoryUrl>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/spectresystems/Cupboard</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/patriksvensson/cupboard</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>https://github.com/spectresystems/Cupboard/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/patriksvensson/cupboard/releases</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Label="Source Link">
