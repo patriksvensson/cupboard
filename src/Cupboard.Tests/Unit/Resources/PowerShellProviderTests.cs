@@ -54,6 +54,7 @@ namespace Cupboard.Tests.Unit.Resources
             {
                 // Given
                 var fixture = new CupboardFixture();
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.FileSystem.CreateFile("C:/lol.ps1");
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.RunScript>());
 
@@ -71,6 +72,7 @@ namespace Cupboard.Tests.Unit.Resources
             {
                 // Given
                 var fixture = new CupboardFixture();
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.FileSystem.CreateDirectory("C:/Temp");
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.RunCommand>());
 
@@ -91,7 +93,7 @@ namespace Cupboard.Tests.Unit.Resources
 
                 fixture.FileSystem.CreateDirectory("C:/Temp");
                 fixture.FileSystem.CreateFile("C:/lol.ps1");
-                fixture.Process.RegisterDefault(new ProcessRunnerResult(1));
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(1));
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.RunUnless>());
 
                 // When
@@ -125,6 +127,7 @@ namespace Cupboard.Tests.Unit.Resources
             {
                 // Given
                 var fixture = new CupboardFixture();
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.FileSystem.CreateFile("C:/lol.ps1");
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.RunCore>());
 
@@ -160,7 +163,7 @@ namespace Cupboard.Tests.Unit.Resources
                 // Given
                 var fixture = new CupboardFixture(family);
                 fixture.FileSystem.CreateFile("/Working/lol.ps1");
-                fixture.Process.RegisterDefault(new ProcessRunnerResult(0));
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.RunScript>());
 
                 // When

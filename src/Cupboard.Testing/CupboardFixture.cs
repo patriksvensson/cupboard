@@ -54,8 +54,6 @@ namespace Cupboard.Testing
                 case PlatformFamily.Unknown:
                     throw new InvalidOperationException("Unknown platform");
             }
-
-            Process.RegisterDefault(new ProcessRunnerResult(0));
         }
 
         public void Configure(Action<CatalogContext> action)
@@ -72,6 +70,7 @@ namespace Cupboard.Testing
         private CupboardHost BuildHost()
         {
             var builder = new CupboardHostBuilder(Console);
+            builder.PropagateExceptions();
             builder.ConfigureServices(services =>
             {
                 // Register fakes

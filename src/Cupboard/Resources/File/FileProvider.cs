@@ -94,7 +94,7 @@ namespace Cupboard
                     }
 
                     // Create symbolic link
-                    if (!SymbolicLinks.CreateSymbolicLink(source, destination))
+                    if (!_fileSystem.File.CreateSymbolicLinkSafe(source, destination))
                     {
                         _logger.Error("Could not create symbolic link");
                         return ResourceState.Error;

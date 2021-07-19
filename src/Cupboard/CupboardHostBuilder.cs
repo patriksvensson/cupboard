@@ -13,6 +13,7 @@ namespace Cupboard
     {
         private readonly List<Action<IHostBuilder>> _configurations;
         private readonly IAnsiConsole _console;
+        private bool _propagateExceptions = false;
 
         public CupboardHostBuilder(IAnsiConsole? console = null)
         {
@@ -54,6 +55,12 @@ namespace Cupboard
             };
         }
 
+        public CupboardHostBuilder PropagateExceptions()
+        {
+            _propagateExceptions = true;
+            return this;
+        }
+
         public CupboardHostBuilder AddCatalog<TCatalog>()
             where TCatalog : Catalog
         {
@@ -75,7 +82,7 @@ namespace Cupboard
             var host = builder.Build();
             var console = host.Services.GetRequiredService<IAnsiConsole>();
 
-            return new CupboardHost(console, host);
+            return new CupboardHost(console, host, _propagateExceptions);
         }
     }
 }

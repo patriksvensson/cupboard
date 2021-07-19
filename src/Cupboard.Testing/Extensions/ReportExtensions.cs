@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace Cupboard.Testing
@@ -13,7 +13,10 @@ namespace Cupboard.Testing
                 return ResourceState.Unknown;
             }
 
-            var item = report.Items.SingleOrDefault(x => x.Resource.GetType() == typeof(TResource) && x.Resource.Name.Equals(name, StringComparison.Ordinal));
+            var item = report.Items.SingleOrDefault(
+                x => x.Resource.GetType() == typeof(TResource)
+                    && x.Resource.Name.Equals(name, StringComparison.Ordinal));
+
             return item?.State ?? ResourceState.Unknown;
         }
     }

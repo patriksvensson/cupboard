@@ -9,6 +9,11 @@ namespace Cupboard
             return builder.Configure(file => file.Source = path);
         }
 
+        public static IResourceBuilder<File> Destination(this IResourceBuilder<File> builder, FilePath path)
+        {
+            return builder.Configure(file => file.Destination = path);
+        }
+
         public static IResourceBuilder<File> SymbolicLink(this IResourceBuilder<File> builder)
         {
             return builder.Configure(file => file.SymbolicLink = true);

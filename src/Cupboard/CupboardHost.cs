@@ -10,11 +10,13 @@ namespace Cupboard
     {
         private readonly IAnsiConsole _console;
         private readonly IHost _host;
+        private readonly bool _propagateExceptions;
 
-        internal CupboardHost(IAnsiConsole console, IHost host)
+        internal CupboardHost(IAnsiConsole console, IHost host, bool propagateExceptions)
         {
             _console = console ?? throw new ArgumentNullException(nameof(console));
             _host = host ?? throw new ArgumentNullException(nameof(host));
+            _propagateExceptions = propagateExceptions;
         }
 
         public static CupboardHostBuilder CreateBuilder()
@@ -29,7 +31,7 @@ namespace Cupboard
                 var app = _host.Services.GetRequiredService<ICommandApp>();
                 return app.Run(args);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!_propagateExceptions)
             {
                 _console.WriteLine();
                 _console.Write(new Panel("An error occured during execution").BorderColor(Color.Red).RoundedBorder());

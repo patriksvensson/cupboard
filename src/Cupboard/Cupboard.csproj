@@ -25,7 +25,7 @@
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.41.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Spectre.IO" Version="0.3.0" />
+    <PackageReference Include="Spectre.IO" Version="0.4.0" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
   </ItemGroup>
 

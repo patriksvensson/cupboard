@@ -36,6 +36,7 @@ namespace Cupboard.Tests.Unit.Resources
                 // Given
                 var fixture = new CupboardFixture();
                 fixture.Security.IsAdmin = true;
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
                 fixture.Process.Register("choco", "list -lo",
