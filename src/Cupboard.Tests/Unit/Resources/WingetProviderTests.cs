@@ -90,7 +90,8 @@ namespace Cupboard.Tests.Unit.Resources
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
                 fixture.Process.Register("winget", "list --source winget --id GitHub.cli",
-                    new ProcessRunnerResult(0, "GitHub CLI GitHub.cli 1.12.1"));
+                    new ProcessRunnerResult(0, "GitHub CLI GitHub.cli 1.12.1"),
+                    new ProcessRunnerResult(int.MinValue, "No installed package found matching input criteria."));
 
                 fixture.Process.Register("winget", "uninstall -e --id GitHub.cli", new ProcessRunnerResult(0));
 
