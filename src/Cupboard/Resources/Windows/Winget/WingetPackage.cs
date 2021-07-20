@@ -6,6 +6,8 @@ namespace Cupboard
     {
         public string Package { get; set; }
         public PackageState Ensure { get; set; }
+        public bool? IgnoreChecksum { get; set; }
+        public string PackageVersion { get; set; }
 
         public WingetPackage(string name)
             : base(name)

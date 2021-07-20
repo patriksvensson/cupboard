@@ -11,5 +11,15 @@ namespace Cupboard
         {
             return builder.Configure(pkg => pkg.Package = package);
         }
+
+        public static IResourceBuilder<WingetPackage> IgnoreChecksum(this IResourceBuilder<WingetPackage> builder, bool ignoreChecksum)
+        {
+            return builder.Configure(pkg => pkg.IgnoreChecksum = ignoreChecksum);
+        }
+
+        public static IResourceBuilder<WingetPackage> UseVersion(this IResourceBuilder<WingetPackage> builder, string version)
+        {
+            return builder.Configure(pkg => pkg.PackageVersion = version); 
+        }
     }
 }
