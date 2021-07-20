@@ -136,6 +136,7 @@ namespace Cupboard
             {
                 arguments += " --force";
             }
+
             if (!string.IsNullOrWhiteSpace(version))
             {
                 arguments += $" --version {version}";
@@ -166,4 +167,3 @@ namespace Cupboard
         }
     }
 }
-
