@@ -138,7 +138,7 @@ namespace Cupboard
             }
             if (!string.IsNullOrWhiteSpace(version))
             {
-                arguments += $" --version {version}"
+                arguments += $" --version {version}";
             }
 
             var result = await _runner.Run("winget", arguments).ConfigureAwait(false);
