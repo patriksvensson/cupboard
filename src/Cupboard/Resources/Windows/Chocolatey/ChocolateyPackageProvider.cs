@@ -57,7 +57,7 @@ namespace Cupboard
                     }
 
                     // Install package
-                    state = await InstallPackage(resource.Package).ConfigureAwait(false);
+                    state = await InstallPackage(resource.Package, resource.PreRelease, resource.IgnoreChecksum, resource.PackageParameters).ConfigureAwait(false);
                     if (state == ChocolateyPackageState.Exists)
                     {
                         _logger.Information($"The Chocolatey package [yellow]{resource.Package}[/] was installed");
@@ -126,11 +126,28 @@ namespace Cupboard
             return ChocolateyPackageState.Missing;
         }
 
-        private async Task<ChocolateyPackageState> InstallPackage(string package)
+        private async Task<ChocolateyPackageState> InstallPackage(string package, bool preRelease, bool ignoreChecksum, string packageParameters)
         {
             _logger.Debug($"Installing Chocolatey package [yellow]{package}[/]");
 
-            var result = await _runner.Run("choco", $"install {package} -y").ConfigureAwait(false);
+            var arguments = $"install {package} -y";
+
+            if (preRelease)
+            {
+                arguments += " --pre";
+            }
+
+            if (ignoreChecksum)
+            {
+                arguments += " --ignore-checksum";
+            }
+
+            if (!string.IsNullOrWhiteSpace(packageParameters))
+            {
+                arguments += $" --package-parameters=\"{packageParameters}\"";
+            }
+
+            var result = await _runner.Run("choco", arguments).ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 return ChocolateyPackageState.Error;
