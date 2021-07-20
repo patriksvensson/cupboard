@@ -126,7 +126,7 @@ namespace Cupboard
             return ChocolateyPackageState.Missing;
         }
 
-        private async Task<ChocolateyPackageState> InstallPackage(string package, bool preRelease, bool ignoreChecksum, string packageParameters)
+        private async Task<ChocolateyPackageState> InstallPackage(string package, bool preRelease, bool ignoreChecksum, string? packageParameters)
         {
             _logger.Debug($"Installing Chocolatey package [yellow]{package}[/]");
 
