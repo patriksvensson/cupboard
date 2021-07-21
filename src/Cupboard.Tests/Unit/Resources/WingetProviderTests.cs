@@ -47,7 +47,7 @@ namespace Cupboard.Tests.Unit.Resources
                     new ProcessRunnerResult(int.MinValue, "No installed package found matching input criteria."),
                     new ProcessRunnerResult(0, "GitHub CLI GitHub.cli 1.12.1"));
 
-                fixture.Process.Register("winget", "install -e --id GitHub.cli --force",
+                fixture.Process.Register("winget", "install -e --id GitHub.cli",
                     new ProcessRunnerResult(0, "Lol installed GitHub.cli"));
 
                 // When
