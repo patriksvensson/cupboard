@@ -12,9 +12,9 @@ namespace Cupboard
             return builder.Configure(pkg => pkg.Package = package);
         }
 
-        public static IResourceBuilder<WingetPackage> IgnoreChecksum(this IResourceBuilder<WingetPackage> builder, bool ignoreChecksum)
+        public static IResourceBuilder<WingetPackage> Force(this IResourceBuilder<WingetPackage> builder, bool force)
         {
-            return builder.Configure(pkg => pkg.IgnoreChecksum = ignoreChecksum);
+            return builder.Configure(pkg => pkg.Force = force);
         }
 
         public static IResourceBuilder<WingetPackage> UseVersion(this IResourceBuilder<WingetPackage> builder, string version)

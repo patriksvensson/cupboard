@@ -57,7 +57,7 @@ namespace Cupboard
                     }
 
                     // Install package
-                    state = await InstallPackage(resource.Package, resource.IgnoreChecksum, resource.PackageVersion).ConfigureAwait(false);
+                    state = await InstallPackage(resource.Package, resource.Force, resource.PackageVersion).ConfigureAwait(false);
                     if (state == WingetPackageState.Exists)
                     {
                         _logger.Information($"The Winget package [yellow]{resource.Package}[/] was installed");
