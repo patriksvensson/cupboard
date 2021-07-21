@@ -57,7 +57,7 @@ namespace Cupboard
                     }
 
                     // Install package
-                    state = await InstallPackage(resource.Package, resource.Force, resource.PackageVersion).ConfigureAwait(false);
+                    state = await InstallPackage(resource).ConfigureAwait(false);
                     if (state == WingetPackageState.Exists)
                     {
                         _logger.Information($"The Winget package [yellow]{resource.Package}[/] was installed");
@@ -126,20 +126,20 @@ namespace Cupboard
             return WingetPackageState.Missing;
         }
 
-        private async Task<WingetPackageState> InstallPackage(string package, bool? ignoreChecksum, string? version)
+        private async Task<WingetPackageState> InstallPackage(WingetPackage resource)
         {
-            _logger.Debug($"Installing Winget package [yellow]{package}[/]");
+            _logger.Debug($"Installing Winget package [yellow]{resource.Package}[/]");
 
-            string arguments = $"install -e --id {package}";
+            string arguments = $"install -e --id {resource.Package}";
 
-            if (ignoreChecksum == true)
+            if (resource.Force == true)
             {
                 arguments += " --force";
             }
 
-            if (!string.IsNullOrWhiteSpace(version))
+            if (!string.IsNullOrWhiteSpace(resource.PackageVersion))
             {
-                arguments += $" --version {version}";
+                arguments += $" --version {resource.PackageVersion}";
             }
 
             var result = await _runner.Run("winget", arguments).ConfigureAwait(false);
@@ -149,7 +149,7 @@ namespace Cupboard
             }
 
             _dirty = true;
-            return await IsPackageInstalled(package).ConfigureAwait(false);
+            return await IsPackageInstalled(resource.Package).ConfigureAwait(false);
         }
 
         private async Task<WingetPackageState> UninstallPackage(string package)

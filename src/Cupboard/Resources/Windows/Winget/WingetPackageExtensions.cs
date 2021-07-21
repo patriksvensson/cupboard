@@ -17,7 +17,7 @@ namespace Cupboard
             return builder.Configure(pkg => pkg.Force = force);
         }
 
-        public static IResourceBuilder<WingetPackage> UseVersion(this IResourceBuilder<WingetPackage> builder, string version)
+        public static IResourceBuilder<WingetPackage> PackageVersion(this IResourceBuilder<WingetPackage> builder, string version)
         {
             return builder.Configure(pkg => pkg.PackageVersion = version);
         }
