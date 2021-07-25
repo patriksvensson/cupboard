@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     internal sealed class ArgumentFacts : IFactProvider
     {

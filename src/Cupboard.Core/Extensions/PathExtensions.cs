@@ -5,7 +5,7 @@ using Spectre.IO;
 
 namespace Cupboard
 {
-    public static class FileSystemExtensions
+    public static class PathExtensions
     {
         public static void SetPermissions(this Path path, Chmod chmod)
         {

@@ -4,24 +4,19 @@
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
-    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+    <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CliWrap" Version="3.3.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
-    <ProjectReference Include="..\Cupboard.Resources.Windows\Cupboard.Resources.Windows.csproj" />
     <ProjectReference Include="..\Cupboard.Resources\Cupboard.Resources.csproj" />
   </ItemGroup>
 

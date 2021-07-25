@@ -7,7 +7,7 @@ namespace Cupboard
     public sealed class ManifestContext
     {
         public FactCollection Facts { get; }
-        internal List<ResourceBuilder> Builders { get; }
+        public List<ResourceBuilder> Builders { get; }
 
         public ManifestContext(FactCollection facts)
         {

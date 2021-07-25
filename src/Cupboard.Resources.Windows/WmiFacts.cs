@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Management.Infrastructure;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     internal sealed class WmiFacts : IFactProvider
     {

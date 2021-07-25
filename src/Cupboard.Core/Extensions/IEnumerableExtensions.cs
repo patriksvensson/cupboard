@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cupboard.Internal
 {
-    internal static class IEnumerableExtensions
+    public static class IEnumerableExtensions
     {
         public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> source)
         {

@@ -33,7 +33,7 @@ namespace Cupboard.Internal
             }
 
             // Get all used manifests
-            var usedManifests = manifests.Where(x => ctx.Manifests.Contains(x.GetType()));
+            var usedManifests = ctx.GetAddedManifests(manifests);
 
             // Build the resource graph
             var graph = ResourceGraphBuilder.Build(_resourceProviders, usedManifests, facts);

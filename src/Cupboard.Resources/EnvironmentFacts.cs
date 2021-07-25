@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     internal sealed class EnvironmentFacts : IFactProvider
     {

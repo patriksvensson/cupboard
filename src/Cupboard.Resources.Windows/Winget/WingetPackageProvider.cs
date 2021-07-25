@@ -130,9 +130,9 @@ namespace Cupboard
         {
             _logger.Debug($"Installing Winget package [yellow]{resource.Package}[/]");
 
-            string arguments = $"install -e --id {resource.Package}";
+            var arguments = $"install -e --id {resource.Package}";
 
-            if (resource.Force == true)
+            if (resource.Force)
             {
                 arguments += " --force";
             }

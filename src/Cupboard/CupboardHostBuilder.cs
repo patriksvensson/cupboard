@@ -26,6 +26,12 @@ namespace Cupboard
                     services.RegisterAllOf<IFactProvider>();
                     services.RegisterAllOf<Manifest>();
 
+                    // Load things from known assemblies that might not yet be loaded
+                    services.RegisterAllOf<IResourceProvider>(typeof(DirectoryProvider).Assembly);
+                    services.RegisterAllOf<IResourceProvider>(typeof(ChocolateyPackageProvider).Assembly);
+                    services.RegisterAllOf<IFactProvider>(typeof(DirectoryProvider).Assembly);
+                    services.RegisterAllOf<IFactProvider>(typeof(ChocolateyPackageProvider).Assembly);
+
                     services.AddSingleton(_console);
                     services.AddSingleton<IPlatform, Platform>();
                     services.AddSingleton<ICupboardFileSystem, CupboardFileSystem>();

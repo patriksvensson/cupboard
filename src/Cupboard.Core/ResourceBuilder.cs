@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cupboard.Internal
 {
-    internal abstract class ResourceBuilder
+    public abstract class ResourceBuilder
     {
         public string Name { get; }
 
@@ -25,7 +25,7 @@ namespace Cupboard.Internal
         }
     }
 
-    internal sealed class ResourceBuilder<TResource> : ResourceBuilder, IResourceBuilder<TResource>
+    public sealed class ResourceBuilder<TResource> : ResourceBuilder, IResourceBuilder<TResource>
         where TResource : Resource
     {
         public ResourceBuilder(string name)
