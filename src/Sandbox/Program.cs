@@ -19,7 +19,6 @@ namespace Sandbox
         {
             context.UseManifest<Chocolatey>();
             context.UseManifest<ChocolateyPackages>();
-            context.UseManifest<WingetPackages>();
         }
     }
 }

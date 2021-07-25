@@ -40,6 +40,7 @@ namespace Cupboard
 
                     services.AddSingleton<ICupboardLogger, CupboardLogger>();
                     services.AddSingleton<ExecutionEngine>();
+                    services.AddSingleton<ExecutionPlanBuilder>();
                     services.AddSingleton<ReportRenderer>();
                     services.AddSingleton<FactBuilder>();
                     services.AddSingleton<ResourceProviderRepository>();
