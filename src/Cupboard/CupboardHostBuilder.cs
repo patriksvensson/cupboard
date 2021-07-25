@@ -22,15 +22,10 @@ namespace Cupboard
             {
                 builder => builder.ConfigureServices(services =>
                 {
-                    services.RegisterAllOf<IResourceProvider>();
-                    services.RegisterAllOf<IFactProvider>();
-                    services.RegisterAllOf<Manifest>();
+                    services.AddAll<Manifest>();
 
-                    // Load things from known assemblies that might not yet be loaded
-                    services.RegisterAllOf<IResourceProvider>(typeof(DirectoryProvider).Assembly);
-                    services.RegisterAllOf<IResourceProvider>(typeof(ChocolateyPackageProvider).Assembly);
-                    services.RegisterAllOf<IFactProvider>(typeof(DirectoryProvider).Assembly);
-                    services.RegisterAllOf<IFactProvider>(typeof(ChocolateyPackageProvider).Assembly);
+                    services.AddModule<ResourceModule>();
+                    services.AddModule<WindowsModule>();
 
                     services.AddSingleton(_console);
                     services.AddSingleton<IPlatform, Platform>();

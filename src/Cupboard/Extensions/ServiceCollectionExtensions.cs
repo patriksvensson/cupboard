@@ -8,47 +8,20 @@ namespace Cupboard.Internal
 {
     internal static class ServiceCollectionExtensions
     {
-        internal static IServiceCollection RegisterInheritedClasses<TService>(this IServiceCollection services)
-            where TService : class
+        internal static IServiceCollection AddModule<T>(this IServiceCollection services)
+            where T : DependencyModule, new()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
+            if (services is null)
             {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (!type.IsAbstract && typeof(TService).IsAssignableFrom(type))
-                    {
-                        services.AddSingleton(typeof(TService), type);
-                    }
-                }
+                throw new ArgumentNullException(nameof(services));
             }
 
+            var module = new T();
+            module.Register(services);
             return services;
         }
 
-        internal static IServiceCollection RegisterImplementedInterfaces<TService>(this IServiceCollection services)
-        {
-            if (!typeof(TService).IsInterface)
-            {
-                throw new InvalidOperationException($"The type '{typeof(TService).FullName}' is not an interface.");
-            }
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (!type.IsInterface && !type.IsAbstract && typeof(TService).IsAssignableFrom(type))
-                    {
-                        services.AddSingleton(typeof(TService), type);
-                    }
-                }
-            }
-
-            return services;
-        }
-
-        internal static IServiceCollection RegisterAllOf<TService>(this IServiceCollection services, Assembly? assembly = null)
+        internal static IServiceCollection AddAll<TService>(this IServiceCollection services, Assembly? assembly = null)
         {
             var serviceType = typeof(TService);
             var isInterface = serviceType.IsInterface;
