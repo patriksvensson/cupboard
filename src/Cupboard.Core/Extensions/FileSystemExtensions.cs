@@ -1,6 +1,6 @@
 using Spectre.IO;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     public static class FileSystemExtensions
     {

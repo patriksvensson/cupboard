@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     public static class IEnumerableExtensions
     {

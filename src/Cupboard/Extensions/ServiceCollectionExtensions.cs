@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Cupboard.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard
 {
     public static class ServiceCollectionExtensions
     {
