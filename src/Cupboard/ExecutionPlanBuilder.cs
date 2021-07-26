@@ -7,11 +7,11 @@ namespace Cupboard.Internal
 {
     internal sealed class ExecutionPlanBuilder
     {
-        private readonly ResourceProviderRepository _resourceProviders;
+        private readonly ResourceProviderRepository _providers;
 
-        public ExecutionPlanBuilder(ResourceProviderRepository resourceProviders)
+        public ExecutionPlanBuilder(ResourceProviderRepository providers)
         {
-            _resourceProviders = resourceProviders ?? throw new ArgumentNullException(nameof(resourceProviders));
+            _providers = providers ?? throw new ArgumentNullException(nameof(providers));
         }
 
         public ExecutionPlan Build(
@@ -20,10 +20,27 @@ namespace Cupboard.Internal
             IFactBuilder factBuilder,
             IRemainingArguments args)
         {
+            // Build facts
             var facts = factBuilder.Build(args);
-            var ctx = new CatalogContext(facts);
 
+            // Get all manifests added by catalogs
+            var catalogManifests = GetCatalogManifests(catalogs, manifests, facts);
+
+            // Build the resource graph
+            var graph = ResourceGraphBuilder.Build(_providers, catalogManifests, facts);
+            graph.Configurations.ForEach(action => action());
+
+            // Build the execution plan
+            return Build(graph, facts);
+        }
+
+        private static IEnumerable<Manifest> GetCatalogManifests(
+            IEnumerable<Catalog> catalogs,
+            IEnumerable<Manifest> manifests,
+            FactCollection facts)
+        {
             // Execute all catalogs
+            var ctx = new CatalogContext(facts);
             foreach (var catalog in catalogs)
             {
                 if (catalog.CanRun(facts))
@@ -32,15 +49,8 @@ namespace Cupboard.Internal
                 }
             }
 
-            // Get all used manifests
-            var usedManifests = ctx.GetAddedManifests(manifests);
-
-            // Build the resource graph
-            var graph = ResourceGraphBuilder.Build(_resourceProviders, usedManifests, facts);
-            graph.Configurations.ForEach(action => action());
-
-            // Build the execution plan
-            return Build(graph, facts);
+            var catalogManifests = ctx.GetManifests();
+            return manifests.Where(x => catalogManifests.Contains(x.GetType()));
         }
 
         private ExecutionPlan Build(ResourceGraph graph, FactCollection facts)
@@ -57,7 +67,7 @@ namespace Cupboard.Internal
                 }
 
                 // Get the provider.
-                var provider = _resourceProviders.GetProvider(resource.ResourceType);
+                var provider = _providers.GetProvider(resource.ResourceType);
                 if (provider == null)
                 {
                     throw new InvalidOperationException($"Could not find resource provider for '{node.Name}' ({node.ResourceType.Name}).");

@@ -17,17 +17,17 @@ namespace Cupboard
 
         public CupboardHostBuilder(IAnsiConsole? console = null)
         {
-            _console = console ?? AnsiConsole.Create(new AnsiConsoleSettings());
+            _console = console ?? AnsiConsole.Console;
             _configurations = new List<Action<IHostBuilder>>
             {
                 builder => builder.ConfigureServices(services =>
                 {
                     services.AddAll<Manifest>();
 
-                    services.AddModule<ResourceModule>();
+                    services.AddModule<ResourcesModule>();
                     services.AddModule<WindowsModule>();
 
-                    services.AddSingleton(_console);
+                    services.AddSingleton<IAnsiConsole>(_console);
                     services.AddSingleton<IPlatform, Platform>();
                     services.AddSingleton<ICupboardFileSystem, CupboardFileSystem>();
                     services.AddSingleton<ICupboardEnvironment, CupboardEnvironment>();

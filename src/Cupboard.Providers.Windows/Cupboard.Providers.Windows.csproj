@@ -17,7 +17,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
-    <ProjectReference Include="..\Cupboard.Resources\Cupboard.Resources.csproj" />
+    <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
   </ItemGroup>
 
 </Project>

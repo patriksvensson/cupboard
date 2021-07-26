@@ -6,10 +6,10 @@ using Spectre.Console.Cli;
 
 namespace Cupboard.Internal
 {
-    internal static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
-        internal static IServiceCollection AddModule<T>(this IServiceCollection services)
-            where T : DependencyModule, new()
+        public static IServiceCollection AddModule<T>(this IServiceCollection services)
+            where T : ServiceModule, new()
         {
             if (services is null)
             {
@@ -17,7 +17,7 @@ namespace Cupboard.Internal
             }
 
             var module = new T();
-            module.Register(services);
+            module.Configure(services);
             return services;
         }
 

@@ -23,9 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Testing", "Cupboar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Core", "Cupboard.Core\Cupboard.Core.csproj", "{21BEB9A7-3C13-40F6-95BE-129F83416FD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Resources", "Cupboard.Resources\Cupboard.Resources.csproj", "{AEB49DD9-7B3F-4A07-9122-FB4BC70CE5F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Providers", "Cupboard.Providers\Cupboard.Providers.csproj", "{AEB49DD9-7B3F-4A07-9122-FB4BC70CE5F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Resources.Windows", "Cupboard.Resources.Windows\Cupboard.Resources.Windows.csproj", "{0A9FD530-AB99-400B-9461-5ACF8763EB68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard.Providers.Windows", "Cupboard.Providers.Windows\Cupboard.Providers.Windows.csproj", "{0A9FD530-AB99-400B-9461-5ACF8763EB68}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{CDE01212-4135-4D1E-82BD-68F6C5724595}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{97277350-2069-4863-B0DE-07E929629958} = {16209549-6E32-4C68-ACE2-5AFDC5258093}
+		{AEB49DD9-7B3F-4A07-9122-FB4BC70CE5F1} = {CDE01212-4135-4D1E-82BD-68F6C5724595}
+		{0A9FD530-AB99-400B-9461-5ACF8763EB68} = {CDE01212-4135-4D1E-82BD-68F6C5724595}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91DC3E44-F01D-459A-A956-418FE23E6723}

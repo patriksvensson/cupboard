@@ -21,8 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
-    <ProjectReference Include="..\Cupboard.Resources.Windows\Cupboard.Resources.Windows.csproj" />
-    <ProjectReference Include="..\Cupboard.Resources\Cupboard.Resources.csproj" />
+    <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
+    <ProjectReference Include="..\Cupboard.Providers.Windows\Cupboard.Providers.Windows.csproj" />
   </ItemGroup>
 
 </Project>

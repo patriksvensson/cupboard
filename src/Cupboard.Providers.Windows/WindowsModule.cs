@@ -2,9 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cupboard
 {
-    public sealed class WindowsModule : DependencyModule
+    public sealed class WindowsModule : ServiceModule
     {
-        public override void Register(IServiceCollection services)
+        public override void Configure(IServiceCollection services)
         {
             // Resources
             services.AddSingleton<IResourceProvider, ChocolateyPackageProvider>();
