@@ -1,7 +1,7 @@
 using Cupboard.Testing;
 using Shouldly;
 
-namespace Cupboard.Tests.Unit.Resources
+namespace Cupboard.Tests.Unit.Providers
 {
     public sealed class ChocolateyProviderTests
     {
@@ -96,7 +96,7 @@ namespace Cupboard.Tests.Unit.Resources
 
                 // Then
                 result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Changed);
-                fixture.Logger.WasLogged("Uninstalling Chocolatey package vscode...");
+                fixture.Logger.WasLogged("Uninstalling Chocolatey package [yellow]vscode[/]");
                 fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was uninstalled");
             }
 

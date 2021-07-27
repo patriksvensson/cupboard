@@ -1,13 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using CliWrap;
 
 namespace Cupboard
 {
     public sealed class VSCodeExtensionProvider : AsyncResourceProvider<VSCodeExtension>
     {
+        private readonly IProcessRunner _runner;
         private readonly ICupboardLogger _logger;
         private string? _cachedOutput;
         private bool _dirty;
@@ -19,8 +18,11 @@ namespace Cupboard
             Error,
         }
 
-        public VSCodeExtensionProvider(ICupboardLogger logger)
+        public VSCodeExtensionProvider(
+            IProcessRunner runner,
+            ICupboardLogger logger)
         {
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dirty = true;
         }
@@ -93,13 +95,7 @@ namespace Cupboard
         {
             _logger.Debug($"Installing VSCode extension [yellow]{package}[/]");
 
-            var stdout = new StringBuilder();
-            var result = await Cli.Wrap(GetCodeExecutable())
-                .WithArguments($"--install-extension {package}")
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                .WithValidation(CommandResultValidation.None)
-                .ExecuteAsync();
-
+            var result = await _runner.Run(GetCodeExecutable(), $"--install-extension {package}").ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 _logger.Error("Exit code: " + result.ExitCode);
@@ -114,13 +110,7 @@ namespace Cupboard
         {
             _logger.Debug($"Uninstalling VSCode extension [yellow]{package}[/]");
 
-            var stdout = new StringBuilder();
-            var result = await Cli.Wrap(GetCodeExecutable())
-                .WithArguments($"---uninstall-extension {package}")
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                .WithValidation(CommandResultValidation.None)
-                .ExecuteAsync();
-
+            var result = await _runner.Run(GetCodeExecutable(), $"---uninstall-extension {package}").ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 return VSCodeExtensionState.Error;
@@ -134,19 +124,13 @@ namespace Cupboard
         {
             if (_dirty || _cachedOutput == null)
             {
-                var stdout = new StringBuilder();
-                var result = await Cli.Wrap(GetCodeExecutable())
-                    .WithArguments("--list-extensions")
-                    .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                    .WithValidation(CommandResultValidation.None)
-                    .ExecuteAsync();
-
+                var result = await _runner.Run(GetCodeExecutable(), "--list-extensions").ConfigureAwait(false);
                 if (result.ExitCode != 0)
                 {
                     return VSCodeExtensionState.Error;
                 }
 
-                _cachedOutput = stdout.ToString();
+                _cachedOutput = result.StandardOut;
                 _dirty = false;
             }
 

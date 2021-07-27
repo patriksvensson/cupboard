@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CliWrap.EventStream;
 
 namespace Cupboard.Testing
 {
@@ -42,7 +41,7 @@ namespace Cupboard.Testing
             return _calls.Any(c => c.File.Equals(file, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<ProcessRunnerResult> Run(string file, string arguments, Action<CommandEvent>? handler = null)
+        public Task<ProcessRunnerResult> Run(string file, string arguments, Func<string, bool>? filter = null, bool supressOutput = false)
         {
             var key = GetKey(file, arguments);
             if (_registrations.ContainsKey(key))

@@ -5,6 +5,7 @@ namespace Cupboard
         Verbosity Verbosity { get; }
 
         void SetVerbosity(Verbosity verbosity);
-        void Log(Verbosity verbosity, LogLevel level, string markup);
+        void Log(Verbosity verbosity, LogLevel level, string text);
+        void Log(Verbosity verbosity, LogLevel level, string title, string text);
     }
 }

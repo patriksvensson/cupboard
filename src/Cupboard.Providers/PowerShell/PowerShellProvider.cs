@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using CliWrap.EventStream;
-using Spectre.Console;
 using Spectre.IO;
 
 namespace Cupboard
@@ -125,23 +123,7 @@ namespace Cupboard
                 _ => throw new InvalidOperationException($"Unknown PowerShell provider '{flavor}'"),
             };
 
-            var result = await _runner.Run(executable, args, @event =>
-            {
-                if (@event is StandardOutputCommandEvent output)
-                {
-                    if (!string.IsNullOrWhiteSpace(output.Text))
-                    {
-                        _logger.Verbose($"OUT> {output.Text.EscapeMarkup()}");
-                    }
-                }
-                else if (@event is StandardErrorCommandEvent error)
-                {
-                    if (!string.IsNullOrWhiteSpace(error.Text))
-                    {
-                        _logger.Verbose($"ERR> {error.Text.EscapeMarkup()}");
-                    }
-                }
-            }).ConfigureAwait(false);
+            var result = await _runner.Run(executable, args).ConfigureAwait(false);
 
             return result.ExitCode;
         }

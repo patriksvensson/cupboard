@@ -2,7 +2,7 @@ using System;
 
 namespace Cupboard
 {
-    public sealed class WingetPackage : Resource
+    public sealed class WingetPackage : Resource, IHasPackageName, IHasPackageState
     {
         public string Package { get; set; }
         public PackageState Ensure { get; set; }

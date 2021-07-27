@@ -27,13 +27,23 @@ namespace Cupboard.Testing
             _messages = new List<LoggedMessage>();
         }
 
-        public void Log(Verbosity verbosity, LogLevel level, string markup)
+        public void Log(Verbosity verbosity, LogLevel level, string text)
         {
             _messages.Add(new LoggedMessage
             {
                 Verbosity = verbosity,
                 Level = level,
-                Message = markup,
+                Message = text,
+            });
+        }
+
+        public void Log(Verbosity verbosity, LogLevel level, string title, string text)
+        {
+            _messages.Add(new LoggedMessage
+            {
+                Verbosity = verbosity,
+                Level = level,
+                Message = title + " " + text,
             });
         }
 

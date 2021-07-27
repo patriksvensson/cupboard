@@ -3,27 +3,19 @@ using System.Threading.Tasks;
 
 namespace Cupboard
 {
-    public sealed class ChocolateyPackageProvider : AsyncWindowsResourceProvider<ChocolateyPackage>
+    public sealed class ChocolateyPackageProvider : PackageInstallerProvider<ChocolateyPackage>
     {
         private readonly IProcessRunner _runner;
-        private readonly IEnvironmentRefresher _refresher;
-        private readonly ICupboardLogger _logger;
-        private string? _cachedOutput;
-        private bool _dirty;
 
-        private enum ChocolateyPackageState
-        {
-            Exists,
-            Missing,
-            Error,
-        }
+        protected override string Name { get; } = "Chocolatey";
 
-        public ChocolateyPackageProvider(IProcessRunner runner, IEnvironmentRefresher refresher, ICupboardLogger logger)
+        public ChocolateyPackageProvider(
+            IProcessRunner runner,
+            ICupboardLogger logger,
+            IEnvironmentRefresher refresher)
+                : base(logger, refresher)
         {
             _runner = runner ?? throw new ArgumentNullException(nameof(runner));
-            _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _dirty = true;
         }
 
         public override ChocolateyPackage Create(string name)
@@ -34,141 +26,41 @@ namespace Cupboard
             };
         }
 
-        public override bool RequireAdministrator(FactCollection facts)
+        protected override bool IsPackageInstalled(ChocolateyPackage resource, string output)
         {
-            return true;
+            return output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
         }
 
-        public override async Task<ResourceState> RunAsync(IExecutionContext context, ChocolateyPackage resource)
+        protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
         {
-            var state = await IsPackageInstalled(resource.Package).ConfigureAwait(false);
-            if (state == ChocolateyPackageState.Error)
-            {
-                return ResourceState.Error;
-            }
-
-            if (resource.Ensure == PackageState.Installed)
-            {
-                if (state == ChocolateyPackageState.Missing)
-                {
-                    if (context.DryRun)
-                    {
-                        return ResourceState.Changed;
-                    }
-
-                    // Install package
-                    state = await InstallPackage(resource.Package, resource.PreRelease, resource.IgnoreChecksum, resource.PackageParameters).ConfigureAwait(false);
-                    if (state == ChocolateyPackageState.Exists)
-                    {
-                        _logger.Information($"The Chocolatey package [yellow]{resource.Package}[/] was installed");
-                        _refresher.Refresh();
-                        return ResourceState.Changed;
-                    }
-
-                    return ResourceState.Error;
-                }
-
-                _logger.Debug($"The Chocolatey package [yellow]{resource.Package}[/] is already installed");
-            }
-            else
-            {
-                if (state == ChocolateyPackageState.Exists)
-                {
-                    if (context.DryRun)
-                    {
-                        return ResourceState.Changed;
-                    }
-
-                    // Uninstall package
-                    state = await UninstallPackage(resource.Package).ConfigureAwait(false);
-                    if (state == ChocolateyPackageState.Missing)
-                    {
-                        _logger.Information($"The Chocolatey package [yellow]{resource.Package}[/] was uninstalled");
-                        _refresher.Refresh();
-
-                        return ResourceState.Changed;
-                    }
-
-                    return ResourceState.Error;
-                }
-
-                _logger.Debug($"The Chocolatey package [yellow]{resource.Package}[/] is already uninstalled");
-            }
-
-            return ResourceState.Unchanged;
+            return await _runner.Run("choco", "list -lo", supressOutput: true).ConfigureAwait(false);
         }
 
-        private async Task<ChocolateyPackageState> IsPackageInstalled(string package)
+        protected override async Task<ProcessRunnerResult> InstallPackage(ChocolateyPackage resource)
         {
-            if (_dirty || _cachedOutput == null)
-            {
-                var result = await _runner.Run("choco", "list -lo").ConfigureAwait(false);
-                if (result.ExitCode != 0)
-                {
-                    return ChocolateyPackageState.Error;
-                }
+            var arguments = $"install {resource.Package} -y";
 
-                _cachedOutput = result.StandardOut;
-                _dirty = false;
-            }
-
-            if (_cachedOutput == null)
-            {
-                _logger.Error("An error occured while retrieving Chocolatey state");
-                return ChocolateyPackageState.Error;
-            }
-
-            if (_cachedOutput.Contains(package, StringComparison.OrdinalIgnoreCase))
-            {
-                return ChocolateyPackageState.Exists;
-            }
-
-            return ChocolateyPackageState.Missing;
-        }
-
-        private async Task<ChocolateyPackageState> InstallPackage(string package, bool preRelease, bool ignoreChecksum, string? packageParameters)
-        {
-            _logger.Debug($"Installing Chocolatey package [yellow]{package}[/]");
-
-            var arguments = $"install {package} -y";
-
-            if (preRelease)
+            if (resource.PreRelease)
             {
                 arguments += " --pre";
             }
 
-            if (ignoreChecksum)
+            if (resource.IgnoreChecksum)
             {
                 arguments += " --ignore-checksum";
             }
 
-            if (!string.IsNullOrWhiteSpace(packageParameters))
+            if (!string.IsNullOrWhiteSpace(resource.PackageParameters))
             {
-                arguments += $" --package-parameters=\"{packageParameters}\"";
+                arguments += $" --package-parameters=\"{resource.PackageParameters}\"";
             }
 
-            var result = await _runner.Run("choco", arguments).ConfigureAwait(false);
-            if (result.ExitCode != 0)
-            {
-                return ChocolateyPackageState.Error;
-            }
-
-            _dirty = true;
-            return await IsPackageInstalled(package).ConfigureAwait(false);
+            return await _runner.Run("choco", arguments, t => !t.StartsWith("Progress:")).ConfigureAwait(false);
         }
 
-        private async Task<ChocolateyPackageState> UninstallPackage(string package)
+        protected override async Task<ProcessRunnerResult> UninstallPackage(ChocolateyPackage resource)
         {
-            _logger.Debug($"Uninstalling Chocolatey package {package}...");
-
-            var result = await _runner.Run("choco", $"uninstall {package}").ConfigureAwait(false);
-            if (result.ExitCode != 0)
-            {
-                return ChocolateyPackageState.Error;
-            }
-
-            _dirty = true;
-            return await IsPackageInstalled(package).ConfigureAwait(false);
+            return await _runner.Run("choco", $"uninstall {resource.Package}").ConfigureAwait(false);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using Cupboard.Internal;
 using Spectre.IO;
 using FileAttributes = System.IO.FileAttributes;
 

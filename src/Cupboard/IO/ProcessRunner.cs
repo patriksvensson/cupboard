@@ -3,12 +3,20 @@ using System.Text;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.EventStream;
+using Spectre.Console;
 
 namespace Cupboard.Internal
 {
     internal sealed class ProcessRunner : IProcessRunner
     {
-        public async Task<ProcessRunnerResult> Run(string file, string? arguments = null, Action<CommandEvent>? handler = null)
+        private readonly ICupboardLogger _logger;
+
+        public ProcessRunner(ICupboardLogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public async Task<ProcessRunnerResult> Run(string file, string? arguments = null, Func<string, bool>? filter = null, bool supressOutput = false)
         {
             var cli = Cli.Wrap(file);
             cli = cli.WithValidation(CommandResultValidation.None);
@@ -24,15 +32,23 @@ namespace Cupboard.Internal
 
             await foreach (var cmdEvent in cli.ListenAsync())
             {
-                handler?.Invoke(cmdEvent);
-
                 switch (cmdEvent)
                 {
-                    case StandardOutputCommandEvent stdOut:
-                        standardOut.Append(stdOut.Text);
+                    case StandardOutputCommandEvent output:
+                        standardOut.Append(output.Text);
+                        if (!supressOutput && !string.IsNullOrWhiteSpace(output.Text) && (filter?.Invoke(output.Text) ?? true))
+                        {
+                            _logger.Verbose("OUT>", output.Text.EscapeMarkup().TrimStart());
+                        }
+
                         break;
-                    case StandardErrorCommandEvent stdErr:
-                        standardOut.Append(stdErr.Text);
+                    case StandardErrorCommandEvent error:
+                        if (!supressOutput && !string.IsNullOrWhiteSpace(error.Text) && (filter?.Invoke(error.Text) ?? true))
+                        {
+                            _logger.Error("ERR>", error.Text.EscapeMarkup().TrimStart());
+                        }
+
+                        standardError.Append(error.Text);
                         break;
                     case ExitedCommandEvent exited:
                         exitCode = exited.ExitCode;
@@ -40,7 +56,10 @@ namespace Cupboard.Internal
                 }
             }
 
-            return new ProcessRunnerResult(exitCode, standardOut.ToString());
+            return new ProcessRunnerResult(
+                exitCode,
+                standardOut.ToString(),
+                standardError.ToString());
         }
     }
 }

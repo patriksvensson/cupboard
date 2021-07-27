@@ -1,12 +1,11 @@
 using System;
-using System.Text;
 using System.Threading.Tasks;
-using CliWrap;
 
 namespace Cupboard
 {
     public sealed class WindowsFeatureProvider : AsyncWindowsResourceProvider<WindowsFeature>
     {
+        private readonly IProcessRunner _runner;
         private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
@@ -17,9 +16,13 @@ namespace Cupboard
             Error,
         }
 
-        public WindowsFeatureProvider(IEnvironmentRefresher refresher, ICupboardLogger logger)
+        public WindowsFeatureProvider(
+            IProcessRunner runner,
+            IEnvironmentRefresher refresher,
+            ICupboardLogger logger)
         {
-            _refresher = refresher;
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
+            _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -60,11 +63,7 @@ namespace Cupboard
                     return ResourceState.Unchanged;
                 }
 
-                var result = await Cli.Wrap("dism.exe")
-                    .WithValidation(CommandResultValidation.None)
-                    .WithArguments($"/online /enable-feature /featurename:{feature}")
-                    .ExecuteAsync();
-
+                var result = await _runner.Run("dism.exe", $"/online /enable-feature /featurename:{feature}").ConfigureAwait(false);
                 if (result.ExitCode != 0)
                 {
                     _logger.Error($"An error occured when enabling Windows feature [yellow]{feature}[/]");
@@ -84,11 +83,7 @@ namespace Cupboard
                     return ResourceState.Unchanged;
                 }
 
-                var result = await Cli.Wrap("dism.exe")
-                    .WithValidation(CommandResultValidation.None)
-                    .WithArguments($"/online /disable-feature /featurename:{feature}")
-                    .ExecuteAsync();
-
+                var result = await _runner.Run("dism.exe", $"/online /disable-feature /featurename:{feature}").ConfigureAwait(false);
                 if (result.ExitCode != 0)
                 {
                     _logger.Error($"An error occured when disabling Windows feature [yellow]{feature}[/]");
@@ -104,21 +99,15 @@ namespace Cupboard
             return ResourceState.Error;
         }
 
-        private static async Task<WindowsFeatureStatus> IsFeatureEnabled(string feature)
+        private async Task<WindowsFeatureStatus> IsFeatureEnabled(string feature)
         {
-            var stdout = new StringBuilder();
-            var result = await Cli.Wrap("dism.exe")
-                .WithArguments($"/online /Get-FeatureInfo /FeatureName:{feature}")
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdout))
-                .WithValidation(CommandResultValidation.None)
-                .ExecuteAsync();
-
+            var result = await _runner.Run("dism.exe", $"/online /Get-FeatureInfo /FeatureName:{feature}").ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 return WindowsFeatureStatus.Error;
             }
 
-            if (stdout.ToString().Contains("State : Enabled", StringComparison.OrdinalIgnoreCase))
+            if (result.StandardOut.Contains("State : Enabled", StringComparison.OrdinalIgnoreCase))
             {
                 return WindowsFeatureStatus.Enabled;
             }

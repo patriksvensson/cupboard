@@ -1,24 +1,26 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CliWrap;
 using Spectre.IO;
 
 namespace Cupboard
 {
     public sealed class ExecProvider : AsyncResourceProvider<Exec>
     {
+        private readonly IProcessRunner _runner;
         private readonly ICupboardFileSystem _fileSystem;
         private readonly ICupboardEnvironment _environment;
         private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         public ExecProvider(
+            IProcessRunner runner,
             ICupboardFileSystem fileSystem,
             ICupboardEnvironment environment,
             IEnvironmentRefresher refresher,
             ICupboardLogger logger)
         {
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _refresher = refresher ?? throw new ArgumentNullException(nameof(refresher));
@@ -46,12 +48,7 @@ namespace Cupboard
                 return ResourceState.Unknown;
             }
 
-            _logger.Debug($"Executing [yellow]{path.FullPath}[/] {resource.Args}".TrimEnd());
-            var result = await Cli.Wrap(path.FullPath)
-                .WithValidation(CommandResultValidation.None)
-                .WithArguments(args)
-                .ExecuteAsync();
-
+            var result = await _runner.Run(path.FullPath, args).ConfigureAwait(false);
             if (result.ExitCode != 0)
             {
                 if (resource.ValidExitCodes?.Contains(result.ExitCode) == true)

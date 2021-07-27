@@ -1,11 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using CliWrap.EventStream;
 
 namespace Cupboard
 {
     public interface IProcessRunner
     {
-        Task<ProcessRunnerResult> Run(string file, string arguments, Action<CommandEvent>? handler = null);
+        Task<ProcessRunnerResult> Run(string file, string arguments, Func<string, bool>? filter = null, bool supressOutput = false);
     }
 }

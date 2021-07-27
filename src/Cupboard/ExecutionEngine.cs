@@ -56,12 +56,9 @@ namespace Cupboard.Internal
 
             // Do we need administrator privileges?
             // Make sure we're running with elevated permissions
-            if (plan.RequiresAdministrator)
+            if (plan.RequiresAdministrator && !_security.IsAdministrator() && !dryRun)
             {
-                if (!_security.IsAdministrator() && !dryRun)
-                {
-                    throw new InvalidOperationException("Not running as administrator");
-                }
+                throw new InvalidOperationException("Not running as administrator");
             }
 
             // Create the execution context
@@ -80,6 +77,7 @@ namespace Cupboard.Internal
                 else
                 {
                     status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
+                    _logger.Verbose($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
 
                     // Abort if we cannot run a provider
                     if (!node.Provider.CanRun(facts))

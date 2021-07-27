@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cupboard.Testing;
 using Shouldly;
 
-namespace Cupboard.Tests.Unit.Resources
+namespace Cupboard.Tests.Unit.Providers
 {
     public sealed class WingetProviderTests
     {
@@ -100,7 +95,7 @@ namespace Cupboard.Tests.Unit.Resources
 
                 // Then
                 result.Report.GetState<WingetPackage>("GitHub CLI").ShouldBe(ResourceState.Changed);
-                fixture.Logger.WasLogged("Uninstalling Winget package GitHub.cli...");
+                fixture.Logger.WasLogged("Uninstalling Winget package [yellow]GitHub.cli[/]");
                 fixture.Logger.WasLogged("The Winget package [yellow]GitHub.cli[/] was uninstalled");
             }
 
