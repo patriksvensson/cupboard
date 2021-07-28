@@ -1,7 +1,9 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Cupboard.Internal
 {
+    [Obsolete("Please use RegistryValueKindExtensions instead")]
     internal static class RegistryKeyValueKindExtensions
     {
         [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]

@@ -1,5 +1,8 @@
+using System;
+
 namespace Cupboard
 {
+    [Obsolete("Please use the RegistryValue resource")]
     public sealed class RegistryKey : Resource
     {
         public RegistryKeyPath? Path { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace Cupboard
+namespace Cupboard
 {
-    public enum RegistryKeyValueKind
+    public enum RegistryValueKind
     {
         None = -1,
         Unknown = 0,

@@ -31,7 +31,11 @@ namespace Cupboard.Internal
 
             [CommandOption("-y|--yes|--confirm")]
             [Description("Confirm all prompts. Chooses affirmative answer instead of prompting.")]
-            public bool Yes { get; set; }
+            public bool AutoConfirm { get; set; }
+
+            [CommandOption("--ignore-reboots")]
+            [Description("Ignore any pending reboots.")]
+            public bool IgnoreReboots { get; set; }
 
             [CommandOption("-w|--working|--workingdir")]
             [Description("Sets the working directory.")]
@@ -130,13 +134,17 @@ namespace Cupboard.Internal
         {
             if (settings.DryRun)
             {
-                return await _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true).ConfigureAwait(false);
+                return await _executor.Run(context.Remaining, new DummyUpdater(),
+                    dryRun: true, ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
             }
             else
             {
-                if (!settings.Yes)
+                if (!settings.AutoConfirm)
                 {
-                    var report = await _executor.Run(context.Remaining, new DummyUpdater(), dryRun: true).ConfigureAwait(false);
+                    var report = await _executor.Run(
+                        context.Remaining, new DummyUpdater(), dryRun: true,
+                        ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
+
                     if (report.Items.Count == 0)
                     {
                         return report;
@@ -155,6 +163,13 @@ namespace Cupboard.Internal
                         }
                     }
 
+                    if (report.PendingReboot)
+                    {
+                        _console.MarkupLine("[red]ERROR:[/] A pending reboot have been detected.");
+                        _console.MarkupLine("[grey]To ignore, pass the [yellow]--ignore-reboots[/] flag.[/]");
+                        return null;
+                    }
+
                     _console.MarkupLine("[yellow]WARNING[/]: This will change the state of the current machine.");
                     if (!_console.Confirm("Are you sure you want to continue?", defaultValue: false))
                     {
@@ -165,9 +180,8 @@ namespace Cupboard.Internal
                 return await _console.Status().StartAsync("Executing", async status =>
                 {
                     return await _executor.Run(
-                        context.Remaining,
-                        new StatusUpdater(status),
-                        dryRun: false).ConfigureAwait(false);
+                        context.Remaining, new StatusUpdater(status), dryRun: false,
+                        ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
                 }).ConfigureAwait(false);
             }
         }

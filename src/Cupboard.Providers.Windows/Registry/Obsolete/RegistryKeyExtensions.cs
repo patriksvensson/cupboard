@@ -1,5 +1,8 @@
+using System;
+
 namespace Cupboard
 {
+    [Obsolete("Please use the RegistryValue resource instead")]
     public static class RegistryKeyExtensions
     {
         public static IResourceBuilder<RegistryKey> Ensure(this IResourceBuilder<RegistryKey> builder, RegistryKeyState state)

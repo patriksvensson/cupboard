@@ -17,9 +17,10 @@ namespace Sandbox
                 .ToFile("~/install-chocolatey.ps1");
 
             // Set execution policy
-            context.Resource<RegistryKey>("Set execution policy")
+            context.Resource<RegistryValue>("Set execution policy")
                 .Path(@"HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell\ExecutionPolicy")
-                .Value("Unrestricted", RegistryKeyValueKind.String);
+                .Value("ExecutionPolicy")
+                .Data("Unrestricted", RegistryValueKind.String);
 
             // Install
             context.Resource<PowerShell>("Install Chocolatey")
@@ -27,7 +28,7 @@ namespace Sandbox
                 .Flavor(PowerShellFlavor.PowerShell)
                 .RequireAdministrator()
                 .Unless("if (Test-Path \"$($env:ProgramData)/chocolatey/choco.exe\") { exit 1 }")
-                .After<RegistryKey>("Set execution policy")
+                .After<RegistryValue>("Set execution policy")
                 .After<Download>("https://chocolatey.org/install.ps1");
         }
     }

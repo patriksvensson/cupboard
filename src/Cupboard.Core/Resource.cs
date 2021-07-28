@@ -8,7 +8,9 @@ namespace Cupboard
 
         public string Name { get; }
         public bool RequireAdministrator { get; set; }
-        public ErrorHandling OnError { get; set; } = ErrorHandling.Abort;
+
+        public ErrorOptions Error { get; set; } = ErrorOptions.Abort;
+        public RebootOptions Reboot { get; set; } = RebootOptions.Reboot;
 
         protected Resource(string name)
         {

@@ -9,8 +9,12 @@ namespace Cupboard
             // Resources
             services.AddSingleton<IResourceProvider, ChocolateyPackageProvider>();
             services.AddSingleton<IResourceProvider, WindowsFeatureProvider>();
-            services.AddSingleton<IResourceProvider, RegistryKeyProvider>();
+            services.AddSingleton<IResourceProvider, RegistryValueProvider>();
             services.AddSingleton<IResourceProvider, WingetPackageProvider>();
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            services.AddSingleton<IResourceProvider, RegistryKeyProvider>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             // Facts
             services.AddSingleton<IFactProvider, WindowsFacts>();

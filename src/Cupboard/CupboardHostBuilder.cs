@@ -38,6 +38,7 @@ namespace Cupboard
                     services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
                     services.AddSingleton<IFactBuilder, FactBuilder>();
                     services.AddSingleton<ISecurityPrincipal, SecurityPrincipal>();
+                    services.AddSingleton<IRebootDetector, RebootDetector>();
 
                     services.AddSingleton<ICupboardLogger, CupboardLogger>();
                     services.AddSingleton<ExecutionEngine>();

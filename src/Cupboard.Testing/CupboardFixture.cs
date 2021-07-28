@@ -22,6 +22,7 @@ namespace Cupboard.Testing
         public FakeCupboardFileSystem FileSystem { get; }
         public FakeCupboardEnvironment Environment { get; }
         public FakeWindowsRegistry WindowsRegistry { get; }
+        public FakeRebootDetector RebootDetector { get; }
 
         public FactCollection Facts => _factBuilder.Facts;
 
@@ -39,6 +40,7 @@ namespace Cupboard.Testing
             Environment = new FakeCupboardEnvironment(family);
             FileSystem = new FakeCupboardFileSystem(Environment);
             WindowsRegistry = new FakeWindowsRegistry();
+            RebootDetector = new FakeRebootDetector();
 
             switch (family)
             {
@@ -73,13 +75,6 @@ namespace Cupboard.Testing
             builder.PropagateExceptions();
             builder.ConfigureServices(services =>
             {
-                // Register fakes
-                services.AddSingleton(FileSystem);
-                services.AddSingleton(Environment);
-                services.AddSingleton(Process);
-                services.AddSingleton(EnvironmentRefresher);
-                services.AddSingleton(Logger);
-
                 // Register the report interceptor
                 services.AddSingleton<IReportSubscriber>(_interceptor);
 
@@ -90,6 +85,7 @@ namespace Cupboard.Testing
                 services.Replace(ServiceDescriptor.Singleton<ICupboardEnvironment>(_ => Environment));
                 services.Replace(ServiceDescriptor.Singleton<IEnvironmentRefresher>(_ => EnvironmentRefresher));
                 services.Replace(ServiceDescriptor.Singleton<IWindowsRegistry>(_ => WindowsRegistry));
+                services.Replace(ServiceDescriptor.Singleton<IRebootDetector>(_ => RebootDetector));
                 services.Replace(ServiceDescriptor.Singleton<ICupboardLogger>(_ => Logger));
                 services.Replace(ServiceDescriptor.Singleton<IFactBuilder>(_ => _factBuilder));
 

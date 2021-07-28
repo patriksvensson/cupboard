@@ -10,6 +10,7 @@ namespace Cupboard.Internal
         private readonly IFactBuilder _factBuilder;
         private readonly ExecutionPlanBuilder _executionPlanBuilder;
         private readonly ISecurityPrincipal _security;
+        private readonly IRebootDetector _reboot;
         private readonly List<Catalog> _specifications;
         private readonly List<Manifest> _manifests;
         private readonly ICupboardLogger _logger;
@@ -21,25 +22,29 @@ namespace Cupboard.Internal
             IEnumerable<Manifest> manifests,
             ExecutionPlanBuilder executionPlanBuilder,
             ISecurityPrincipal security,
+            IRebootDetector reboot,
             ICupboardLogger logger,
             IReportSubscriber? subscriber = null)
         {
             _factBuilder = factBuilder ?? throw new ArgumentNullException(nameof(factBuilder));
             _executionPlanBuilder = executionPlanBuilder ?? throw new ArgumentNullException(nameof(executionPlanBuilder));
             _security = security ?? throw new ArgumentNullException(nameof(security));
+            _reboot = reboot ?? throw new ArgumentNullException(nameof(reboot));
             _specifications = new List<Catalog>(specifications ?? Array.Empty<Catalog>());
             _manifests = new List<Manifest>(manifests ?? Array.Empty<Manifest>());
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _subscriber = subscriber;
         }
 
-        public async Task<Report> Run(IRemainingArguments args, IStatusUpdater status, bool dryRun)
+        public async Task<Report> Run(
+            IRemainingArguments args, IStatusUpdater status,
+            bool dryRun, bool ignoreReboots)
         {
             var facts = _factBuilder.Build(args);
 
             // Build and execute the plan
             var plan = _executionPlanBuilder.Build(_specifications, _manifests, _factBuilder, args);
-            var report = await ExecutePlan(plan, facts, status, dryRun).ConfigureAwait(false);
+            var report = await ExecutePlan(plan, facts, status, dryRun, ignoreReboots).ConfigureAwait(false);
 
             // Notify any subscribers about the plan
             _subscriber?.Notify(report);
@@ -47,18 +52,28 @@ namespace Cupboard.Internal
             return report;
         }
 
-        private async Task<Report> ExecutePlan(ExecutionPlan plan, FactCollection facts, IStatusUpdater status, bool dryRun)
+        private async Task<Report> ExecutePlan(
+            ExecutionPlan plan, FactCollection facts, IStatusUpdater status,
+            bool dryRun, bool ignoreReboots)
         {
+            var pendingReboot = _reboot.HasPendingReboot();
+
             if (plan.Count == 0)
             {
-                return new Report(Array.Empty<ReportItem>(), facts, plan.RequiresAdministrator, dryRun);
+                return new Report(Array.Empty<ReportItem>(), facts, plan.RequiresAdministrator, dryRun, pendingReboot);
             }
 
             // Do we need administrator privileges?
             // Make sure we're running with elevated permissions
-            if (plan.RequiresAdministrator && !_security.IsAdministrator() && !dryRun)
+            if (!dryRun && plan.RequiresAdministrator && !_security.IsAdministrator())
             {
                 throw new InvalidOperationException("Not running as administrator");
+            }
+
+            // Is there a pending reboot?
+            if (!dryRun && pendingReboot)
+            {
+                throw new InvalidOperationException("A pending reboot have been detected");
             }
 
             // Create the execution context
@@ -90,16 +105,31 @@ namespace Cupboard.Internal
                     var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
                     results.Add(new ReportItem(node.Provider, node.Resource, state, node.RequireAdministrator));
 
-                    if (state.IsError() && node.Resource.OnError != ErrorHandling.Ignore)
+                    if (state.IsError() && node.Resource.Error != ErrorOptions.IgnoreErrors)
                     {
                         _logger.Error($"Aborting run due to error in [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/].");
                         break;
+                    }
+
+                    // Pending reboot?
+                    if (_reboot.HasPendingReboot())
+                    {
+                        _logger.Warning("A pending reboot has been detected");
+
+                        if (node.Resource.Reboot != RebootOptions.IgnorePendingReboot)
+                        {
+                            if (!ignoreReboots)
+                            {
+                                _logger.Information("Aborting due to pending reboot.");
+                                break;
+                            }
+                        }
                     }
                 }
             }
 
             _logger.Debug("Execution done.");
-            return new Report(results, facts, plan.RequiresAdministrator, context.DryRun);
+            return new Report(results, facts, plan.RequiresAdministrator, context.DryRun, pendingReboot);
         }
     }
 }

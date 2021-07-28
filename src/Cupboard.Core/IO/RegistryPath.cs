@@ -4,20 +4,19 @@ using System.Linq;
 
 namespace Cupboard
 {
-    public sealed class RegistryKeyPath
+    public sealed class RegistryPath
     {
         private static readonly Dictionary<string, string> _rootSubstitutions;
-        private static readonly Dictionary<string, RegistryKeyRoot> _roots;
+        private static readonly Dictionary<string, RegistryHive> _roots;
 
-        public RegistryKeyRoot Root { get; set; }
+        public RegistryHive Hive { get; set; }
         public string Path { get; set; }
         public string SubKey { get; }
-        public string Value { get; }
         public IReadOnlyList<string> Segments { get; }
 
         public bool IsValid { get; }
 
-        static RegistryKeyPath()
+        static RegistryPath()
         {
             _rootSubstitutions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -35,18 +34,18 @@ namespace Cupboard
                 { "HKCC:", "HKEY_CURRENT_CONFIG" },
             };
 
-            _roots = new Dictionary<string, RegistryKeyRoot>(StringComparer.OrdinalIgnoreCase)
+            _roots = new Dictionary<string, RegistryHive>(StringComparer.OrdinalIgnoreCase)
             {
-                { "HKEY_CLASSES_ROOT", RegistryKeyRoot.ClassesRoot },
-                { "HKEY_CURRENT_CONFIG", RegistryKeyRoot.CurrentConfig },
-                { "HKEY_CURRENT_USER", RegistryKeyRoot.CurrentUser },
-                { "HKEY_LOCAL_MACHINE", RegistryKeyRoot.LocalMachine },
-                { "HKEY_PERFORMANCE_DATA", RegistryKeyRoot.PerformanceData },
-                { "HKEY_USERS", RegistryKeyRoot.Users },
+                { "HKEY_CLASSES_ROOT", RegistryHive.ClassesRoot },
+                { "HKEY_CURRENT_CONFIG", RegistryHive.CurrentConfig },
+                { "HKEY_CURRENT_USER", RegistryHive.CurrentUser },
+                { "HKEY_LOCAL_MACHINE", RegistryHive.LocalMachine },
+                { "HKEY_PERFORMANCE_DATA", RegistryHive.PerformanceData },
+                { "HKEY_USERS", RegistryHive.Users },
             };
         }
 
-        public RegistryKeyPath(string path)
+        public RegistryPath(string path)
         {
             path ??= string.Empty;
             var key = path.Replace("/", "\\");
@@ -56,20 +55,19 @@ namespace Cupboard
 
             if (Segments.Count > 0)
             {
-                Root = GetRoot(Segments[0]);
+                Hive = GetRoot(Segments[0]);
                 Segments = Segments.Skip(1).ToList();
                 Path = string.Join("\\", Segments);
             }
 
-            SubKey = string.Join("\\", Segments.Take(Segments.Count - 1));
-            Value = Segments.LastOrDefault() ?? string.Empty;
+            SubKey = string.Join("\\", Segments.Take(Segments.Count));
 
             IsValid = Segments.Count > 1
-                && Root != RegistryKeyRoot.Unknown
+                && Hive != RegistryHive.Unknown
                 && !string.IsNullOrWhiteSpace(Path);
         }
 
-        private static RegistryKeyRoot GetRoot(string rootName)
+        private static RegistryHive GetRoot(string rootName)
         {
             if (_rootSubstitutions.ContainsKey(rootName))
             {
@@ -78,7 +76,7 @@ namespace Cupboard
 
             if (!_roots.TryGetValue(rootName, out var r))
             {
-                return RegistryKeyRoot.Unknown;
+                return RegistryHive.Unknown;
             }
 
             return r;
@@ -86,15 +84,20 @@ namespace Cupboard
 
         private string? GetRootName()
         {
-            return Root switch
+            return Hive switch
             {
-                RegistryKeyRoot.ClassesRoot => "HKEY_CLASSES_ROOT",
-                RegistryKeyRoot.CurrentUser => "HKEY_CURRENT_USER",
-                RegistryKeyRoot.LocalMachine => "HKEY_LOCAL_MACHINE",
-                RegistryKeyRoot.Users => "HKEY_USERS",
-                RegistryKeyRoot.CurrentConfig => "HKEY_CURRENT_CONFIG",
+                RegistryHive.ClassesRoot => "HKEY_CLASSES_ROOT",
+                RegistryHive.CurrentUser => "HKEY_CURRENT_USER",
+                RegistryHive.LocalMachine => "HKEY_LOCAL_MACHINE",
+                RegistryHive.Users => "HKEY_USERS",
+                RegistryHive.CurrentConfig => "HKEY_CURRENT_CONFIG",
                 _ => null,
             };
+        }
+
+        public static implicit operator RegistryPath(string path)
+        {
+            return new RegistryPath(path);
         }
 
         public override string ToString()

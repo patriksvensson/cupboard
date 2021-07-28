@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Cupboard
 {
+    [Obsolete("Please use the RegistryValue resource instead")]
     public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>
     {
         private readonly IWindowsRegistry _registry;

@@ -2,10 +2,17 @@ namespace Cupboard
 {
     public static class ResourceExtensions
     {
-        public static IResourceBuilder<T> OnError<T>(this IResourceBuilder<T> builder, ErrorHandling error)
+        public static IResourceBuilder<T> OnError<T>(this IResourceBuilder<T> builder, ErrorOptions options)
             where T : Resource
         {
-            builder.Configure(res => res.OnError = error);
+            builder.Configure(res => res.Error = options);
+            return builder;
+        }
+
+        public static IResourceBuilder<T> OnReboot<T>(this IResourceBuilder<T> builder, RebootOptions options)
+            where T : Resource
+        {
+            builder.Configure(res => res.Reboot = options);
             return builder;
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Cupboard
+namespace Cupboard
 {
     public interface IWindowsRegistry
     {

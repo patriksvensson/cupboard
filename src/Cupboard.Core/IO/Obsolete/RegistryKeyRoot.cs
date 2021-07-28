@@ -1,5 +1,8 @@
+using System;
+
 namespace Cupboard
 {
+    [Obsolete("Please use RegistryRoot instead")]
     public enum RegistryKeyRoot
     {
         Unknown = 0,
