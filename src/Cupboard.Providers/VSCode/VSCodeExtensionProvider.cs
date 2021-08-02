@@ -1,30 +1,26 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Spectre.IO;
 
 namespace Cupboard
 {
-    public sealed class VSCodeExtensionProvider : AsyncResourceProvider<VSCodeExtension>
+    public sealed class VSCodeExtensionProvider : PackageInstallerProvider<VSCodeExtension>
     {
         private readonly IProcessRunner _runner;
-        private readonly ICupboardLogger _logger;
-        private string? _cachedOutput;
-        private bool _dirty;
+        private readonly ICupboardEnvironment _environment;
 
-        private enum VSCodeExtensionState
-        {
-            Exists,
-            Missing,
-            Error,
-        }
+        protected override string Name { get; } = "VSCode";
+        protected override string Kind { get; } = "extension";
 
         public VSCodeExtensionProvider(
             IProcessRunner runner,
-            ICupboardLogger logger)
+            ICupboardEnvironment environment,
+            ICupboardLogger logger,
+            IEnvironmentRefresher refresher)
+                : base(logger, refresher)
         {
             _runner = runner ?? throw new ArgumentNullException(nameof(runner));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _dirty = true;
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
         public override VSCodeExtension Create(string name)
@@ -35,122 +31,34 @@ namespace Cupboard
             };
         }
 
-        public override async Task<ResourceState> RunAsync(IExecutionContext context, VSCodeExtension resource)
+        protected override bool IsPackageInstalled(VSCodeExtension resource, string output)
         {
-            var state = await IsPackageInstalled(resource.Package).ConfigureAwait(false);
-            if (state == VSCodeExtensionState.Error)
-            {
-                return ResourceState.Error;
-            }
-
-            if (resource.Ensure == PackageState.Installed)
-            {
-                if (state == VSCodeExtensionState.Missing)
-                {
-                    if (context.DryRun)
-                    {
-                        return ResourceState.Changed;
-                    }
-
-                    // Install package
-                    state = await InstallPackage(resource.Package).ConfigureAwait(false);
-                    if (state == VSCodeExtensionState.Exists)
-                    {
-                        _logger.Information($"The VSCode extension [yellow]{resource.Package}[/] was installed");
-                        return ResourceState.Changed;
-                    }
-
-                    return ResourceState.Error;
-                }
-
-                _logger.Debug($"The VSCode extension [yellow]{resource.Package}[/] is already installed");
-            }
-            else
-            {
-                if (state == VSCodeExtensionState.Exists)
-                {
-                    if (context.DryRun)
-                    {
-                        return ResourceState.Changed;
-                    }
-
-                    // Uninstall package
-                    state = await UninstallPackage(resource.Package).ConfigureAwait(false);
-                    if (state == VSCodeExtensionState.Missing)
-                    {
-                        _logger.Information($"The VSCode extension [yellow]{resource.Package}[/] was uninstalled");
-                        return ResourceState.Changed;
-                    }
-
-                    return ResourceState.Error;
-                }
-
-                _logger.Debug($"The VSCode extension [yellow]{resource.Package}[/] is already uninstalled");
-            }
-
-            return ResourceState.Unchanged;
+            return output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<VSCodeExtensionState> InstallPackage(string package)
+        protected override async Task<ProcessRunnerResult> GetPackageState(VSCodeExtension resource)
         {
-            _logger.Debug($"Installing VSCode extension [yellow]{package}[/]");
-
-            var result = await _runner.Run(GetCodeExecutable(), $"--install-extension {package}").ConfigureAwait(false);
-            if (result.ExitCode != 0)
-            {
-                _logger.Error("Exit code: " + result.ExitCode);
-                return VSCodeExtensionState.Error;
-            }
-
-            _dirty = true;
-            return await IsPackageInstalled(package).ConfigureAwait(false);
+            var executable = GetCodeExecutable();
+            return await _runner.Run(executable, "--list-extensions", supressOutput: true).ConfigureAwait(false);
         }
 
-        private async Task<VSCodeExtensionState> UninstallPackage(string package)
+        protected override async Task<ProcessRunnerResult> InstallPackage(VSCodeExtension resource)
         {
-            _logger.Debug($"Uninstalling VSCode extension [yellow]{package}[/]");
-
-            var result = await _runner.Run(GetCodeExecutable(), $"---uninstall-extension {package}").ConfigureAwait(false);
-            if (result.ExitCode != 0)
-            {
-                return VSCodeExtensionState.Error;
-            }
-
-            _dirty = true;
-            return await IsPackageInstalled(package).ConfigureAwait(false);
+            var executable = GetCodeExecutable();
+            var arguments = $"--install-extension {resource.Package}";
+            return await _runner.Run(executable, arguments).ConfigureAwait(false);
         }
 
-        private async Task<VSCodeExtensionState> IsPackageInstalled(string package)
+        protected override async Task<ProcessRunnerResult> UninstallPackage(VSCodeExtension resource)
         {
-            if (_dirty || _cachedOutput == null)
-            {
-                var result = await _runner.Run(GetCodeExecutable(), "--list-extensions").ConfigureAwait(false);
-                if (result.ExitCode != 0)
-                {
-                    return VSCodeExtensionState.Error;
-                }
-
-                _cachedOutput = result.StandardOut;
-                _dirty = false;
-            }
-
-            if (_cachedOutput == null)
-            {
-                _logger.Error("An error occured while retrieving VSCode extension state");
-                return VSCodeExtensionState.Error;
-            }
-
-            if (_cachedOutput.Contains(package, StringComparison.OrdinalIgnoreCase))
-            {
-                return VSCodeExtensionState.Exists;
-            }
-
-            return VSCodeExtensionState.Missing;
+            var executable = GetCodeExecutable();
+            var arguments = $"--uninstall-extension {resource.Package}";
+            return await _runner.Run(executable, arguments).ConfigureAwait(false);
         }
 
-        private static string GetCodeExecutable()
+        private string GetCodeExecutable()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (_environment.Platform.Family == PlatformFamily.Windows)
             {
                 // TODO 2021-07-14: This is not good
                 return "C:/Program Files/Microsoft VS Code/bin/code.cmd";

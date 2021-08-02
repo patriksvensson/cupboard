@@ -15,7 +15,7 @@ namespace Cupboard.Testing
 
             var item = report.Items.SingleOrDefault(
                 x => x.Resource.GetType() == typeof(TResource)
-                    && x.Resource.Name.Equals(name, StringComparison.Ordinal));
+                    && x.Resource.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
             return item?.State ?? ResourceState.Unknown;
         }

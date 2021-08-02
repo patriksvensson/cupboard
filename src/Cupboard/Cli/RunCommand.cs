@@ -165,9 +165,16 @@ namespace Cupboard.Internal
 
                     if (report.PendingReboot)
                     {
-                        _console.MarkupLine("[red]ERROR:[/] A pending reboot have been detected.");
-                        _console.MarkupLine("[grey]To ignore, pass the [yellow]--ignore-reboots[/] flag.[/]");
-                        return null;
+                        if (settings.IgnoreReboots)
+                        {
+                            _console.MarkupLine("[yellow]WARNING:[/] A pending reboot have been detected.");
+                        }
+                        else
+                        {
+                            _console.MarkupLine("[red]ERROR:[/] A pending reboot have been detected.");
+                            _console.MarkupLine("[grey]To ignore, pass the [yellow]--ignore-reboots[/] flag.[/]");
+                            return null;
+                        }
                     }
 
                     _console.MarkupLine("[yellow]WARNING[/]: This will change the state of the current machine.");

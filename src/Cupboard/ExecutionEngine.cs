@@ -71,7 +71,7 @@ namespace Cupboard.Internal
             }
 
             // Is there a pending reboot?
-            if (!dryRun && pendingReboot)
+            if (!dryRun && pendingReboot && !ignoreReboots)
             {
                 throw new InvalidOperationException("A pending reboot have been detected");
             }
@@ -114,8 +114,12 @@ namespace Cupboard.Internal
                     // Pending reboot?
                     if (_reboot.HasPendingReboot())
                     {
-                        _logger.Warning("A pending reboot has been detected");
+                        if (!pendingReboot)
+                        {
+                            _logger.Warning("A pending reboot has been detected");
+                        }
 
+                        pendingReboot = true;
                         if (node.Resource.Reboot != RebootOptions.IgnorePendingReboot)
                         {
                             if (!ignoreReboots)

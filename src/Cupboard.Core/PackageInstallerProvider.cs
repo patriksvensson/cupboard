@@ -12,6 +12,7 @@ namespace Cupboard
 
         protected virtual bool ShouldRefresh => true;
         protected abstract string Name { get; }
+        protected virtual string Kind { get; } = "package";
 
         protected PackageInstallerProvider(
             ICupboardLogger logger,
@@ -53,7 +54,7 @@ namespace Cupboard
                     return await Install(resource).ConfigureAwait(false);
                 }
 
-                _logger.Debug($"The {Name} package [yellow]{resource.Package}[/] is already installed");
+                _logger.Debug($"The {Name} {Kind} [yellow]{resource.Package}[/] is already installed");
             }
             else
             {
@@ -68,7 +69,7 @@ namespace Cupboard
                     return await Uninstall(resource).ConfigureAwait(false);
                 }
 
-                _logger.Debug($"The {Name} package [yellow]{resource.Package}[/] is already uninstalled");
+                _logger.Debug($"The {Name} {Kind} [yellow]{resource.Package}[/] is already uninstalled");
             }
 
             return ResourceState.Unchanged;
@@ -95,7 +96,7 @@ namespace Cupboard
 
         private async Task<ResourceState> Install(T resource)
         {
-            _logger.Debug($"Installing {Name} package [yellow]{resource.Package}[/]");
+            _logger.Debug($"Installing {Name} {Kind} [yellow]{resource.Package}[/]");
 
             // Install package
             var result = await InstallPackage(resource).ConfigureAwait(false);
@@ -110,7 +111,7 @@ namespace Cupboard
             var state = await CheckIfInstalled(resource).ConfigureAwait(false);
             if (state == PackageInstallerResult.Exists)
             {
-                _logger.Information($"The {Name} package [yellow]{resource.Package}[/] was installed");
+                _logger.Information($"The {Name} {Kind} [yellow]{resource.Package}[/] was installed");
 
                 if (ShouldRefresh)
                 {
@@ -125,7 +126,7 @@ namespace Cupboard
 
         private async Task<ResourceState> Uninstall(T resource)
         {
-            _logger.Debug($"Uninstalling {Name} package [yellow]{resource.Package}[/]");
+            _logger.Debug($"Uninstalling {Name} {Kind} [yellow]{resource.Package}[/]");
 
             // Uninstall package
             var result = await UninstallPackage(resource).ConfigureAwait(false);
@@ -140,7 +141,7 @@ namespace Cupboard
             var state = await CheckIfInstalled(resource).ConfigureAwait(false);
             if (state == PackageInstallerResult.Missing)
             {
-                _logger.Information($"The {Name} package [yellow]{resource.Package}[/] was uninstalled");
+                _logger.Information($"The {Name} {Kind} [yellow]{resource.Package}[/] was uninstalled");
 
                 if (ShouldRefresh)
                 {

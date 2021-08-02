@@ -56,7 +56,7 @@ namespace Cupboard.Tests.Unit.Providers
             }
 
             [WindowsFact]
-            public void Should_Not_Install_Package_If_Present_lol()
+            public void Should_Not_Install_Package_If_Present()
             {
                 // Given
                 var fixture = new CupboardFixture();
