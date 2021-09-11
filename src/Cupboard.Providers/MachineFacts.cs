@@ -101,7 +101,7 @@ namespace Cupboard
 
         public static bool IsArmOrArm64(this FactCollection facts)
         {
-            return IsX86(facts) || IsX64(facts);
+            return IsArm(facts) || IsArm64(facts);
         }
     }
 }
