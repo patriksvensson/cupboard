@@ -18,7 +18,7 @@ namespace Sandbox
 
             // Set execution policy
             context.Resource<RegistryValue>("Set execution policy")
-                .Path(@"HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell\ExecutionPolicy")
+                .Path(@"HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell")
                 .Value("ExecutionPolicy")
                 .Data("Unrestricted", RegistryValueKind.String);
 
