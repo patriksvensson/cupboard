@@ -44,15 +44,18 @@ public sealed class Chocolatey : Manifest
             .ToFile("~/install-chocolatey.ps1");
 
         // Set execution policy
-        context.Resource<RegistryKey>("Set execution policy")
-            .Path(@"HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell\ExecutionPolicy")
-            .Value("Unrestricted", RegistryKeyValueKind.String);
+        context.Resource<RegistryValue>("Set execution policy")
+            .Path(@"HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell")
+            .Value("ExecutionPolicy")
+            .Data("Unrestricted", RegistryValueKind.String);
 
         // Install
-        context.Resource<PowerShellScript>("Install Chocolatey")
+        context.Resource<PowerShell>("Install Chocolatey")
             .Script("~/install-chocolatey.ps1")
+            .Flavor(PowerShellFlavor.PowerShell)
+            .RequireAdministrator()
             .Unless("if (Test-Path \"$($env:ProgramData)/chocolatey/choco.exe\") { exit 1 }")
-            .After<RegistryKey>("Set execution policy")
+            .After<RegistryValue>("Set execution policy")
             .After<Download>("https://chocolatey.org/install.ps1");
 
         // Install VSCode via Chocolatey
@@ -103,10 +106,6 @@ public static class Program
 ### 5. Run the configuration
 
 Now, open up a terminal in administrator mode and execute the build.
-
-```
-> dotnet run -- --verbosity diagnostic
-```
 
 Cupboard will show you a summary of what will be changed, which you will
 have to approve.
