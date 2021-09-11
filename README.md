@@ -61,7 +61,7 @@ public sealed class Chocolatey : Manifest
         // Install VSCode via Chocolatey
         context.Resource<ChocolateyPackage>("vscode")
             .Ensure(PackageState.Installed)
-            .After<PowerShellScript>("Install Chocolatey");
+            .After<PowerShell>("Install Chocolatey");
     }
 ```
 
@@ -97,7 +97,6 @@ public static class Program
     {
         return CupboardHost.CreateBuilder()
             .AddCatalog<MyWindowsComputer>()
-            .Build()
             .Run(args);
     }
 }
