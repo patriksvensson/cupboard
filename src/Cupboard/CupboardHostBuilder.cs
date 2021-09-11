@@ -87,5 +87,11 @@ namespace Cupboard
 
             return new CupboardHost(console, host, _propagateExceptions);
         }
+
+        public int Run(string[] args)
+        {
+            var host = Build();
+            return host.Run(args);
+        }
     }
 }

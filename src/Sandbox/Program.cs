@@ -8,7 +8,6 @@ namespace Sandbox
         {
             return CupboardHost.CreateBuilder()
                 .AddCatalog<SandboxCatalog>()
-                .Build()
                 .Run(args);
         }
     }
