@@ -63,6 +63,7 @@ public sealed class Chocolatey : Manifest
             .Ensure(PackageState.Installed)
             .After<PowerShell>("Install Chocolatey");
     }
+}
 ```
 
 ### 3. Create a catalog
@@ -75,7 +76,7 @@ public sealed class MyWindowsComputer : Catalog
 {
     public override void Execute(CatalogContext context)
     {
-        if (context.Facts["os.platform"] != OSPlatform.Windows) 
+        if (context.Facts.IsWindows())
         {
             return;
         }
