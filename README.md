@@ -76,7 +76,7 @@ public sealed class MyWindowsComputer : Catalog
 {
     public override void Execute(CatalogContext context)
     {
-        if (context.Facts.IsWindows())
+        if (!context.Facts.IsWindows())
         {
             return;
         }
