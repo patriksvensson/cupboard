@@ -4,20 +4,22 @@ _[![Cupboard NuGet Version](https://img.shields.io/nuget/v/cupboard.svg?style=fl
 
 A framework for provisioning local environments to a desired state, using the .NET SDK.
 
-**⚠ Disclaimer:**  
-Currently in preview. Use at own risk.
+## Disclaimer
+Currently in preview. **Use at own risk.**
 
 ## Introduction
 
 In Cupboard, you define `catalogs`, `manifests`, and `resources`.
 
-* **Resources:**
+* **Resources:**  
   A resource describes the desired state for some part of a system.  
   This might be a file, directory, package, etc.
 * **Manifests:**  
-  A manifest contains one or many resources.
+  A manifest contains one or many resources.  
+  Used to specify how to assemble parts that uses many resources.
 * **Catalogs:**  
-  A catalog contains one or many manifests.
+  A catalog contains one or many manifests.  
+  Used as a logical grouping of machines and/or platforms.
 
 ### 1. Create a console application
 
