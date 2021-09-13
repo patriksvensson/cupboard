@@ -1,5 +1,7 @@
 # Cupboard
 
+_[![Cupboard NuGet Version](https://img.shields.io/nuget/v/cupboard.svg?style=flat&label=NuGet%3A%20Cupboard)](https://www.nuget.org/packages/cupboard)_
+
 A framework for provisioning local environments to a desired state, using the .NET SDK.
 
 **⚠ Disclaimer:**  
@@ -9,12 +11,12 @@ Currently in preview. Use at own risk.
 
 In Cupboard, you define `catalogs`, `manifests`, and `resources`.
 
-* 🍎 **Resources:**
+* **Resources:**
   A resource describes the desired state for some part of a system.  
   This might be a file, directory, package, etc.
-* 🌳 **Manifests:**  
+* **Manifests:**  
   A manifest contains one or many resources.
-* 🌍 **Catalogs:**  
+* **Catalogs:**  
   A catalog contains one or many manifests.
 
 ### 1. Create a console application
@@ -72,7 +74,7 @@ When we have a `Manifest`, we need to create a `Catalog` containing the manifest
 We'll also add a condition that excludes non-Windows environments.
 
 ```csharp
-public sealed class MyWindowsComputer : Catalog
+public sealed class WindowsComputer : Catalog
 {
     public override void Execute(CatalogContext context)
     {
