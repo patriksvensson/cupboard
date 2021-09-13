@@ -9,7 +9,7 @@ namespace Cupboard.Internal
     {
         public void Refresh()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
                 return;
             }

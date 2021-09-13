@@ -1,107 +1,59 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Spectre.Console.Cli;
-using Platform = System.Runtime.InteropServices.OSPlatform;
+using Spectre.IO;
 
 namespace Cupboard
 {
     internal sealed class MachineFacts : IFactProvider
     {
+        private readonly IPlatform _platform;
+
+        internal static class Constants
+        {
+            public const string OSArchitecture = "os.arch";
+            public const string OSPlatform = "os.platform";
+            public const string MachineName = "machine.name";
+            public const string ComputerName = "computer.name";
+            public const string UserName = "user.name";
+        }
+
+        public MachineFacts(IPlatform platform)
+        {
+            _platform = platform ?? throw new ArgumentNullException(nameof(platform));
+        }
+
         IEnumerable<(string Name, object Value)> IFactProvider.GetFacts(IRemainingArguments args)
         {
-            yield return ("os.arch", RuntimeInformation.OSArchitecture);
-            yield return ("os.platform", GetOSPlatform());
-            yield return ("machine.name", Environment.MachineName);
-            yield return ("computer.name", Environment.MachineName);
-            yield return ("user.name", Environment.UserName);
+            yield return (Constants.OSArchitecture, GetOSArchitecture());
+            yield return (Constants.OSPlatform, GetOSPlatform());
+            yield return (Constants.MachineName, System.Environment.MachineName);
+            yield return (Constants.ComputerName, System.Environment.MachineName);
+            yield return (Constants.UserName, System.Environment.UserName);
         }
 
-        private static OSPlatform GetOSPlatform()
+        private OSArchitecture GetOSArchitecture()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return _platform.Architecture switch
             {
-                return OSPlatform.Windows;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                PlatformArchitecture.X86 => OSArchitecture.X86,
+                PlatformArchitecture.X64 => OSArchitecture.X64,
+                PlatformArchitecture.Arm => OSArchitecture.ARM,
+                PlatformArchitecture.Arm64 => OSArchitecture.ARM64,
+                _ => throw new InvalidOperationException("Unknown OS architecture"),
+            };
+        }
+
+        private OSPlatform GetOSPlatform()
+        {
+            return _platform.Family switch
             {
-                return OSPlatform.OSX;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return OSPlatform.Linux;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
-            {
-                return OSPlatform.FreeBSD;
-            }
-            else
-            {
-                throw new InvalidOperationException("Unknown OS platform");
-            }
-        }
-    }
-
-    public static partial class MachineFactsExtensions
-    {
-        public static Platform OSPlatform(this FactCollection facts)
-        {
-            return facts["os"]["platform"].As<Platform>();
-        }
-
-        public static Architecture OSArchitecture(this FactCollection facts)
-        {
-            return facts["os"]["arch"].As<Architecture>();
-        }
-
-        public static bool IsWindows(this FactCollection facts)
-        {
-            return OSPlatform(facts) == Platform.Windows;
-        }
-
-        public static bool IsLinux(this FactCollection facts)
-        {
-            return OSPlatform(facts) == Platform.Linux;
-        }
-
-        public static bool IsMacOS(this FactCollection facts)
-        {
-            return OSPlatform(facts) == Platform.OSX;
-        }
-
-        public static bool IsFreeBSD(this FactCollection facts)
-        {
-            return OSPlatform(facts) == Platform.FreeBSD;
-        }
-
-        public static bool IsX86(this FactCollection facts)
-        {
-            return OSArchitecture(facts) is Architecture.X86;
-        }
-
-        public static bool IsX64(this FactCollection facts)
-        {
-            return OSArchitecture(facts) is Architecture.X64;
-        }
-
-        public static bool IsX86OrX64(this FactCollection facts)
-        {
-            return IsX86(facts) || IsX64(facts);
-        }
-
-        public static bool IsArm(this FactCollection facts)
-        {
-            return OSArchitecture(facts) is Architecture.Arm or Architecture.Arm64;
-        }
-
-        public static bool IsArm64(this FactCollection facts)
-        {
-            return OSArchitecture(facts) is Architecture.Arm64;
-        }
-
-        public static bool IsArmOrArm64(this FactCollection facts)
-        {
-            return IsArm(facts) || IsArm64(facts);
+                PlatformFamily.Windows => OSPlatform.Windows,
+                PlatformFamily.Linux => OSPlatform.Linux,
+                PlatformFamily.MacOs => OSPlatform.MacOS,
+                PlatformFamily.FreeBSD => OSPlatform.FreeBSD,
+                _ => throw new InvalidOperationException("Unknown OS platform"),
+            };
         }
     }
 }

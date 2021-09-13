@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Shouldly;
 using Xunit;
 
@@ -14,7 +13,7 @@ namespace Cupboard.Tests.Unit
                 // Given
                 var facts = new FactCollection
                 {
-                    { "os.arch", Architecture.Arm },
+                    { "os.arch", OSArchitecture.ARM },
                 };
 
                 // When
@@ -30,7 +29,7 @@ namespace Cupboard.Tests.Unit
                 // Given
                 var facts = new FactCollection
                 {
-                    { "os.arch", Architecture.Arm64 },
+                    { "os.arch", OSArchitecture.ARM64 },
                 };
 
                 // When
@@ -46,7 +45,7 @@ namespace Cupboard.Tests.Unit
                 // Given
                 var facts = new FactCollection
                 {
-                    { "os.arch", Architecture.X64 },
+                    { "os.arch", OSArchitecture.X64 },
                 };
 
                 // When

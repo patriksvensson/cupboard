@@ -53,7 +53,7 @@ namespace Cupboard.Tests.Unit.Providers
 
             // Then
             result.Report.GetState<File>("~/foo.txt").ShouldBe(ResourceState.Changed);
-            fixture.FileShouldExist("/home/Patrik/foo.txt");
+            fixture.FileShouldExist("/home/JohnDoe/foo.txt");
         }
 
         [Fact]
@@ -69,8 +69,8 @@ namespace Cupboard.Tests.Unit.Providers
 
             // Then
             result.Report.GetState<File>("~/foo.txt").ShouldBe(ResourceState.Changed);
-            fixture.FileShouldExist("/home/Patrik/foo.txt");
-            fixture.FileShouldBeSymbolicLink("/home/Patrik/foo.txt");
+            fixture.FileShouldExist("/home/JohnDoe/foo.txt");
+            fixture.FileShouldBeSymbolicLink("/home/JohnDoe/foo.txt");
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Cupboard.Tests.Unit.Providers
 
             // Then
             result.Report.GetState<File>("~/foo.txt").ShouldBe(ResourceState.Changed);
-            fixture.FileShouldNotExist("/home/Patrik/foo.txt");
+            fixture.FileShouldNotExist("/home/JohnDoe/foo.txt");
         }
     }
 }

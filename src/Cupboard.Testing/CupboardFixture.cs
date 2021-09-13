@@ -45,13 +45,13 @@ namespace Cupboard.Testing
             switch (family)
             {
                 case PlatformFamily.Windows:
-                    Facts.Add("os.platform", OSPlatform.Windows);
+                    Facts.Add("os.platform", System.Runtime.InteropServices.OSPlatform.Windows);
                     break;
                 case PlatformFamily.Linux:
-                    Facts.Add("os.platform", OSPlatform.Linux);
+                    Facts.Add("os.platform", System.Runtime.InteropServices.OSPlatform.Linux);
                     break;
                 case PlatformFamily.MacOs:
-                    Facts.Add("os.platform", OSPlatform.OSX);
+                    Facts.Add("os.platform", System.Runtime.InteropServices.OSPlatform.OSX);
                     break;
                 case PlatformFamily.Unknown:
                     throw new InvalidOperationException("Unknown platform");

@@ -8,7 +8,7 @@ namespace Cupboard.Internal
     {
         public bool IsAdministrator()
         {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+            return RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) ?
                 new WindowsPrincipal(WindowsIdentity.GetCurrent())
                     .IsInRole(WindowsBuiltInRole.Administrator) :
                 Syscall.geteuid() == 0;

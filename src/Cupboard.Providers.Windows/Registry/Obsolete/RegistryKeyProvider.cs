@@ -27,7 +27,7 @@ namespace Cupboard
 
         public override ResourceState Run(IExecutionContext context, RegistryKey resource)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
                 _logger.Error("Cannot manipulate registry keys on non-Windows OS");
                 return ResourceState.Error;

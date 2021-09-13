@@ -35,7 +35,7 @@ namespace Cupboard
 
         public bool HasPendingReboot()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
                 return false;
             }

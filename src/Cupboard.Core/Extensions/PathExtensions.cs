@@ -14,7 +14,7 @@ namespace Cupboard
                 throw new ArgumentNullException(nameof(path));
             }
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
                 return;
             }

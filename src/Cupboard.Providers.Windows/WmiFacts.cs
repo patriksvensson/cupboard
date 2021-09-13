@@ -26,7 +26,7 @@ namespace Cupboard
 
         public IEnumerable<(string Name, object Value)> GetFacts(IRemainingArguments args)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
                 yield break;
             }

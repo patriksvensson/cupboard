@@ -92,6 +92,21 @@ namespace Cupboard
             return fact.Value is int value ? value : 0;
         }
 
+        public static implicit operator decimal(Fact fact)
+        {
+            return fact.Value is decimal value ? value : 0M;
+        }
+
+        public static implicit operator double(Fact fact)
+        {
+            return fact.Value is double value ? value : 0D;
+        }
+
+        public static implicit operator float(Fact fact)
+        {
+            return fact.Value is float value ? value : 0F;
+        }
+
         public static implicit operator bool(Fact fact)
         {
             return fact.Value is bool value && value;

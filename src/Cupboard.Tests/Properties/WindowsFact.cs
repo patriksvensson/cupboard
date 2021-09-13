@@ -9,7 +9,7 @@ namespace Cupboard.Tests.Unit
 
         static WindowsFact()
         {
-            _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            _isWindows = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
         }
 
         public WindowsFact(string reason = null)
