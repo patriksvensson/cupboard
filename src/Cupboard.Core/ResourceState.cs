@@ -7,6 +7,7 @@ namespace Cupboard
         Unchanged,
         Executed,
         Skipped,
+        ManuallySkipped,
         Error,
     }
 }

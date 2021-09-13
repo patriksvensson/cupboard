@@ -52,17 +52,7 @@ namespace Cupboard.Internal
                         }
                     }
 
-                    var color = item.State switch
-                    {
-                        ResourceState.Changed => Color.Green,
-                        ResourceState.Unchanged => Color.Grey,
-                        ResourceState.Skipped => Color.Yellow,
-                        ResourceState.Executed => Color.Green,
-                        ResourceState.Error => Color.Red,
-                        _ => Color.Default,
-                    };
-
-                    columns.Add(new Text(item.State.ToString(), new Style(foreground: color)));
+                    columns.Add(new Text(GetName(item.State), new Style(foreground: GetColor(item.State))));
                 }
 
                 table.AddRow(columns.ToArray());
@@ -85,7 +75,7 @@ namespace Cupboard.Internal
 
                 foreach (var group in grouped)
                 {
-                    chart.AddItem(group.Key.ToString(), group.Count(), GetColor(group.Key));
+                    chart.AddItem(GetName(group.Key), group.Count(), GetColor(group.Key));
                 }
 
                 _console.Write(
@@ -114,6 +104,21 @@ namespace Cupboard.Internal
             }
         }
 
+        private static string GetName(ResourceState state)
+        {
+            return state switch
+            {
+                ResourceState.Unknown => "Unknown",
+                ResourceState.Changed => "Changed",
+                ResourceState.Unchanged => "Unchanged",
+                ResourceState.Executed => "Executed",
+                ResourceState.Skipped => "Skipped",
+                ResourceState.ManuallySkipped => "Skipped (manually)",
+                ResourceState.Error => "Error",
+                _ => state.ToString(),
+            };
+        }
+
         private static Color GetColor(ResourceState state)
         {
             return state switch
@@ -123,6 +128,7 @@ namespace Cupboard.Internal
                 ResourceState.Unchanged => Color.Silver,
                 ResourceState.Executed => Color.Green,
                 ResourceState.Skipped => Color.Yellow,
+                ResourceState.ManuallySkipped => Color.Yellow,
                 ResourceState.Error => Color.Red,
                 _ => Color.Aqua,
             };

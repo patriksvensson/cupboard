@@ -37,14 +37,16 @@ namespace Cupboard.Internal
         }
 
         public async Task<Report> Run(
-            IRemainingArguments args, IStatusUpdater status,
+            IRemainingArguments args,
+            IStatusUpdater status,
+            IExecutionController controller,
             bool dryRun, bool ignoreReboots)
         {
             var facts = _factBuilder.Build(args);
 
             // Build and execute the plan
             var plan = _executionPlanBuilder.Build(_specifications, _manifests, _factBuilder, args);
-            var report = await ExecutePlan(plan, facts, status, dryRun, ignoreReboots).ConfigureAwait(false);
+            var report = await ExecutePlan(plan, facts, status, controller, dryRun, ignoreReboots).ConfigureAwait(false);
 
             // Notify any subscribers about the plan
             _subscriber?.Notify(report);
@@ -53,7 +55,9 @@ namespace Cupboard.Internal
         }
 
         private async Task<Report> ExecutePlan(
-            ExecutionPlan plan, FactCollection facts, IStatusUpdater status,
+            ExecutionPlan plan, FactCollection facts,
+            IStatusUpdater status,
+            IExecutionController controller,
             bool dryRun, bool ignoreReboots)
         {
             var pendingReboot = _reboot.HasPendingReboot();
@@ -91,44 +95,61 @@ namespace Cupboard.Internal
                 }
                 else
                 {
-                    status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
-                    _logger.Verbose($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
-
-                    // Abort if we cannot run a provider
-                    if (!node.Provider.CanRun(facts))
+                    var request = controller.GetAction(node.Provider, node.Resource);
+                    if (request == ExecutionAction.Skip)
                     {
-                        _logger.Error($"The resource [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/] cannot be run");
+                        _logger.Error("[yellow]Skipping resource[/]");
+                        results.Add(new ReportItem(node.Provider, node.Resource, ResourceState.ManuallySkipped, node.RequireAdministrator));
+                        continue;
+                    }
+                    else if (request == ExecutionAction.Abort)
+                    {
+                        _logger.Error("Aborting run");
                         break;
                     }
 
-                    // Run the provider
-                    var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
-                    results.Add(new ReportItem(node.Provider, node.Resource, state, node.RequireAdministrator));
-
-                    if (state.IsError() && node.Resource.Error != ErrorOptions.IgnoreErrors)
+                    var result = await status.Update($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]", async () =>
                     {
-                        _logger.Error($"Aborting run due to error in [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/].");
-                        break;
-                    }
+                        _logger.Verbose($"Executing [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
 
-                    // Pending reboot?
-                    if (_reboot.HasPendingReboot())
-                    {
-                        if (!pendingReboot)
+                        // Abort if we cannot run a provider
+                        if (!node.Provider.CanRun(facts))
                         {
-                            _logger.Warning("A pending reboot has been detected");
+                            _logger.Error($"The resource [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/] cannot be run");
+                            return false;
                         }
 
-                        pendingReboot = true;
-                        if (node.Resource.Reboot != RebootOptions.IgnorePendingReboot)
+                        // Run the provider
+                        var state = await node.Provider.RunAsync(context, node.Resource).ConfigureAwait(false);
+                        results.Add(new ReportItem(node.Provider, node.Resource, state, node.RequireAdministrator));
+
+                        if (state.IsError() && node.Resource.Error != ErrorOptions.IgnoreErrors)
                         {
-                            if (!ignoreReboots)
+                            _logger.Error($"Aborting run due to error in [green]{node.Provider.ResourceType.Name}[/]::[blue]{node.Resource.Name}[/]");
+                            return false;
+                        }
+
+                        // Pending reboot?
+                        if (_reboot.HasPendingReboot())
+                        {
+                            if (!pendingReboot)
                             {
-                                _logger.Information("Aborting due to pending reboot.");
-                                break;
+                                _logger.Warning("A pending reboot has been detected");
+                            }
+
+                            pendingReboot = true;
+                            if (node.Resource.Reboot != RebootOptions.IgnorePendingReboot)
+                            {
+                                if (!ignoreReboots)
+                                {
+                                    _logger.Information("Aborting due to pending reboot.");
+                                    return false;
+                                }
                             }
                         }
-                    }
+
+                        return true;
+                    }).ConfigureAwait(false);
                 }
             }
 

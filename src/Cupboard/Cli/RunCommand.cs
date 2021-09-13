@@ -18,6 +18,8 @@ namespace Cupboard.Internal
         private readonly ICupboardEnvironment _environment;
         private readonly ISecurityPrincipal _security;
         private readonly IAnsiConsole _console;
+        private readonly IExecutionController _defaultController;
+        private readonly IExecutionController _interactiveController;
 
         public sealed class Settings : CommandSettings
         {
@@ -41,6 +43,10 @@ namespace Cupboard.Internal
             [Description("Sets the working directory.")]
             [TypeConverter(typeof(DirectoryPathConverter))]
             public DirectoryPath? WorkingDirectory { get; set; }
+
+            [CommandOption("-i|--interactive")]
+            [Description("Asks the user for permission before executing resources")]
+            public bool Interactive { get; set; }
 
             [CommandOption("-v|--verbosity")]
             [DefaultValue(Verbosity.Normal)]
@@ -68,6 +74,8 @@ namespace Cupboard.Internal
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _security = security ?? throw new ArgumentNullException(nameof(security));
             _console = console ?? throw new ArgumentNullException(nameof(console));
+            _defaultController = new DefaultExecutionController();
+            _interactiveController = new InteractiveExecutionController(_console);
         }
 
         public override ValidationResult Validate([NotNull] CommandContext context, [NotNull] Settings settings)
@@ -134,7 +142,8 @@ namespace Cupboard.Internal
         {
             if (settings.DryRun)
             {
-                return await _executor.Run(context.Remaining, new DummyUpdater(),
+                return await _executor.Run(
+                    context.Remaining, new DummyUpdater(), _defaultController,
                     dryRun: true, ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
             }
             else
@@ -142,8 +151,8 @@ namespace Cupboard.Internal
                 if (!settings.AutoConfirm)
                 {
                     var report = await _executor.Run(
-                        context.Remaining, new DummyUpdater(), dryRun: true,
-                        ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
+                        context.Remaining, new DummyUpdater(), _defaultController,
+                        dryRun: true, ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
 
                     if (report.Items.Count == 0)
                     {
@@ -184,12 +193,10 @@ namespace Cupboard.Internal
                     }
                 }
 
-                return await _console.Status().StartAsync("Executing", async status =>
-                {
-                    return await _executor.Run(
-                        context.Remaining, new StatusUpdater(status), dryRun: false,
-                        ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
-                }).ConfigureAwait(false);
+                var controller = settings.Interactive ? _interactiveController : _defaultController;
+                return await _executor.Run(
+                    context.Remaining, new StatusUpdater(_console), controller,
+                    dryRun: false, ignoreReboots: settings.IgnoreReboots).ConfigureAwait(false);
             }
         }
     }
