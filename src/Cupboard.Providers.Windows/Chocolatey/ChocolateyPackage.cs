@@ -9,6 +9,7 @@ namespace Cupboard
         public bool PreRelease { get; set; }
         public bool IgnoreChecksum { get; set; }
         public string? PackageParameters { get; set; }
+        public string? PackageVersion { get; set; }
 
         public ChocolateyPackage(string name)
             : base(name)

@@ -50,6 +50,11 @@ namespace Cupboard
                 arguments += " --ignore-checksum";
             }
 
+            if (!string.IsNullOrWhiteSpace(resource.PackageVersion))
+            {
+                arguments += $" --version {resource.PackageVersion}";
+            }
+
             if (!string.IsNullOrWhiteSpace(resource.PackageParameters))
             {
                 arguments += $" --package-parameters=\"{resource.PackageParameters}\"";
