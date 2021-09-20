@@ -28,12 +28,34 @@ namespace Cupboard
 
         protected override bool IsPackageInstalled(ChocolateyPackage resource, string output)
         {
-            return output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
+            var containsPackage = output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
+            if (string.IsNullOrEmpty(resource.PackageVersion))
+            {
+                return containsPackage;
+            }
+
+            if (!containsPackage)
+            {
+                return false;
+            }
+
+            var indexOfPipe = output.IndexOf('|');
+            var indexOfNewLine = output.IndexOfAny(new[] { '\r', '\n' }, indexOfPipe);
+            if (indexOfPipe == -1 || indexOfNewLine == -1)
+            {
+                return false;
+            }
+
+            var versionString = output.Substring(indexOfPipe + 1, indexOfNewLine);
+            return Version.TryParse(versionString, out var currentPackageVersion)
+                && Version.TryParse(resource.PackageVersion, out var packageVersion)
+                && currentPackageVersion >= packageVersion;
         }
 
         protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
         {
-            return await _runner.Run("choco", "list -lo", supressOutput: true).ConfigureAwait(false);
+            var arguments = $"list --limit-output --local-only {resource.Package}";
+            return await _runner.Run("choco", arguments, supressOutput: true).ConfigureAwait(false);
         }
 
         protected override async Task<ProcessRunnerResult> InstallPackage(ChocolateyPackage resource)
