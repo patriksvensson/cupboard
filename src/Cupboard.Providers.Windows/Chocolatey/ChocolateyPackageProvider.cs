@@ -41,13 +41,19 @@ namespace Cupboard
             }
 
             var indexOfPipe = outputSpan.IndexOf('|');
-            var indexOfNewLine = outputSpan.IndexOfAny('\r', '\n');
-            if (indexOfPipe == -1 || indexOfNewLine == -1)
+            if (indexOfPipe == -1)
             {
                 return false;
             }
 
-            var versionSpan = outputSpan.Slice(indexOfPipe + 1, indexOfNewLine);
+            var indexOfPipePlusOne = indexOfPipe + 1;
+            var indexOfNewLine = outputSpan[indexOfPipePlusOne..].IndexOfAny('\r', '\n');
+            if (indexOfNewLine == -1)
+            {
+                return false;
+            }
+
+            var versionSpan = outputSpan.Slice(indexOfPipePlusOne, indexOfNewLine);
             return Version.TryParse(versionSpan, out var currentPackageVersion)
                    && Version.TryParse(resource.PackageVersion.AsSpan(), out var packageVersion)
                    && currentPackageVersion >= packageVersion;
