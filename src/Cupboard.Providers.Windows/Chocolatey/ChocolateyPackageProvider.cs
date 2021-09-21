@@ -28,7 +28,8 @@ namespace Cupboard
 
         protected override bool IsPackageInstalled(ChocolateyPackage resource, string output)
         {
-            var containsPackage = output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
+            var outputSpan = output.AsSpan();
+            var containsPackage = outputSpan.Contains(resource.Package.AsSpan(), StringComparison.OrdinalIgnoreCase);
             if (string.IsNullOrEmpty(resource.PackageVersion))
             {
                 return containsPackage;
@@ -39,17 +40,17 @@ namespace Cupboard
                 return false;
             }
 
-            var indexOfPipe = output.IndexOf('|');
-            var indexOfNewLine = output.IndexOfAny(new[] { '\r', '\n' }, indexOfPipe);
+            var indexOfPipe = outputSpan.IndexOf('|');
+            var indexOfNewLine = outputSpan.IndexOfAny('\r', '\n');
             if (indexOfPipe == -1 || indexOfNewLine == -1)
             {
                 return false;
             }
 
-            var versionString = output.Substring(indexOfPipe + 1, indexOfNewLine);
-            return Version.TryParse(versionString, out var currentPackageVersion)
-                && Version.TryParse(resource.PackageVersion, out var packageVersion)
-                && currentPackageVersion >= packageVersion;
+            var versionSpan = outputSpan.Slice(indexOfPipe + 1, indexOfNewLine);
+            return Version.TryParse(versionSpan, out var currentPackageVersion)
+                   && Version.TryParse(resource.PackageVersion.AsSpan(), out var packageVersion)
+                   && currentPackageVersion >= packageVersion;
         }
 
         protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
