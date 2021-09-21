@@ -54,7 +54,7 @@ namespace Cupboard
 
         protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
         {
-            var arguments = $"list --limit-output --local-only {resource.Package}";
+            var arguments = $"list --limit-output --local-only --exact {resource.Package}";
             return await _runner.Run("choco", arguments, supressOutput: true).ConfigureAwait(false);
         }
 
