@@ -39,9 +39,9 @@ namespace Cupboard.Tests.Unit.Providers
                 fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
-                fixture.Process.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."),
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "\n"),
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"));
 
                 fixture.Process.Register("choco", "install vscode -y",
                     new ProcessRunnerResult(0, "Lol installed VSCode"));
@@ -63,8 +63,8 @@ namespace Cupboard.Tests.Unit.Providers
                 fixture.Security.IsAdmin = true;
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
-                fixture.Process.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."));
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"));
 
                 // When
                 var result = fixture.Run("-y");
@@ -85,9 +85,9 @@ namespace Cupboard.Tests.Unit.Providers
                 fixture.Security.IsAdmin = true;
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
-                fixture.Process.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\nvscode 1.58.0\n2 packages installed."),
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."));
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"),
+                    new ProcessRunnerResult(0, "\n"));
 
                 fixture.Process.Register("choco", "uninstall vscode", new ProcessRunnerResult(0));
 
@@ -108,8 +108,8 @@ namespace Cupboard.Tests.Unit.Providers
                 fixture.Security.IsAdmin = true;
                 fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
-                fixture.Process.Register("choco", "list -lo",
-                    new ProcessRunnerResult(0, "Chocolatey v0.10.15\n7zip.install 19.0\n1 package installed."));
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "\n"));
 
                 // When
                 var result = fixture.Run("-y");
