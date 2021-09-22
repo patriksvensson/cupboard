@@ -28,12 +28,42 @@ namespace Cupboard
 
         protected override bool IsPackageInstalled(ChocolateyPackage resource, string output)
         {
-            return output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
+            var outputSpan = output.AsSpan();
+            var containsPackage = outputSpan.Contains(resource.Package.AsSpan(), StringComparison.OrdinalIgnoreCase);
+            if (string.IsNullOrEmpty(resource.PackageVersion))
+            {
+                return containsPackage;
+            }
+
+            if (!containsPackage)
+            {
+                return false;
+            }
+
+            var indexOfPipe = outputSpan.IndexOf('|');
+            if (indexOfPipe == -1)
+            {
+                return false;
+            }
+
+            var indexOfPipePlusOne = indexOfPipe + 1;
+            var indexOfNewLine = outputSpan[indexOfPipePlusOne..].IndexOfAny('\r', '\n');
+            if (indexOfNewLine == -1)
+            {
+                return false;
+            }
+
+            var versionSpan = outputSpan.Slice(indexOfPipePlusOne, indexOfNewLine);
+            return Version.TryParse(versionSpan, out var currentPackageVersion)
+                   && Version.TryParse(resource.PackageVersion.AsSpan(), out var packageVersion)
+                   && ((resource.AllowDowngrade is true && currentPackageVersion == packageVersion)
+                       || (resource.AllowDowngrade is false && currentPackageVersion >= packageVersion));
         }
 
         protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
         {
-            return await _runner.Run("choco", "list -lo", supressOutput: true).ConfigureAwait(false);
+            var arguments = $"list --limit-output --local-only --exact {resource.Package}";
+            return await _runner.Run("choco", arguments, supressOutput: true).ConfigureAwait(false);
         }
 
         protected override async Task<ProcessRunnerResult> InstallPackage(ChocolateyPackage resource)
@@ -48,6 +78,16 @@ namespace Cupboard
             if (resource.IgnoreChecksum)
             {
                 arguments += " --ignore-checksum";
+            }
+
+            if (resource.AllowDowngrade)
+            {
+                arguments += " --allow-downgrade";
+            }
+
+            if (!string.IsNullOrWhiteSpace(resource.PackageVersion))
+            {
+                arguments += $" --version {resource.PackageVersion}";
             }
 
             if (!string.IsNullOrWhiteSpace(resource.PackageParameters))
