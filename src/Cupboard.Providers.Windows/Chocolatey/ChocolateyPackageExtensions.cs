@@ -31,5 +31,10 @@ namespace Cupboard
         {
             return builder.Configure(pkg => pkg.PackageVersion = version);
         }
+
+        public static IResourceBuilder<ChocolateyPackage> AllowDowngrade(this IResourceBuilder<ChocolateyPackage> builder)
+        {
+            return builder.Configure(pkg => pkg.AllowDowngrade = true);
+        }
     }
 }

@@ -28,6 +28,18 @@ namespace Cupboard.Tests.Unit.Providers
                 }
             }
 
+            public sealed class InstallVersionAllowDowngrade : Manifest
+            {
+                public override void Execute(ManifestContext context)
+                {
+                    context.Resource<ChocolateyPackage>("Visual Studio Code")
+                        .Package("vscode")
+                        .UseVersion("1.58.0")
+                        .AllowDowngrade()
+                        .Ensure(PackageState.Installed);
+                }
+            }
+
             public sealed class Uninstall : Manifest
             {
                 public override void Execute(ManifestContext context)
@@ -164,6 +176,75 @@ namespace Cupboard.Tests.Unit.Providers
 
                 fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
                     new ProcessRunnerResult(0, "vscode|1.59.0\n"));
+
+                // When
+                var result = fixture.Run("-y");
+
+                // Then
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Unchanged);
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already installed");
+            }
+
+            [WindowsFact]
+            public void Should_Install_Package_If_Higher_Version_With_Allow_Downgrade()
+            {
+                // Given
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
+
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "vscode|1.59.0\n"),
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"));
+
+                fixture.Process.Register("choco", "install vscode -y --allow-downgrade --version 1.58.0",
+                    new ProcessRunnerResult(0, "Lol installed VSCode"));
+
+                // When
+                var result = fixture.Run("-y");
+
+                // Then
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Changed);
+                fixture.Logger.WasLogged("Installing Chocolatey package [yellow]vscode[/]");
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
+            }
+
+            [WindowsFact]
+            public void Should_Install_Package_If_Lower_Version_With_Allow_Downgrade()
+            {
+                // Given
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
+
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "vscode|1.57.0\n"),
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"));
+
+                fixture.Process.Register("choco", "install vscode -y --allow-downgrade --version 1.58.0",
+                    new ProcessRunnerResult(0, "Lol installed VSCode"));
+
+                // When
+                var result = fixture.Run("-y");
+
+                // Then
+                result.Report.GetState<ChocolateyPackage>("Visual Studio Code").ShouldBe(ResourceState.Changed);
+                fixture.Logger.WasLogged("Installing Chocolatey package [yellow]vscode[/]");
+                fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
+            }
+
+            [WindowsFact]
+            public void Should_Not_Install_Package_Of_Same_Version_With_Allow_Downgrade()
+            {
+                // Given
+                var fixture = new CupboardFixture();
+                fixture.Security.IsAdmin = true;
+                fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
+
+                fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
+                    new ProcessRunnerResult(0, "vscode|1.58.0\n"));
 
                 // When
                 var result = fixture.Run("-y");

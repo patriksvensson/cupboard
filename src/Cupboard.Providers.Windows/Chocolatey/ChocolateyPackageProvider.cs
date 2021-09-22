@@ -56,7 +56,8 @@ namespace Cupboard
             var versionSpan = outputSpan.Slice(indexOfPipePlusOne, indexOfNewLine);
             return Version.TryParse(versionSpan, out var currentPackageVersion)
                    && Version.TryParse(resource.PackageVersion.AsSpan(), out var packageVersion)
-                   && currentPackageVersion >= packageVersion;
+                   && ((resource.AllowDowngrade is true && currentPackageVersion == packageVersion)
+                       || (resource.AllowDowngrade is false && currentPackageVersion >= packageVersion));
         }
 
         protected override async Task<ProcessRunnerResult> GetPackageState(ChocolateyPackage resource)
@@ -77,6 +78,11 @@ namespace Cupboard
             if (resource.IgnoreChecksum)
             {
                 arguments += " --ignore-checksum";
+            }
+
+            if (resource.AllowDowngrade)
+            {
+                arguments += " --allow-downgrade";
             }
 
             if (!string.IsNullOrWhiteSpace(resource.PackageVersion))

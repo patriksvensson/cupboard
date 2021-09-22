@@ -8,6 +8,7 @@ namespace Cupboard
         public PackageState Ensure { get; set; }
         public bool PreRelease { get; set; }
         public bool IgnoreChecksum { get; set; }
+        public bool AllowDowngrade { get; set; }
         public string? PackageParameters { get; set; }
         public string? PackageVersion { get; set; }
 
