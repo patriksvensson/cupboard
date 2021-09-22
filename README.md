@@ -76,7 +76,7 @@ When we have a `Manifest`, we need to create a `Catalog` containing the manifest
 We'll also add a condition that excludes non-Windows environments.
 
 ```csharp
-public sealed class WindowsComputer : Catalog
+public sealed class MyWindowsComputer : Catalog
 {
     public override void Execute(CatalogContext context)
     {
