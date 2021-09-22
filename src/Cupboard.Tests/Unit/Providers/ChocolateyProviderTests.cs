@@ -23,7 +23,7 @@ namespace Cupboard.Tests.Unit.Providers
                 {
                     context.Resource<ChocolateyPackage>("Visual Studio Code")
                         .Package("vscode")
-                        .Configure(package => package.PackageVersion = "1.58.0")
+                        .UseVersion("1.58.0")
                         .Ensure(PackageState.Installed);
                 }
             }
