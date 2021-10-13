@@ -10,6 +10,7 @@ public sealed class WindowsModule : ServiceModule
         services.AddSingleton<IResourceProvider, WindowsFeatureProvider>();
         services.AddSingleton<IResourceProvider, RegistryValueProvider>();
         services.AddSingleton<IResourceProvider, WingetPackageProvider>();
+        services.AddSingleton<IResourceProvider, CertificateProvider>();
 
         // Facts
         services.AddSingleton<IFactProvider, WindowsFacts>();
