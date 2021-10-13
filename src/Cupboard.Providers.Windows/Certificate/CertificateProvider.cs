@@ -81,7 +81,7 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
         return certificate;
     }
 
-    private async Task<ResourceState> EnsureAbsent(Certificate resource, IExecutionContext context)
+    private async Task<X509Certificate2?> RetrieveCertificate(Certificate resource, X509Store store)
     {
         X509Certificate2? certificate = null;
 
@@ -91,7 +91,6 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
             if (_fileSystem.Exist(filePath) is false)
             {
                 _logger.Error("Certificate file does not exist");
-                return ResourceState.Error;
             }
 
             certificate = new X509Certificate2(filePath.FullPath);
@@ -105,11 +104,17 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
             certificate = new X509Certificate2(certificateBytes);
         }
 
+        certificate ??= FindCertificateInStore(resource, store);
+
+        return certificate;
+    }
+
+    private async Task<ResourceState> EnsureAbsent(Certificate resource, IExecutionContext context)
+    {
         _logger.Debug($"Opening Certificate Store: [yellow]{ToStoreNameString(resource.StoreName)}[/] Location: [yellow]{ToStoreLocationString(resource.StoreLocation)}[/]");
         using var store = new X509Store(resource.StoreName, resource.StoreLocation);
         store.Open(OpenFlags.ReadWrite);
-
-        certificate ??= FindCertificateInStore(resource, store);
+        var certificate = await RetrieveCertificate(resource, store).ConfigureAwait(false);
 
         if (certificate is null)
         {
@@ -137,32 +142,10 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
 
     private async Task<ResourceState> EnsurePresent(Certificate resource, IExecutionContext context)
     {
-        X509Certificate2? certificate = null;
-        if (resource.FilePath is not null && resource.Url is null)
-        {
-            var filePath = resource.FilePath.MakeAbsolute(_environment);
-            if (_fileSystem.Exist(filePath) is false)
-            {
-                _logger.Error("Certificate file does not exist");
-                return ResourceState.Error;
-            }
-
-            certificate = new X509Certificate2(filePath.FullPath);
-        }
-
-        if (resource.Url is not null && resource.FilePath is null)
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Get, resource.Url);
-            using var response = await _http.SendAsync(request).ConfigureAwait(false);
-            var certificateBytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            certificate = new X509Certificate2(certificateBytes);
-        }
-
         _logger.Debug($"Opening Certificate Store: [yellow]{ToStoreNameString(resource.StoreName)}[/] Location: [yellow]{ToStoreLocationString(resource.StoreLocation)}[/]");
         using var store = new X509Store(resource.StoreName, resource.StoreLocation);
         store.Open(OpenFlags.ReadWrite);
-
-        certificate ??= FindCertificateInStore(resource, store);
+        var certificate = await RetrieveCertificate(resource, store).ConfigureAwait(false);
 
         if (certificate is null)
         {
