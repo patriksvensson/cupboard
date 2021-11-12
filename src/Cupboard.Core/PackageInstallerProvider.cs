@@ -11,6 +11,7 @@ namespace Cupboard
         private string? _cachedOutput;
 
         protected virtual bool ShouldRefresh => true;
+        protected virtual bool ShouldCache => false;
         protected abstract string Name { get; }
         protected virtual string Kind { get; } = "package";
 
@@ -77,19 +78,26 @@ namespace Cupboard
 
         private async Task<PackageInstallerResult> CheckIfInstalled(T resource)
         {
-            if (_cachedOutput == null)
+            if (ShouldCache && _cachedOutput is not null)
             {
-                var result = await GetPackageState(resource).ConfigureAwait(false);
-                if (IsError(PackageInstallerOperation.RetriveState, result))
-                {
-                    _logger.Error($"An error occured while retrieving {Name} state");
-                    return PackageInstallerResult.Error;
-                }
+                return IsPackageInstalled(resource, _cachedOutput)
+                    ? PackageInstallerResult.Exists
+                    : PackageInstallerResult.Missing;
+            }
 
+            var result = await GetPackageState(resource).ConfigureAwait(false);
+            if (IsError(PackageInstallerOperation.RetriveState, result))
+            {
+                _logger.Error($"An error occured while retrieving {Name} state");
+                return PackageInstallerResult.Error;
+            }
+
+            if (ShouldCache)
+            {
                 _cachedOutput = result.StandardOut;
             }
 
-            return IsPackageInstalled(resource, _cachedOutput)
+            return IsPackageInstalled(resource, result.StandardOut)
                 ? PackageInstallerResult.Exists
                 : PackageInstallerResult.Missing;
         }
