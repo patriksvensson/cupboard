@@ -9,6 +9,7 @@ namespace Cupboard
         private readonly IProcessRunner _runner;
         private readonly ICupboardEnvironment _environment;
 
+        protected override bool ShouldCache { get; } = true;
         protected override string Name { get; } = "VSCode";
         protected override string Kind { get; } = "extension";
 
