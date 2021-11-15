@@ -47,11 +47,13 @@ namespace Cupboard
             }
 
             var indexOfPipePlusOne = indexOfPipe + 1;
-            var indexOfNewLine = outputSpan[indexOfPipePlusOne..].IndexOfAny('\r', '\n');
-            var versionSpan = indexOfNewLine == -1 ?
-                outputSpan[indexOfPipePlusOne..] :
-                outputSpan.Slice(indexOfPipePlusOne, indexOfNewLine);
+            var indexOfNewLine = outputSpan.IndexOfAny('\r', '\n');
+            if (indexOfNewLine == -1)
+            {
+                indexOfNewLine = outputSpan.Length;
+            }
 
+            var versionSpan = outputSpan[indexOfPipePlusOne..indexOfNewLine];
             return Version.TryParse(versionSpan, out var currentPackageVersion)
                    && Version.TryParse(resource.PackageVersion.AsSpan(), out var packageVersion)
                    && ((resource.AllowDowngrade is true && currentPackageVersion == packageVersion)
