@@ -15,7 +15,7 @@ public sealed class Certificate : Resource
 
     public CertificateState Ensure { get; set; }
 
-    public string Thumbprint { get; set; } = string.Empty;
+    public string? Thumbprint { get; set; }
 
     public bool ValidateThumbprint { get; set; }
 

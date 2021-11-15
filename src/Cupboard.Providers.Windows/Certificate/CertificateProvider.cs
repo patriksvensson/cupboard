@@ -121,7 +121,7 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
             return ResourceState.Unchanged;
         }
 
-        if (resource.ValidateThumbprint && resource.Thumbprint.Equals(certificate.Thumbprint, StringComparison.InvariantCultureIgnoreCase) is false)
+        if (resource.ValidateThumbprint && resource.Thumbprint?.Equals(certificate.Thumbprint, StringComparison.InvariantCultureIgnoreCase) is false)
         {
             _logger.Error($"Certificate thumbprint does not match. The provided thumbprint '{resource.Thumbprint}' is not equal to the thumbprint inside the certificate '{certificate.Thumbprint}'");
             return ResourceState.Error;
@@ -153,7 +153,7 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
             return ResourceState.Error;
         }
 
-        if (resource.ValidateThumbprint && resource.Thumbprint.Equals(certificate.Thumbprint, StringComparison.InvariantCultureIgnoreCase) is false)
+        if (resource.ValidateThumbprint && resource.Thumbprint?.Equals(certificate.Thumbprint, StringComparison.InvariantCultureIgnoreCase) is false)
         {
             _logger.Error($"Certificate thumbprint does not match. The provided thumbprint '{resource.Thumbprint}' is not equal to the thumbprint inside the certificate '{certificate.Thumbprint}'");
             return ResourceState.Error;
