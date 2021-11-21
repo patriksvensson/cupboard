@@ -5,21 +5,21 @@ var configuration = Argument("configuration", "Release");
 // Tasks
 
 Task("Build")
-    .Does(context => 
+    .Does(context =>
 {
-    DotNetCoreBuild("./src/Cupboard.sln", new DotNetCoreBuildSettings {
+    DotNetBuild("./src/Cupboard.sln", new DotNetBuildSettings {
         Configuration = configuration,
         NoIncremental = context.HasArgument("rebuild"),
-        MSBuildSettings = new DotNetCoreMSBuildSettings()
+        MSBuildSettings = new DotNetMSBuildSettings()
             .TreatAllWarningsAs(MSBuildTreatAllWarningsAs.Error)
     });
 });
 
 Task("Test")
     .IsDependentOn("Build")
-    .Does(context => 
+    .Does(context =>
 {
-    DotNetCoreTest("./src/Cupboard.sln", new DotNetCoreTestSettings {
+    DotNetTest("./src/Cupboard.sln", new DotNetTestSettings {
         Configuration = configuration,
         NoRestore = true,
         NoBuild = true,
@@ -28,16 +28,16 @@ Task("Test")
 
 Task("Package")
     .IsDependentOn("Test")
-    .Does(context => 
+    .Does(context =>
 {
     context.CleanDirectory("./.artifacts");
 
-    context.DotNetCorePack($"./src/Cupboard.sln", new DotNetCorePackSettings {
+    context.DotNetPack($"./src/Cupboard.sln", new DotNetPackSettings {
         Configuration = configuration,
         NoRestore = true,
         NoBuild = true,
         OutputDirectory = "./.artifacts",
-        MSBuildSettings = new DotNetCoreMSBuildSettings()
+        MSBuildSettings = new DotNetMSBuildSettings()
             .TreatAllWarningsAs(MSBuildTreatAllWarningsAs.Error)
     });
 });
@@ -45,7 +45,7 @@ Task("Package")
 Task("Publish-NuGet")
     .WithCriteria(ctx => BuildSystem.IsRunningOnGitHubActions, "Not running on GitHub Actions")
     .IsDependentOn("Package")
-    .Does(context => 
+    .Does(context =>
 {
     var apiKey = Argument<string>("nuget-key", null);
     if(string.IsNullOrWhiteSpace(apiKey)) {
@@ -53,10 +53,10 @@ Task("Publish-NuGet")
     }
 
     // Publish to GitHub Packages
-    foreach(var file in context.GetFiles("./.artifacts/*.nupkg")) 
+    foreach(var file in context.GetFiles("./.artifacts/*.nupkg"))
     {
         context.Information("Publishing {0}...", file.GetFilename().FullPath);
-        DotNetCoreNuGetPush(file.FullPath, new DotNetCoreNuGetPushSettings
+        DotNetNuGetPush(file.FullPath, new DotNetNuGetPushSettings
         {
             Source = "https://api.nuget.org/v3/index.json",
             ApiKey = apiKey,

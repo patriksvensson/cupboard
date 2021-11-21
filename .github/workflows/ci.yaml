@@ -32,10 +32,10 @@ jobs:
         run: git fetch --tags
         shell: bash
 
-      - name: Setup dotnet
+      - name: Setup dotnet 6.0.100
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.301
+          dotnet-version: 6.0.100
 
       - name: Build
         shell: bash
