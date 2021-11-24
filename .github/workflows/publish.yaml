@@ -46,7 +46,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.301
+          dotnet-version: 6.0.100
 
       - name: Build
         shell: bash
@@ -76,7 +76,7 @@ jobs:
       - name: Setup dotnet 5.0.301
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.301
+          dotnet-version: 6.0.100
 
       - name: Publish
         shell: bash
