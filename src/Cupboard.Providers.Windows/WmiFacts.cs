@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Management;
 using System.Runtime.InteropServices;
-using Microsoft.Management.Infrastructure;
 using Spectre.Console.Cli;
 
 namespace Cupboard
@@ -31,18 +31,18 @@ namespace Cupboard
                 yield break;
             }
 
-            var cimSession = CimSession.Create(null);
-            var inst = cimSession.GetInstance("root\\cimv2", new CimInstance("Win32_OperatingSystem", "root\\cimv2"));
-
-            foreach (var prop in inst.CimInstanceProperties)
+            var keys = string.Join(',', _properties.Keys);
+            var searcher = new ManagementObjectSearcher($"SELECT {keys} FROM Win32_OperatingSystem");
+            var osDetailsCollection = searcher.Get();
+            foreach (var prop in osDetailsCollection)
             {
-                if (_properties.ContainsKey(prop.Name))
+                foreach (var property in _properties)
                 {
-                    yield return (_properties[prop.Name], prop.Value);
+                    yield return (property.Value, prop[property.Key]);
                 }
             }
 
-            if (inst.CimInstanceProperties.Count > 0)
+            if (osDetailsCollection.Count > 0)
             {
                 yield return ("wmi.os", true);
             }
