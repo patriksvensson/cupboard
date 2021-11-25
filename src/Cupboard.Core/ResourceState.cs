@@ -1,13 +1,12 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum ResourceState
 {
-    public enum ResourceState
-    {
-        Unknown = 0,
-        Changed,
-        Unchanged,
-        Executed,
-        Skipped,
-        ManuallySkipped,
-        Error,
-    }
+    Unknown = 0,
+    Changed,
+    Unchanged,
+    Executed,
+    Skipped,
+    ManuallySkipped,
+    Error,
 }

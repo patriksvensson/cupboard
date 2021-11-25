@@ -1,9 +1,8 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum PackageInstallerOperation
 {
-    public enum PackageInstallerOperation
-    {
-        RetriveState = 0,
-        Install = 1,
-        Uninstall = 2,
-    }
+    RetriveState = 0,
+    Install = 1,
+    Uninstall = 2,
 }

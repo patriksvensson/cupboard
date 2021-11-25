@@ -1,14 +1,13 @@
-namespace Cupboard.Internal
-{
-    internal sealed class ResourceGraphEdge
-    {
-        public IResourceIdentity From { get; }
-        public IResourceIdentity To { get; }
+namespace Cupboard.Internal;
 
-        public ResourceGraphEdge(IResourceIdentity from, IResourceIdentity to)
-        {
-            From = from;
-            To = to;
-        }
+internal sealed class ResourceGraphEdge
+{
+    public IResourceIdentity From { get; }
+    public IResourceIdentity To { get; }
+
+    public ResourceGraphEdge(IResourceIdentity from, IResourceIdentity to)
+    {
+        From = from;
+        To = to;
     }
 }

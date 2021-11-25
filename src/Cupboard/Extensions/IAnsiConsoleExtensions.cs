@@ -1,16 +1,15 @@
 using Spectre.Console;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal static class IAnsiConsoleExtensions
 {
-    internal static class IAnsiConsoleExtensions
+    public static bool Confirm(this IAnsiConsole console, string markup, bool defaultValue = true)
     {
-        public static bool Confirm(this IAnsiConsole console, string markup, bool defaultValue = true)
-        {
-            return new ConfirmationPrompt(markup)
+        return new ConfirmationPrompt(markup)
             {
                 DefaultValue = defaultValue,
             }
             .Show(console);
-        }
     }
 }

@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cupboard
+namespace Cupboard;
+
+public abstract class ServiceModule
 {
-    public abstract class ServiceModule
-    {
-        public abstract void Configure(IServiceCollection services);
-    }
+    public abstract void Configure(IServiceCollection services);
 }

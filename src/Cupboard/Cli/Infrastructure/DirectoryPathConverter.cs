@@ -3,22 +3,21 @@ using System.ComponentModel;
 using System.Globalization;
 using Spectre.IO;
 
-namespace Cupboard.Internal
-{
-    /// <summary>
-    /// A type converter for <see cref="DirectoryPath"/>.
-    /// </summary>
-    internal sealed class DirectoryPathConverter : TypeConverter
-    {
-        /// <inheritdoc/>
-        public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
-        {
-            if (value is string stringValue)
-            {
-                return new DirectoryPath(stringValue);
-            }
+namespace Cupboard.Internal;
 
-            throw new NotSupportedException("Can't convert value to file path.");
+/// <summary>
+/// A type converter for <see cref="DirectoryPath"/>.
+/// </summary>
+internal sealed class DirectoryPathConverter : TypeConverter
+{
+    /// <inheritdoc/>
+    public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+    {
+        if (value is string stringValue)
+        {
+            return new DirectoryPath(stringValue);
         }
+
+        throw new NotSupportedException("Can't convert value to file path.");
     }
 }

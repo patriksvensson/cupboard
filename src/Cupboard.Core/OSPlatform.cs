@@ -1,11 +1,10 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum OSPlatform
 {
-    public enum OSPlatform
-    {
-        Unknown,
-        Windows,
-        Linux,
-        MacOS,
-        FreeBSD,
-    }
+    Unknown,
+    Windows,
+    Linux,
+    MacOS,
+    FreeBSD,
 }

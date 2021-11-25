@@ -1,11 +1,10 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum Verbosity
 {
-    public enum Verbosity
-    {
-        Quiet = 0,
-        Minimal,
-        Normal,
-        Verbose,
-        Diagnostic,
-    }
+    Quiet = 0,
+    Minimal,
+    Normal,
+    Verbose,
+    Diagnostic,
 }

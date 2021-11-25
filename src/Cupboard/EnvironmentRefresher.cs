@@ -3,55 +3,54 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal class EnvironmentRefresher : IEnvironmentRefresher
 {
-    internal class EnvironmentRefresher : IEnvironmentRefresher
+    public void Refresh()
     {
-        public void Refresh()
+        if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
         {
-            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            return;
+        }
+
+        var roots = new[]
+        {
+            Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Environment"),
+            Registry.CurrentUser.OpenSubKey("Environment"),
+        };
+
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var root in roots)
+        {
+            if (root == null)
             {
-                return;
+                continue;
             }
 
-            var roots = new[]
+            var keys = root.GetValueNames();
+            if (keys != null)
             {
-                Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Environment"),
-                Registry.CurrentUser.OpenSubKey("Environment"),
-            };
-
-            var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var root in roots)
-            {
-                if (root == null)
+                foreach (var key in keys)
                 {
-                    continue;
-                }
-
-                var keys = root.GetValueNames();
-                if (keys != null)
-                {
-                    foreach (var key in keys)
+                    if (key.Equals("PATH", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (key.Equals("PATH", StringComparison.OrdinalIgnoreCase))
-                        {
-                            result.TryGetValue(key, out var path);
-                            path ??= string.Empty;
-                            result[key] = (path + ";" + root.GetValue(key)?.ToString() ?? string.Empty).TrimStart(';');
-                        }
-                        else
-                        {
-                            result[key] = root.GetValue(key)?.ToString() ?? string.Empty;
-                        }
+                        result.TryGetValue(key, out var path);
+                        path ??= string.Empty;
+                        result[key] = (path + ";" + root.GetValue(key)?.ToString() ?? string.Empty).TrimStart(';');
+                    }
+                    else
+                    {
+                        result[key] = root.GetValue(key)?.ToString() ?? string.Empty;
                     }
                 }
             }
+        }
 
-            foreach (var envVar in result)
-            {
-                System.Environment.SetEnvironmentVariable(envVar.Key, envVar.Value, EnvironmentVariableTarget.Process);
-            }
+        foreach (var envVar in result)
+        {
+            System.Environment.SetEnvironmentVariable(envVar.Key, envVar.Value, EnvironmentVariableTarget.Process);
         }
     }
 }

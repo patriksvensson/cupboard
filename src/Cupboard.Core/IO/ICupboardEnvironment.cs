@@ -1,9 +1,8 @@
 using Spectre.IO;
 
-namespace Cupboard
+namespace Cupboard;
+
+public interface ICupboardEnvironment : IEnvironment
 {
-    public interface ICupboardEnvironment : IEnvironment
-    {
-        FilePath GetTempFilePath();
-    }
+    FilePath GetTempFilePath();
 }

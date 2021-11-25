@@ -1,8 +1,7 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum ChmodFormatting
 {
-    public enum ChmodFormatting
-    {
-        Numeric = 0,
-        Symbolic = 1,
-    }
+    Numeric = 0,
+    Symbolic = 1,
 }

@@ -1,7 +1,6 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public interface IHasPackageState
 {
-    public interface IHasPackageState
-    {
-        PackageState Ensure { get; }
-    }
+    PackageState Ensure { get; }
 }

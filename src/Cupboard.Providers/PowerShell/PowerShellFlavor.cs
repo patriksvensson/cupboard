@@ -1,8 +1,7 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public enum PowerShellFlavor
 {
-    public enum PowerShellFlavor
-    {
-        PowerShell,
-        PowerShellCore,
-    }
+    PowerShell,
+    PowerShellCore,
 }

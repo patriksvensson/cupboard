@@ -1,8 +1,7 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum PackageState
 {
-    public enum PackageState
-    {
-        Installed = 1,
-        Uninstalled = 2,
-    }
+    Installed = 1,
+    Uninstalled = 2,
 }

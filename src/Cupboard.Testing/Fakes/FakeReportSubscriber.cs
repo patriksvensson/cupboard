@@ -1,12 +1,11 @@
-namespace Cupboard.Testing
-{
-    internal sealed class FakeReportSubscriber : IReportSubscriber
-    {
-        public Report? Report { get; set; }
+namespace Cupboard.Testing;
 
-        public void Notify(Report report)
-        {
-            Report = report;
-        }
+internal sealed class FakeReportSubscriber : IReportSubscriber
+{
+    public Report? Report { get; set; }
+
+    public void Notify(Report report)
+    {
+        Report = report;
     }
 }

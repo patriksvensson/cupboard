@@ -1,8 +1,7 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public enum RegistryKeyState
 {
-    public enum RegistryKeyState
-    {
-        Exist = 0,
-        DoNotExist = 1,
-    }
+    Exist = 0,
+    DoNotExist = 1,
 }

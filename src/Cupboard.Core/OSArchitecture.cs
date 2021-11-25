@@ -1,11 +1,10 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum OSArchitecture
 {
-    public enum OSArchitecture
-    {
-        Unknown,
-        X86,
-        X64,
-        ARM,
-        ARM64,
-    }
+    Unknown,
+    X86,
+    X64,
+    ARM,
+    ARM64,
 }

@@ -1,9 +1,8 @@
-namespace Cupboard.Testing
+namespace Cupboard.Testing;
+
+public sealed class FakeEnvironmentRefresher : IEnvironmentRefresher
 {
-    public sealed class FakeEnvironmentRefresher : IEnvironmentRefresher
+    public void Refresh()
     {
-        public void Refresh()
-        {
-        }
     }
 }

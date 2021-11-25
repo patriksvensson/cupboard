@@ -1,25 +1,24 @@
 using System;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal sealed class TypeResolver : ITypeResolver
 {
-    internal sealed class TypeResolver : ITypeResolver
+    private readonly IServiceProvider _provider;
+
+    public TypeResolver(IServiceProvider provider)
     {
-        private readonly IServiceProvider _provider;
+        _provider = provider;
+    }
 
-        public TypeResolver(IServiceProvider provider)
+    public object? Resolve(Type? type)
+    {
+        if (type == null)
         {
-            _provider = provider;
+            return null;
         }
 
-        public object? Resolve(Type? type)
-        {
-            if (type == null)
-            {
-                return null;
-            }
-
-            return _provider.GetService(type);
-        }
+        return _provider.GetService(type);
     }
 }

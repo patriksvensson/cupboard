@@ -1,16 +1,15 @@
 using Cupboard;
 
-namespace Sandbox
+namespace Sandbox;
+
+public sealed class WingetPackages : Manifest
 {
-    public sealed class WingetPackages : Manifest
+    public override void Execute(ManifestContext context)
     {
-        public override void Execute(ManifestContext context)
+        foreach (var package in new[] { "GitHub.cli" })
         {
-            foreach (var package in new[] { "GitHub.cli" })
-            {
-                context.Resource<WingetPackage>(package)
-                    .Ensure(PackageState.Installed);
-            }
+            context.Resource<WingetPackage>(package)
+                .Ensure(PackageState.Installed);
         }
     }
 }

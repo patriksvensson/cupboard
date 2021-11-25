@@ -1,9 +1,8 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum ExecutionAction
 {
-    public enum ExecutionAction
-    {
-        Run = 0,
-        Skip = 1,
-        Abort = 2,
-    }
+    Run = 0,
+    Skip = 1,
+    Abort = 2,
 }

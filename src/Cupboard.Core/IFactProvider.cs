@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Spectre.Console.Cli;
 
-namespace Cupboard
+namespace Cupboard;
+
+public interface IFactProvider
 {
-    public interface IFactProvider
-    {
-        IEnumerable<(string Name, object Value)> GetFacts(IRemainingArguments args);
-    }
+    IEnumerable<(string Name, object Value)> GetFacts(IRemainingArguments args);
 }

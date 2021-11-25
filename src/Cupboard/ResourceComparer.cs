@@ -1,44 +1,43 @@
 using System;
 using System.Collections.Generic;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal sealed class ResourceComparer : IEqualityComparer<IResourceIdentity>
 {
-    internal sealed class ResourceComparer : IEqualityComparer<IResourceIdentity>
+    private readonly IEqualityComparer<Type> _typeComparer;
+    private readonly IEqualityComparer<string> _stringComparer;
+
+    public ResourceComparer()
     {
-        private readonly IEqualityComparer<Type> _typeComparer;
-        private readonly IEqualityComparer<string> _stringComparer;
+        _typeComparer = EqualityComparer<Type>.Default;
+        _stringComparer = StringComparer.OrdinalIgnoreCase;
+    }
 
-        public ResourceComparer()
+    public bool Equals(IResourceIdentity? x, IResourceIdentity? y)
+    {
+        if (x == null && y == null)
         {
-            _typeComparer = EqualityComparer<Type>.Default;
-            _stringComparer = StringComparer.OrdinalIgnoreCase;
+            return true;
         }
 
-        public bool Equals(IResourceIdentity? x, IResourceIdentity? y)
+        if (x == null || y == null)
         {
-            if (x == null && y == null)
-            {
-                return true;
-            }
-
-            if (x == null || y == null)
-            {
-                return false;
-            }
-
-            return _typeComparer.Equals(x.ResourceType, y.ResourceType)
-                && _stringComparer.Equals(x.Name, y.Name);
+            return false;
         }
 
-        public int GetHashCode(IResourceIdentity obj)
+        return _typeComparer.Equals(x.ResourceType, y.ResourceType)
+               && _stringComparer.Equals(x.Name, y.Name);
+    }
+
+    public int GetHashCode(IResourceIdentity obj)
+    {
+        unchecked
         {
-            unchecked
-            {
-                var hash = 27;
-                hash = (13 * hash) + _typeComparer.GetHashCode(obj.ResourceType);
-                hash = (13 * hash) + _stringComparer.GetHashCode(obj.Name);
-                return hash;
-            }
+            var hash = 27;
+            hash = (13 * hash) + _typeComparer.GetHashCode(obj.ResourceType);
+            hash = (13 * hash) + _stringComparer.GetHashCode(obj.Name);
+            return hash;
         }
     }
 }

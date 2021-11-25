@@ -1,9 +1,8 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum PackageInstallerResult
 {
-    public enum PackageInstallerResult
-    {
-        Exists = 0,
-        Missing = 1,
-        Error = 2,
-    }
+    Exists = 0,
+    Missing = 1,
+    Error = 2,
 }

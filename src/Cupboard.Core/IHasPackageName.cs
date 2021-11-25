@@ -1,7 +1,6 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public interface IHasPackageName
 {
-    public interface IHasPackageName
-    {
-        string Package { get; }
-    }
+    string Package { get; }
 }
