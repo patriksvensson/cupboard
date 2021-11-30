@@ -10,7 +10,7 @@ Task("Build")
     DotNetBuild("./src/Cupboard.sln", new DotNetBuildSettings {
         Configuration = configuration,
         NoIncremental = context.HasArgument("rebuild"),
-        MSBuildSettings = new DotNetCoreMSBuildSettings()
+        MSBuildSettings = new DotNetMSBuildSettings()
             .TreatAllWarningsAs(MSBuildTreatAllWarningsAs.Error)
     });
 });
@@ -37,7 +37,7 @@ Task("Package")
         NoRestore = true,
         NoBuild = true,
         OutputDirectory = "./.artifacts",
-        MSBuildSettings = new DotNetCoreMSBuildSettings()
+        MSBuildSettings = new DotNetMSBuildSettings()
             .TreatAllWarningsAs(MSBuildTreatAllWarningsAs.Error)
     });
 });
