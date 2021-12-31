@@ -9,6 +9,7 @@ namespace Cupboard
         public bool Force { get; set; }
         public string? PackageVersion { get; set; }
         public string? Override { get; set; }
+        public string? Source { get; set; }
 
         public WingetPackage(string name)
             : base(name)
