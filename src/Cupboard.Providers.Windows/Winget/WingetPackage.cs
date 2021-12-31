@@ -8,6 +8,7 @@ namespace Cupboard
         public PackageState Ensure { get; set; }
         public bool Force { get; set; }
         public string? PackageVersion { get; set; }
+        public string? Override { get; set; }
 
         public WingetPackage(string name)
             : base(name)

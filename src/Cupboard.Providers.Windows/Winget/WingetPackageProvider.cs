@@ -61,6 +61,11 @@ namespace Cupboard
                 arguments += $" --version {resource.PackageVersion}";
             }
 
+            if (string.IsNullOrWhiteSpace(resource.Override) is false)
+            {
+                arguments += $" --override \"{resource.Override}\"";
+            }
+
             return await _runner.Run("winget", arguments).ConfigureAwait(false);
         }
 
