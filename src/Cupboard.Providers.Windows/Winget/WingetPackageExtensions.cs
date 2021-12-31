@@ -26,5 +26,10 @@ namespace Cupboard
         {
             return builder.Configure(pkg => pkg.Override = packageOverride);
         }
+
+        public static IResourceBuilder<WingetPackage> Source(this IResourceBuilder<WingetPackage> builder, string source)
+        {
+            return builder.Configure(pkg => pkg.Source = source);
+        }
     }
 }
