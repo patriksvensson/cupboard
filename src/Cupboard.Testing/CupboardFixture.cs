@@ -13,6 +13,7 @@ namespace Cupboard.Testing
         private readonly List<LambdaCatalog> _catalogs;
         private readonly FakeReportSubscriber _interceptor;
         private readonly FakeFactBuilder _factBuilder;
+        private readonly List<Action<IServiceCollection>> _registrations;
 
         public TestConsole Console { get; }
         public FakeLogger Logger { get; }
@@ -31,6 +32,7 @@ namespace Cupboard.Testing
             _catalogs = new List<LambdaCatalog>();
             _interceptor = new FakeReportSubscriber();
             _factBuilder = new FakeFactBuilder();
+            _registrations = new List<Action<IServiceCollection>>();
 
             Console = new TestConsole();
             Logger = new FakeLogger();
@@ -56,6 +58,11 @@ namespace Cupboard.Testing
                 case PlatformFamily.Unknown:
                     throw new InvalidOperationException("Unknown platform");
             }
+        }
+
+        public void Register(Action<IServiceCollection> action)
+        {
+            _registrations.Add(action);
         }
 
         public void Configure(Action<CatalogContext> action)
@@ -88,6 +95,11 @@ namespace Cupboard.Testing
                 services.Replace(ServiceDescriptor.Singleton<IRebootDetector>(_ => RebootDetector));
                 services.Replace(ServiceDescriptor.Singleton<ICupboardLogger>(_ => Logger));
                 services.Replace(ServiceDescriptor.Singleton<IFactBuilder>(_ => _factBuilder));
+
+                foreach (var registration in _registrations)
+                {
+                    registration(services);
+                }
 
                 foreach (var catalog in _catalogs)
                 {
