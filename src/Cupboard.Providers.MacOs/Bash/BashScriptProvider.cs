@@ -6,13 +6,13 @@ namespace Cupboard
 {
     public sealed class BashScriptProvider : AsyncMacResourceProvider<BashScript>
     {
-        private readonly IFileSystem _fileSystem;
+        private readonly ICupboardFileSystem _fileSystem;
         private readonly IEnvironment _environment;
         private readonly IEnvironmentRefresher _refresher;
         private readonly ICupboardLogger _logger;
 
         public BashScriptProvider(
-            IFileSystem fileSystem,
+            ICupboardFileSystem fileSystem,
             IEnvironment environment,
             IEnvironmentRefresher refresher,
             ICupboardLogger logger)

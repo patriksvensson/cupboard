@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
       <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
-      <ProjectReference Include="..\Cupboard\Cupboard.csproj" />
     </ItemGroup>
 
 </Project>
