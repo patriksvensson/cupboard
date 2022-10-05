@@ -1,10 +1,11 @@
-using Cupboard;
-
-public abstract class MacResourceProvider<TResource> : ResourceProvider<TResource>
-    where TResource : Resource
+namespace Cupboard
 {
-    public override bool CanRun(FactCollection facts)
+    public abstract class MacResourceProvider<TResource> : ResourceProvider<TResource>
+        where TResource : Resource
     {
-        return facts.IsMacOS();
+        public override bool CanRun(FactCollection facts)
+        {
+            return facts.IsMacOS();
+        }
     }
 }

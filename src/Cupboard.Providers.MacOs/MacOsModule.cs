@@ -1,13 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cupboard.Providers.MacOs;
-
-public class MacOsModule : ServiceModule
+namespace Cupboard
 {
-    public override void Configure(IServiceCollection services)
+    public class MacOsModule : ServiceModule
     {
-        // Resources
-        services.AddSingleton<IResourceProvider, HomebrewPackageProvider>();
-        services.AddSingleton<IResourceProvider, BashScriptProvider>();
+        public override void Configure(IServiceCollection services)
+        {
+            // Resources
+            services.AddSingleton<IResourceProvider, HomebrewPackageProvider>();
+            services.AddSingleton<IResourceProvider, BashScriptProvider>();
+        }
     }
 }
