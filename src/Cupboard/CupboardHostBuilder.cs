@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cupboard.Internal;
-using Cupboard.Providers.MacOs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;

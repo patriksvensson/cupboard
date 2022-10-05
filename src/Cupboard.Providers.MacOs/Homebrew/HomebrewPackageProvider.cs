@@ -113,8 +113,8 @@ namespace Cupboard
                         .WithValidation(CommandResultValidation.None)
                         .ExecuteAsync()
                         .ConfigureAwait(false);
-                    // var result = await _runner.Run("brew", package.List(), cmd => _logger.Information($"{cmd}")).ConfigureAwait(false);
 
+                    // var result = await _runner.Run("brew", package.List(), cmd => _logger.Information($"{cmd}")).ConfigureAwait(false);
                     if (result.ExitCode != 0)
                     {
                         _logger.Error($"Received non zero exit code when checking if {package.Package} is installed.");
