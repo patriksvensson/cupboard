@@ -25,6 +25,7 @@ namespace Cupboard
                     services.AddAll<Manifest>();
 
                     services.AddModule<ResourcesModule>();
+                    services.AddModule<MacOsModule>();
                     services.AddModule<WindowsModule>();
 
                     services.AddSingleton<IAnsiConsole>(_console);

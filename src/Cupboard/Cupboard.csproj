@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
     <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
     <ProjectReference Include="..\Cupboard.Providers.Windows\Cupboard.Providers.Windows.csproj" />
+    <ProjectReference Include="..\Cupboard.Providers.MacOs\Cupboard.Providers.MacOs.csproj" />
   </ItemGroup>
 
 </Project>
