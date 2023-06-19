@@ -11,13 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
-    <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
+    
+    
     <ProjectReference Include="..\Cupboard.Providers.Windows\Cupboard.Providers.Windows.csproj" />
   </ItemGroup>
 

@@ -11,11 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Management" Version="6.0.0" />
+    <PackageReference Include="System.Management" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
+    
     <ProjectReference Include="..\Cupboard.Providers\Cupboard.Providers.csproj" />
   </ItemGroup>
 

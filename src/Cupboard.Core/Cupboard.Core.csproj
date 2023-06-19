@@ -11,11 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CliWrap" Version="3.3.3" />
+    <PackageReference Include="CliWrap" Version="3.6.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.41.0" />
-    <PackageReference Include="Spectre.IO" Version="0.8.0" />
+    
+    <PackageReference Include="Spectre.Console" Version="0.47.0" />
+    <PackageReference Include="Spectre.IO" Version="0.12.0" />
   </ItemGroup>
 
 </Project>
