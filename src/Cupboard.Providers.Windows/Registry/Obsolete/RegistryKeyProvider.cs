@@ -1,159 +1,158 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Cupboard
+namespace Cupboard;
+
+[Obsolete("Please use the RegistryValue resource instead")]
+public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>
 {
-    [Obsolete("Please use the RegistryValue resource instead")]
-    public sealed class RegistryKeyProvider : WindowsResourceProvider<RegistryKey>
+    private readonly IWindowsRegistry _registry;
+    private readonly ICupboardLogger _logger;
+
+    public RegistryKeyProvider(IWindowsRegistry registry, ICupboardLogger logger)
     {
-        private readonly IWindowsRegistry _registry;
-        private readonly ICupboardLogger _logger;
+        _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public RegistryKeyProvider(IWindowsRegistry registry, ICupboardLogger logger)
+    public override RegistryKey Create(string name)
+    {
+        return new RegistryKey(name);
+    }
+
+    public override bool RequireAdministrator(FactCollection facts)
+    {
+        return true;
+    }
+
+    public override ResourceState Run(IExecutionContext context, RegistryKey resource)
+    {
+        if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
         {
-            _registry = registry ?? throw new ArgumentNullException(nameof(registry));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.Error("Cannot manipulate registry keys on non-Windows OS");
+            return ResourceState.Error;
         }
 
-        public override RegistryKey Create(string name)
+        if (resource.Path == null)
         {
-            return new RegistryKey(name);
+            _logger.Error($"The registry key for resource '{resource.Name}' has not been set");
+            return ResourceState.Error;
         }
 
-        public override bool RequireAdministrator(FactCollection facts)
+        if (!resource.Path.IsValid)
         {
-            return true;
+            _logger.Error($"The registry key for resource '{resource.Name}' is invalid");
+            return ResourceState.Error;
         }
 
-        public override ResourceState Run(IExecutionContext context, RegistryKey resource)
+        if (resource.State == RegistryKeyState.Exist)
         {
-            if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            if (resource.Value == null)
             {
-                _logger.Error("Cannot manipulate registry keys on non-Windows OS");
+                _logger.Error($"The registry key value for resource '{resource.Name}' has not been set");
                 return ResourceState.Error;
             }
 
-            if (resource.Path == null)
+            var root = GetRegistryKey(resource.Path);
+            if (root == null)
             {
-                _logger.Error($"The registry key for resource '{resource.Name}' has not been set");
+                _logger.Error($"The registry key for resource '{resource.Name}' could not be found");
                 return ResourceState.Error;
             }
 
-            if (!resource.Path.IsValid)
+            var key = root.OpenSubKey(resource.Path.SubKey, true);
+            if (key == null)
             {
-                _logger.Error($"The registry key for resource '{resource.Name}' is invalid");
-                return ResourceState.Error;
-            }
-
-            if (resource.State == RegistryKeyState.Exist)
-            {
-                if (resource.Value == null)
-                {
-                    _logger.Error($"The registry key value for resource '{resource.Name}' has not been set");
-                    return ResourceState.Error;
-                }
-
-                var root = GetRegistryKey(resource.Path);
-                if (root == null)
-                {
-                    _logger.Error($"The registry key for resource '{resource.Name}' could not be found");
-                    return ResourceState.Error;
-                }
-
-                var key = root.OpenSubKey(resource.Path.SubKey, true);
-                if (key == null)
-                {
-                    if (context.DryRun)
-                    {
-                        return ResourceState.Changed;
-                    }
-
-                    _logger.Debug("Trying to create registry key");
-                    key = root.CreateSubKey(resource.Path.SubKey, true);
-                    if (key == null)
-                    {
-                        _logger.Error("Could not create the registry key");
-                        return ResourceState.Error;
-                    }
-                }
-
-                var value = key.GetValue(resource.Path.Value);
-                if (value != null)
-                {
-                    // TODO 2021-07-11: This is good enough for now, but should be properly implemented
-                    if (value.ToString()?.Equals(resource.Value.ToString(), StringComparison.Ordinal) ?? false)
-                    {
-                        _logger.Debug("The registry key already has the expected value");
-                        return ResourceState.Unchanged;
-                    }
-                }
-
-                if (!context.DryRun)
-                {
-                    _logger.Information("Updating registry key");
-                    key.SetValue(resource.Path.Value, resource.Value, resource.ValueKind);
-                }
-
-                return ResourceState.Changed;
-            }
-            else
-            {
-                var root = GetRegistryKey(resource.Path);
-                if (root == null)
-                {
-                    _logger.Error("The registry key for resource could not be found");
-                    return ResourceState.Error;
-                }
-
-                var key = root.OpenSubKey(resource.Path.SubKey, true);
-                if (key == null)
-                {
-                    _logger.Debug("The registry key does not exist");
-                    return ResourceState.Unchanged;
-                }
-
-                var value = key.GetValue(resource.Path.Value);
-                if (value == null)
-                {
-                    _logger.Debug("The registry key value does not exist");
-                    return ResourceState.Unchanged;
-                }
-
                 if (context.DryRun)
                 {
                     return ResourceState.Changed;
                 }
 
-                _logger.Information("Deleting registry key value");
-                return DeleteRegistryKeyValue(key, resource.Path);
+                _logger.Debug("Trying to create registry key");
+                key = root.CreateSubKey(resource.Path.SubKey, true);
+                if (key == null)
+                {
+                    _logger.Error("Could not create the registry key");
+                    return ResourceState.Error;
+                }
             }
-        }
 
-        private ResourceState DeleteRegistryKeyValue(IWindowsRegistryKey key, RegistryKeyPath path)
-        {
-            try
+            var value = key.GetValue(resource.Path.Value);
+            if (value != null)
             {
-                key.DeleteValue(path.Value);
-                return ResourceState.Changed;
+                // TODO 2021-07-11: This is good enough for now, but should be properly implemented
+                if (value.ToString()?.Equals(resource.Value.ToString(), StringComparison.Ordinal) ?? false)
+                {
+                    _logger.Debug("The registry key already has the expected value");
+                    return ResourceState.Unchanged;
+                }
             }
-            catch (Exception ex)
+
+            if (!context.DryRun)
             {
-                _logger.Error($"Could not delete registry key. {ex.Message}");
+                _logger.Information("Updating registry key");
+                key.SetValue(resource.Path.Value, resource.Value, resource.ValueKind);
+            }
+
+            return ResourceState.Changed;
+        }
+        else
+        {
+            var root = GetRegistryKey(resource.Path);
+            if (root == null)
+            {
+                _logger.Error("The registry key for resource could not be found");
                 return ResourceState.Error;
             }
-        }
 
-        private IWindowsRegistryKey? GetRegistryKey(RegistryKeyPath path)
-        {
-            return path.Root switch
+            var key = root.OpenSubKey(resource.Path.SubKey, true);
+            if (key == null)
             {
-                RegistryKeyRoot.ClassesRoot => _registry.ClassesRoot,
-                RegistryKeyRoot.CurrentUser => _registry.CurrentUser,
-                RegistryKeyRoot.LocalMachine => _registry.LocalMachine,
-                RegistryKeyRoot.Users => _registry.Users,
-                RegistryKeyRoot.CurrentConfig => _registry.CurrentConfig,
-                _ => null,
-            };
+                _logger.Debug("The registry key does not exist");
+                return ResourceState.Unchanged;
+            }
+
+            var value = key.GetValue(resource.Path.Value);
+            if (value == null)
+            {
+                _logger.Debug("The registry key value does not exist");
+                return ResourceState.Unchanged;
+            }
+
+            if (context.DryRun)
+            {
+                return ResourceState.Changed;
+            }
+
+            _logger.Information("Deleting registry key value");
+            return DeleteRegistryKeyValue(key, resource.Path);
         }
+    }
+
+    private ResourceState DeleteRegistryKeyValue(IWindowsRegistryKey key, RegistryKeyPath path)
+    {
+        try
+        {
+            key.DeleteValue(path.Value);
+            return ResourceState.Changed;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Could not delete registry key. {ex.Message}");
+            return ResourceState.Error;
+        }
+    }
+
+    private IWindowsRegistryKey? GetRegistryKey(RegistryKeyPath path)
+    {
+        return path.Root switch
+        {
+            RegistryKeyRoot.ClassesRoot => _registry.ClassesRoot,
+            RegistryKeyRoot.CurrentUser => _registry.CurrentUser,
+            RegistryKeyRoot.LocalMachine => _registry.LocalMachine,
+            RegistryKeyRoot.Users => _registry.Users,
+            RegistryKeyRoot.CurrentConfig => _registry.CurrentConfig,
+            _ => null,
+        };
     }
 }

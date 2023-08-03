@@ -4,51 +4,50 @@ using System.Linq;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal sealed class FactCommand : Command<FactCommand.Settings>
 {
-    internal sealed class FactCommand : Command<FactCommand.Settings>
+    private readonly IFactBuilder _builder;
+    private readonly IAnsiConsole _console;
+
+    public sealed class Settings : CommandSettings
     {
-        private readonly IFactBuilder _builder;
-        private readonly IAnsiConsole _console;
+        [CommandOption("--env")]
+        public bool Environment { get; set; }
+    }
 
-        public sealed class Settings : CommandSettings
+    public FactCommand(IFactBuilder builder, IAnsiConsole console)
+    {
+        _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+        _console = console ?? throw new ArgumentNullException(nameof(console));
+    }
+
+    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+    {
+        var facts = _builder.Build(context.Remaining);
+
+        var table = new Table().BorderColor(Color.Grey);
+        table.AddColumns("[grey]Path[/]", "[grey]Type[/]", "[grey]Value[/]");
+
+        foreach (var fact in facts.OrderBy(f => f.FullName))
         {
-            [CommandOption("--env")]
-            public bool Environment { get; set; }
-        }
-
-        public FactCommand(IFactBuilder builder, IAnsiConsole console)
-        {
-            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
-            _console = console ?? throw new ArgumentNullException(nameof(console));
-        }
-
-        public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
-        {
-            var facts = _builder.Build(context.Remaining);
-
-            var table = new Table().BorderColor(Color.Grey);
-            table.AddColumns("[grey]Path[/]", "[grey]Type[/]", "[grey]Value[/]");
-
-            foreach (var fact in facts.OrderBy(f => f.FullName))
+            if (fact.FullName.StartsWith("env.", StringComparison.OrdinalIgnoreCase) && !settings.Environment)
             {
-                if (fact.FullName.StartsWith("env.", StringComparison.OrdinalIgnoreCase) && !settings.Environment)
-                {
-                    continue;
-                }
-
-                var value = fact.Value?.ToString() ?? string.Empty;
-                value = value.Replace("\u001b", "ESC");
-
-                table.AddRow(
-                    fact.FullName,
-                    fact.Value?.GetType().Name ?? "?",
-                    "[grey]" + value.EscapeMarkup() + "[/]");
+                continue;
             }
 
-            _console.Write(table);
+            var value = fact.Value?.ToString() ?? string.Empty;
+            value = value.Replace("\u001b", "ESC");
 
-            return 0;
+            table.AddRow(
+                fact.FullName,
+                fact.Value?.GetType().Name ?? "?",
+                "[grey]" + value.EscapeMarkup() + "[/]");
         }
+
+        _console.Write(table);
+
+        return 0;
     }
 }

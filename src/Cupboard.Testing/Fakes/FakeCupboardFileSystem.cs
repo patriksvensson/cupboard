@@ -2,48 +2,47 @@ using System.IO;
 using Spectre.IO;
 using Spectre.IO.Testing;
 
-namespace Cupboard.Testing
+namespace Cupboard.Testing;
+
+public sealed class FakeCupboardFileSystem : ICupboardFileSystem
 {
-    public sealed class FakeCupboardFileSystem : ICupboardFileSystem
+    private readonly FakeFileSystem _fileSystem;
+
+    public IFileProvider File => _fileSystem.File;
+    public IDirectoryProvider Directory => _fileSystem.Directory;
+
+    public FakeCupboardFileSystem(ICupboardEnvironment environment)
     {
-        private readonly FakeFileSystem _fileSystem;
+        _fileSystem = new FakeFileSystem(environment);
+    }
 
-        public IFileProvider File => _fileSystem.File;
-        public IDirectoryProvider Directory => _fileSystem.Directory;
+    public FakeDirectory CreateDirectory(DirectoryPath path)
+    {
+        return _fileSystem.CreateDirectory(path);
+    }
 
-        public FakeCupboardFileSystem(ICupboardEnvironment environment)
-        {
-            _fileSystem = new FakeFileSystem(environment);
-        }
+    public FakeFile CreateFile(FilePath path, FileAttributes attributes = 0)
+    {
+        return _fileSystem.CreateFile(path, attributes);
+    }
 
-        public FakeDirectory CreateDirectory(DirectoryPath path)
-        {
-            return _fileSystem.CreateDirectory(path);
-        }
+    public FakeFile CreateFile(FilePath path, byte[] contentsBytes)
+    {
+        return _fileSystem.CreateFile(path, contentsBytes);
+    }
 
-        public FakeFile CreateFile(FilePath path, FileAttributes attributes = 0)
-        {
-            return _fileSystem.CreateFile(path, attributes);
-        }
+    public void EnsureFileDoesNotExist(FilePath path)
+    {
+        _fileSystem.EnsureFileDoesNotExist(path);
+    }
 
-        public FakeFile CreateFile(FilePath path, byte[] contentsBytes)
-        {
-            return _fileSystem.CreateFile(path, contentsBytes);
-        }
+    public FakeDirectory GetFakeDirectory(DirectoryPath path)
+    {
+        return _fileSystem.GetFakeDirectory(path);
+    }
 
-        public void EnsureFileDoesNotExist(FilePath path)
-        {
-            _fileSystem.EnsureFileDoesNotExist(path);
-        }
-
-        public FakeDirectory GetFakeDirectory(DirectoryPath path)
-        {
-            return _fileSystem.GetFakeDirectory(path);
-        }
-
-        public FakeFile GetFakeFile(FilePath path)
-        {
-            return _fileSystem.GetFakeFile(path);
-        }
+    public FakeFile GetFakeFile(FilePath path)
+    {
+        return _fileSystem.GetFakeFile(path);
     }
 }

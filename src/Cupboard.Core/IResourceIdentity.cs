@@ -1,11 +1,10 @@
 using System;
 
-namespace Cupboard
-{
-    public interface IResourceIdentity
-    {
-        Type ResourceType { get; }
+namespace Cupboard;
 
-        string Name { get; }
-    }
+public interface IResourceIdentity
+{
+    Type ResourceType { get; }
+
+    string Name { get; }
 }

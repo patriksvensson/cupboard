@@ -1,19 +1,18 @@
 using Spectre.Console.Cli;
 
-namespace Cupboard.Testing
+namespace Cupboard.Testing;
+
+public sealed class FakeFactBuilder : IFactBuilder
 {
-    public sealed class FakeFactBuilder : IFactBuilder
+    public FactCollection Facts { get; set; }
+
+    public FakeFactBuilder()
     {
-        public FactCollection Facts { get; set; }
+        Facts = new FactCollection();
+    }
 
-        public FakeFactBuilder()
-        {
-            Facts = new FactCollection();
-        }
-
-        public FactCollection Build(IRemainingArguments args)
-        {
-            return Facts;
-        }
+    public FactCollection Build(IRemainingArguments args)
+    {
+        return Facts;
     }
 }

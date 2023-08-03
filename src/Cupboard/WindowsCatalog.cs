@@ -1,10 +1,9 @@
-namespace Cupboard
+namespace Cupboard;
+
+public abstract class WindowsCatalog : Catalog
 {
-    public abstract class WindowsCatalog : Catalog
+    public override bool CanRun(FactCollection facts)
     {
-        public override bool CanRun(FactCollection facts)
-        {
-            return facts.IsWindows();
-        }
+        return facts.IsWindows();
     }
 }

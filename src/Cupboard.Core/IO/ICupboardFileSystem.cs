@@ -1,8 +1,7 @@
 ﻿using Spectre.IO;
 
-namespace Cupboard
+namespace Cupboard;
+
+public interface ICupboardFileSystem : IFileSystem
 {
-    public interface ICupboardFileSystem : IFileSystem
-    {
-    }
 }

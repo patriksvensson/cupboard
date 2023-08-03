@@ -1,8 +1,7 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum ErrorOptions
 {
-    public enum ErrorOptions
-    {
-        IgnoreErrors = 0,
-        Abort = 1,
-    }
+    IgnoreErrors = 0,
+    Abort = 1,
 }

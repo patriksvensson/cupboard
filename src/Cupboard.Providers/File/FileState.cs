@@ -1,8 +1,7 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public enum FileState
 {
-    public enum FileState
-    {
-        Present,
-        Absent,
-    }
+    Present,
+    Absent,
 }

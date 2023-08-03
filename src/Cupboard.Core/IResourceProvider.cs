@@ -1,16 +1,15 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Cupboard
+namespace Cupboard;
+
+public interface IResourceProvider
 {
-    public interface IResourceProvider
-    {
-        Type ResourceType { get; }
+    Type ResourceType { get; }
 
-        Resource Create(string name);
+    Resource Create(string name);
 
-        bool RequireAdministrator(FactCollection facts);
-        bool CanRun(FactCollection facts);
-        Task<ResourceState> RunAsync(IExecutionContext context, Resource resource);
-    }
+    bool RequireAdministrator(FactCollection facts);
+    bool CanRun(FactCollection facts);
+    Task<ResourceState> RunAsync(IExecutionContext context, Resource resource);
 }

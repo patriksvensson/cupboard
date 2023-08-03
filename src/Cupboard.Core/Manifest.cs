@@ -1,7 +1,6 @@
-namespace Cupboard
+namespace Cupboard;
+
+public abstract class Manifest
 {
-    public abstract class Manifest
-    {
-        public abstract void Execute(ManifestContext context);
-    }
+    public abstract void Execute(ManifestContext context);
 }

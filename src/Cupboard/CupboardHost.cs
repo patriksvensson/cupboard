@@ -4,41 +4,40 @@ using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Cupboard
+namespace Cupboard;
+
+public sealed class CupboardHost
 {
-    public sealed class CupboardHost
+    private readonly IAnsiConsole _console;
+    private readonly IHost _host;
+    private readonly bool _propagateExceptions;
+
+    internal CupboardHost(IAnsiConsole console, IHost host, bool propagateExceptions)
     {
-        private readonly IAnsiConsole _console;
-        private readonly IHost _host;
-        private readonly bool _propagateExceptions;
+        _console = console ?? throw new ArgumentNullException(nameof(console));
+        _host = host ?? throw new ArgumentNullException(nameof(host));
+        _propagateExceptions = propagateExceptions;
+    }
 
-        internal CupboardHost(IAnsiConsole console, IHost host, bool propagateExceptions)
+    public static CupboardHostBuilder CreateBuilder()
+    {
+        return new CupboardHostBuilder();
+    }
+
+    public int Run(string[] args)
+    {
+        try
         {
-            _console = console ?? throw new ArgumentNullException(nameof(console));
-            _host = host ?? throw new ArgumentNullException(nameof(host));
-            _propagateExceptions = propagateExceptions;
+            var app = _host.Services.GetRequiredService<ICommandApp>();
+            return app.Run(args);
         }
-
-        public static CupboardHostBuilder CreateBuilder()
+        catch (Exception ex) when (!_propagateExceptions)
         {
-            return new CupboardHostBuilder();
-        }
+            _console.WriteLine();
+            _console.Write(new Panel("An error occured during execution").BorderColor(Color.Red).RoundedBorder());
+            _console.WriteException(ex, ExceptionFormats.ShortenEverything);
 
-        public int Run(string[] args)
-        {
-            try
-            {
-                var app = _host.Services.GetRequiredService<ICommandApp>();
-                return app.Run(args);
-            }
-            catch (Exception ex) when (!_propagateExceptions)
-            {
-                _console.WriteLine();
-                _console.Write(new Panel("An error occured during execution").BorderColor(Color.Red).RoundedBorder());
-                _console.WriteException(ex, ExceptionFormats.ShortenEverything);
-
-                return -1;
-            }
+            return -1;
         }
     }
 }

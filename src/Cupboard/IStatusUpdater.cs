@@ -2,34 +2,33 @@ using System;
 using System.Threading.Tasks;
 using Spectre.Console;
 
-namespace Cupboard.Internal
+namespace Cupboard.Internal;
+
+internal interface IStatusUpdater
 {
-    internal interface IStatusUpdater
+    Task<bool> Update(string markup, Func<Task<bool>> func);
+}
+
+internal sealed class StatusUpdater : IStatusUpdater
+{
+    private readonly IAnsiConsole _console;
+
+    public StatusUpdater(IAnsiConsole console)
     {
-        Task<bool> Update(string markup, Func<Task<bool>> func);
+        _console = console;
     }
 
-    internal sealed class StatusUpdater : IStatusUpdater
+    public async Task<bool> Update(string markup, Func<Task<bool>> func)
     {
-        private readonly IAnsiConsole _console;
-
-        public StatusUpdater(IAnsiConsole console)
-        {
-            _console = console;
-        }
-
-        public async Task<bool> Update(string markup, Func<Task<bool>> func)
-        {
-            return await _console.Status().StartAsync(markup, async _ =>
-                await func().ConfigureAwait(false)).ConfigureAwait(false);
-        }
+        return await _console.Status().StartAsync(markup, async _ =>
+            await func().ConfigureAwait(false)).ConfigureAwait(false);
     }
+}
 
-    internal sealed class DummyUpdater : IStatusUpdater
+internal sealed class DummyUpdater : IStatusUpdater
+{
+    public async Task<bool> Update(string markup, Func<Task<bool>> func)
     {
-        public async Task<bool> Update(string markup, Func<Task<bool>> func)
-        {
-            return await func().ConfigureAwait(false);
-        }
+        return await func().ConfigureAwait(false);
     }
 }

@@ -1,12 +1,11 @@
-namespace Cupboard.Testing
-{
-    public sealed class FakeSecurityPrincipal : ISecurityPrincipal
-    {
-        public bool IsAdmin { get; set; }
+namespace Cupboard.Testing;
 
-        public bool IsAdministrator()
-        {
-            return IsAdmin;
-        }
+public sealed class FakeSecurityPrincipal : ISecurityPrincipal
+{
+    public bool IsAdmin { get; set; }
+
+    public bool IsAdministrator()
+    {
+        return IsAdmin;
     }
 }

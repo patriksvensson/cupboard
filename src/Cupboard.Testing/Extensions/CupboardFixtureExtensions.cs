@@ -1,64 +1,63 @@
 using System;
 using Spectre.IO;
 
-namespace Cupboard.Testing
+namespace Cupboard.Testing;
+
+public static class CupboardFixtureExtensions
 {
-    public static class CupboardFixtureExtensions
+    public static void FileShouldExist(this CupboardFixture fixture, FilePath path)
     {
-        public static void FileShouldExist(this CupboardFixture fixture, FilePath path)
+        if (fixture is null)
         {
-            if (fixture is null)
-            {
-                throw new ArgumentNullException(nameof(fixture));
-            }
-
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            if (!fixture.FileSystem.File.Exists(path))
-            {
-                throw new InvalidOperationException($"File at {path.FullPath} does not exist");
-            }
+            throw new ArgumentNullException(nameof(fixture));
         }
 
-        public static void FileShouldNotExist(this CupboardFixture fixture, FilePath path)
+        if (path is null)
         {
-            if (fixture is null)
-            {
-                throw new ArgumentNullException(nameof(fixture));
-            }
-
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            if (fixture.FileSystem.File.Exists(path))
-            {
-                throw new InvalidOperationException($"File at {path.FullPath} should not exist");
-            }
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public static void FileShouldBeSymbolicLink(this CupboardFixture fixture, FilePath path)
+        if (!fixture.FileSystem.File.Exists(path))
         {
-            if (fixture is null)
-            {
-                throw new ArgumentNullException(nameof(fixture));
-            }
+            throw new InvalidOperationException($"File at {path.FullPath} does not exist");
+        }
+    }
 
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
+    public static void FileShouldNotExist(this CupboardFixture fixture, FilePath path)
+    {
+        if (fixture is null)
+        {
+            throw new ArgumentNullException(nameof(fixture));
+        }
 
-            FileShouldExist(fixture, path);
+        if (path is null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
 
-            if (fixture.FileSystem.GetFakeFile(path)?.SymbolicLink == null)
-            {
-                throw new InvalidOperationException($"File at {path.FullPath} is not a symbolic link");
-            }
+        if (fixture.FileSystem.File.Exists(path))
+        {
+            throw new InvalidOperationException($"File at {path.FullPath} should not exist");
+        }
+    }
+
+    public static void FileShouldBeSymbolicLink(this CupboardFixture fixture, FilePath path)
+    {
+        if (fixture is null)
+        {
+            throw new ArgumentNullException(nameof(fixture));
+        }
+
+        if (path is null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        FileShouldExist(fixture, path);
+
+        if (fixture.FileSystem.GetFakeFile(path)?.SymbolicLink == null)
+        {
+            throw new InvalidOperationException($"File at {path.FullPath} is not a symbolic link");
         }
     }
 }

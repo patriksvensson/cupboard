@@ -1,23 +1,22 @@
 using Cupboard;
 
-namespace Sandbox
-{
-    public static class Program
-    {
-        public static int Main(string[] args)
-        {
-            return CupboardHost.CreateBuilder()
-                .AddCatalog<SandboxCatalog>()
-                .Run(args);
-        }
-    }
+namespace Sandbox;
 
-    public sealed class SandboxCatalog : WindowsCatalog
+public static class Program
+{
+    public static int Main(string[] args)
     {
-        public override void Execute(CatalogContext context)
-        {
-            context.UseManifest<VSCode>();
-            context.UseManifest<Chocolatey>();
-        }
+        return CupboardHost.CreateBuilder()
+            .AddCatalog<SandboxCatalog>()
+            .Run(args);
+    }
+}
+
+public sealed class SandboxCatalog : WindowsCatalog
+{
+    public override void Execute(CatalogContext context)
+    {
+        context.UseManifest<VSCode>();
+        context.UseManifest<Chocolatey>();
     }
 }

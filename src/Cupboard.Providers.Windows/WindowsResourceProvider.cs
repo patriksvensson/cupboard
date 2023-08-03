@@ -1,20 +1,19 @@
-namespace Cupboard
-{
-    public abstract class WindowsResourceProvider<TResource> : ResourceProvider<TResource>
-        where TResource : Resource
-    {
-        public override bool CanRun(FactCollection facts)
-        {
-            return facts.IsWindows();
-        }
-    }
+namespace Cupboard;
 
-    public abstract class AsyncWindowsResourceProvider<TResource> : AsyncResourceProvider<TResource>
-        where TResource : Resource
+public abstract class WindowsResourceProvider<TResource> : ResourceProvider<TResource>
+    where TResource : Resource
+{
+    public override bool CanRun(FactCollection facts)
     {
-        public override bool CanRun(FactCollection facts)
-        {
-            return facts.IsWindows();
-        }
+        return facts.IsWindows();
+    }
+}
+
+public abstract class AsyncWindowsResourceProvider<TResource> : AsyncResourceProvider<TResource>
+    where TResource : Resource
+{
+    public override bool CanRun(FactCollection facts)
+    {
+        return facts.IsWindows();
     }
 }

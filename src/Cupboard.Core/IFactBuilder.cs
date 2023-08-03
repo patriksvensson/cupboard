@@ -1,9 +1,8 @@
 using Spectre.Console.Cli;
 
-namespace Cupboard
+namespace Cupboard;
+
+public interface IFactBuilder
 {
-    public interface IFactBuilder
-    {
-        FactCollection Build(IRemainingArguments args);
-    }
+    FactCollection Build(IRemainingArguments args);
 }

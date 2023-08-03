@@ -1,9 +1,8 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum ChmodClass
 {
-    public enum ChmodClass
-    {
-        Owner = 0,
-        Group = 1,
-        Other = 2,
-    }
+    Owner = 0,
+    Group = 1,
+    Other = 2,
 }

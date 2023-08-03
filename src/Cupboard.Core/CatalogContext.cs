@@ -1,29 +1,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace Cupboard
+namespace Cupboard;
+
+public sealed class CatalogContext
 {
-    public sealed class CatalogContext
+    private readonly HashSet<Type> _manifests;
+
+    public FactCollection Facts { get; }
+
+    public CatalogContext(FactCollection facts)
     {
-        private readonly HashSet<Type> _manifests;
+        Facts = facts ?? throw new ArgumentNullException(nameof(facts));
+        _manifests = new HashSet<Type>();
+    }
 
-        public FactCollection Facts { get; }
+    public void UseManifest<TManifest>()
+        where TManifest : Manifest
+    {
+        _manifests.Add(typeof(TManifest));
+    }
 
-        public CatalogContext(FactCollection facts)
-        {
-            Facts = facts ?? throw new ArgumentNullException(nameof(facts));
-            _manifests = new HashSet<Type>();
-        }
-
-        public void UseManifest<TManifest>()
-            where TManifest : Manifest
-        {
-            _manifests.Add(typeof(TManifest));
-        }
-
-        public IEnumerable<Type> GetManifests()
-        {
-            return _manifests;
-        }
+    public IEnumerable<Type> GetManifests()
+    {
+        return _manifests;
     }
 }

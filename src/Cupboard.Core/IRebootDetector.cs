@@ -1,7 +1,6 @@
-namespace Cupboard
+namespace Cupboard;
+
+public interface IRebootDetector
 {
-    public interface IRebootDetector
-    {
-        bool HasPendingReboot();
-    }
+    bool HasPendingReboot();
 }

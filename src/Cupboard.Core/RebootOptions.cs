@@ -1,8 +1,7 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum RebootOptions
 {
-    public enum RebootOptions
-    {
-        IgnorePendingReboot = 0,
-        Reboot = 1,
-    }
+    IgnorePendingReboot = 0,
+    Reboot = 1,
 }

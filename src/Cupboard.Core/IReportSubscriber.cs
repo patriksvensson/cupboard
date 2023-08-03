@@ -1,7 +1,6 @@
-namespace Cupboard
+namespace Cupboard;
+
+public interface IReportSubscriber
 {
-    public interface IReportSubscriber
-    {
-        void Notify(Report report);
-    }
+    void Notify(Report report);
 }

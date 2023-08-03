@@ -1,7 +1,6 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public interface IEnvironmentRefresher
 {
-    public interface IEnvironmentRefresher
-    {
-        void Refresh();
-    }
+    void Refresh();
 }

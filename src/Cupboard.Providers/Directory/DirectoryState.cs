@@ -1,8 +1,7 @@
-namespace Cupboard
+namespace Cupboard;
+
+public enum DirectoryState
 {
-    public enum DirectoryState
-    {
-        Present = 0,
-        Absent = 1,
-    }
+    Present = 0,
+    Absent = 1,
 }

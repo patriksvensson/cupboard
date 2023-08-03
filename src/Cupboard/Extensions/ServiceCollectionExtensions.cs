@@ -5,77 +5,76 @@ using Cupboard.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace Cupboard
+namespace Cupboard;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddModule<T>(this IServiceCollection services)
+        where T : ServiceModule, new()
     {
-        public static IServiceCollection AddModule<T>(this IServiceCollection services)
-            where T : ServiceModule, new()
+        if (services is null)
         {
-            if (services is null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            var module = new T();
-            module.Configure(services);
-            return services;
+            throw new ArgumentNullException(nameof(services));
         }
 
-        internal static IServiceCollection AddAll<TService>(this IServiceCollection services, Assembly? assembly = null)
+        var module = new T();
+        module.Configure(services);
+        return services;
+    }
+
+    internal static IServiceCollection AddAll<TService>(this IServiceCollection services, Assembly? assembly = null)
+    {
+        var serviceType = typeof(TService);
+        var isInterface = serviceType.IsInterface;
+
+        var assemblies = assembly != null
+            ? new Assembly[] { assembly }
+            : AppDomain.CurrentDomain.GetAssemblies();
+
+        foreach (var type in assemblies.SelectMany(assembly => assembly.GetTypes()))
         {
-            var serviceType = typeof(TService);
-            var isInterface = serviceType.IsInterface;
-
-            var assemblies = assembly != null
-                ? new Assembly[] { assembly }
-                : AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var type in assemblies.SelectMany(assembly => assembly.GetTypes()))
+            if (isInterface && type.IsInterface)
             {
-                if (isInterface && type.IsInterface)
-                {
-                    continue;
-                }
-
-                if (!type.IsAbstract && serviceType.IsAssignableFrom(type))
-                {
-                    if (!services.Any(x => x.ImplementationType == type))
-                    {
-                        services.AddSingleton(serviceType, type);
-                    }
-                }
+                continue;
             }
 
-            return services;
+            if (!type.IsAbstract && serviceType.IsAssignableFrom(type))
+            {
+                if (!services.Any(x => x.ImplementationType == type))
+                {
+                    services.AddSingleton(serviceType, type);
+                }
+            }
         }
 
-        internal static IServiceCollection AddCommandLine(
-            this IServiceCollection services,
-            Action<IConfigurator> configurator)
+        return services;
+    }
+
+    internal static IServiceCollection AddCommandLine(
+        this IServiceCollection services,
+        Action<IConfigurator> configurator)
+    {
+        var app = new CommandApp(new TypeRegistrar(services));
+        app.Configure(configurator);
+        services.AddSingleton<ICommandApp>(app);
+
+        return services;
+    }
+
+    internal static IServiceCollection AddCommandLine<TCommand>(
+        this IServiceCollection services,
+        Action<IConfigurator>? configurator = null)
+            where TCommand : class, ICommand
+    {
+        var app = new CommandApp<TCommand>(new TypeRegistrar(services));
+
+        if (configurator != null)
         {
-            var app = new CommandApp(new TypeRegistrar(services));
             app.Configure(configurator);
-            services.AddSingleton<ICommandApp>(app);
-
-            return services;
         }
 
-        internal static IServiceCollection AddCommandLine<TCommand>(
-            this IServiceCollection services,
-            Action<IConfigurator>? configurator = null)
-                where TCommand : class, ICommand
-        {
-            var app = new CommandApp<TCommand>(new TypeRegistrar(services));
+        services.AddSingleton<ICommandApp>(app);
 
-            if (configurator != null)
-            {
-                app.Configure(configurator);
-            }
-
-            services.AddSingleton<ICommandApp>(app);
-
-            return services;
-        }
+        return services;
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace Cupboard
+﻿namespace Cupboard;
+
+public enum WindowsFeatureState
 {
-    public enum WindowsFeatureState
-    {
-        Enabled = 0,
-        Disabled,
-    }
+    Enabled = 0,
+    Disabled,
 }

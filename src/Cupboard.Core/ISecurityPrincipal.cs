@@ -1,7 +1,6 @@
-namespace Cupboard
+namespace Cupboard;
+
+public interface ISecurityPrincipal
 {
-    public interface ISecurityPrincipal
-    {
-        bool IsAdministrator();
-    }
+    bool IsAdministrator();
 }

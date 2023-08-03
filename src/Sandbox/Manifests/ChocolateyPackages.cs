@@ -1,17 +1,16 @@
 using Cupboard;
 
-namespace Sandbox
+namespace Sandbox;
+
+public sealed class ChocolateyPackages : Manifest
 {
-    public sealed class ChocolateyPackages : Manifest
+    public override void Execute(ManifestContext context)
     {
-        public override void Execute(ManifestContext context)
+        foreach (var package in new[] { "screentogif", "repoz" })
         {
-            foreach (var package in new[] { "screentogif", "repoz" })
-            {
-                context.Resource<ChocolateyPackage>(package)
-                    .Ensure(PackageState.Installed)
-                    .After<PowerShell>("Install Chocolatey");
-            }
+            context.Resource<ChocolateyPackage>(package)
+                .Ensure(PackageState.Installed)
+                .After<PowerShell>("Install Chocolatey");
         }
     }
 }
