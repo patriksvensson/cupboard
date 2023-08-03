@@ -44,8 +44,8 @@ jobs:
         run: git fetch --tags
         shell: bash
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
 
       - name: Build
         shell: bash
@@ -72,8 +72,8 @@ jobs:
         run: git fetch --tags
         shell: bash
 
-      - name: Setup dotnet 5.0.301
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
 
       - name: Publish
         shell: bash

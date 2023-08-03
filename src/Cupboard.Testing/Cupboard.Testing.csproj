@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console.Testing" Version="0.41.0" />
-    <PackageReference Include="Spectre.IO.Testing" Version="0.8.0" />
+    <PackageReference Include="Spectre.Console.Testing" Version="0.47.0" />
+    <PackageReference Include="Spectre.IO.Testing" Version="0.12.0" />
   </ItemGroup>
 
 </Project>
