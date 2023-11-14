@@ -23,7 +23,7 @@ In Cupboard, you define `catalogs`, `manifests`, and `resources`.
 
 ### 1. Create a console application
 
-Start by creating a new console application targeting `.NET 6.0`.  
+Start by creating a new console application targeting `.NET 8.0`.  
 Add a reference to the `Cupboard` NuGet package.
 
 ```
