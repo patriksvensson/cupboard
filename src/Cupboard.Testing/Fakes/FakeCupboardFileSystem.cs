@@ -8,12 +8,15 @@ public sealed class FakeCupboardFileSystem : ICupboardFileSystem
 {
     private readonly FakeFileSystem _fileSystem;
 
+    public IPathComparer Comparer { get; }
+
     public IFileProvider File => _fileSystem.File;
     public IDirectoryProvider Directory => _fileSystem.Directory;
 
-    public FakeCupboardFileSystem(ICupboardEnvironment environment)
+    public FakeCupboardFileSystem(IEnvironment environment)
     {
         _fileSystem = new FakeFileSystem(environment);
+        Comparer = new PathComparer(environment);
     }
 
     public FakeDirectory CreateDirectory(DirectoryPath path)

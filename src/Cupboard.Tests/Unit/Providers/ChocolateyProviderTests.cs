@@ -57,8 +57,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_If_Missing()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
@@ -82,8 +81,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Not_Install_Package_If_Present()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
@@ -101,8 +99,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_Version_If_Missing()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersion>());
 
@@ -126,8 +123,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_If_Lower_Version()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersion>());
 
@@ -151,8 +147,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_If_Lower_Version_With_No_NewLine()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersion>());
 
@@ -176,8 +171,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Not_Install_Package_Of_Same_Version()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersion>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
@@ -195,8 +189,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Not_Install_Package_Of_Higher_Version()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersion>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
@@ -214,8 +207,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_If_Higher_Version_With_Allow_Downgrade()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
 
@@ -239,8 +231,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Install_Package_If_Lower_Version_With_Allow_Downgrade()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
 
@@ -264,8 +255,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Not_Install_Package_Of_Same_Version_With_Allow_Downgrade()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.InstallVersionAllowDowngrade>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
@@ -286,8 +276,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Uninstall_Package_If_Present()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",
@@ -309,8 +298,7 @@ public sealed class ChocolateyProviderTests
         public void Should_Not_Uninstall_Package_If_Absent()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
             fixture.Process.Register("choco", "list --limit-output --local-only --exact vscode",

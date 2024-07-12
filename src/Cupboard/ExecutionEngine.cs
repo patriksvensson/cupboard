@@ -69,7 +69,7 @@ internal sealed class ExecutionEngine
 
         // Do we need administrator privileges?
         // Make sure we're running with elevated permissions
-        if (!dryRun && plan.RequiresAdministrator && !_security.IsAdministrator())
+        if (!dryRun && plan.RequiresAdministrator && !_security.IsAdministrator)
         {
             throw new InvalidOperationException("Not running as administrator");
         }

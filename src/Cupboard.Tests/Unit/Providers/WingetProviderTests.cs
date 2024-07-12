@@ -34,8 +34,7 @@ public sealed class WingetProviderTests
         public void Should_Install_Package_If_Missing()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
             fixture.Process.Register("winget", "list --source winget --id GitHub.cli",
@@ -58,8 +57,7 @@ public sealed class WingetProviderTests
         public void Should_Not_Install_Package_If_Present_lol()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Install>());
 
             fixture.Process.Register("winget", "list --source winget --id GitHub.cli",
@@ -80,8 +78,7 @@ public sealed class WingetProviderTests
         public void Should_Uninstall_Package_If_Present()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
             fixture.Process.Register("winget", "list --source winget --id GitHub.cli",
@@ -103,8 +100,7 @@ public sealed class WingetProviderTests
         public void Should_Not_Uninstall_Package_If_Absent()
         {
             // Given
-            var fixture = new CupboardFixture();
-            fixture.Security.IsAdmin = true;
+            var fixture = new CupboardFixture(admin: true);
             fixture.Configure(ctx => ctx.UseManifest<Manifests.Uninstall>());
 
             fixture.Process.Register("winget", "list --source winget --id GitHub.cli",

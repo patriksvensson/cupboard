@@ -62,8 +62,7 @@ public sealed class ManifestContextTests
     public void Can_Add_Multiple_Resources_At_Once()
     {
         // Given
-        var fixture = new CupboardFixture();
-        fixture.Security.IsAdmin = true;
+        var fixture = new CupboardFixture(admin: true);
         fixture.Process.RegisterDefaultResult(new ProcessRunnerResult(0));
         fixture.Configure(ctx => ctx.UseManifest<Manifests.Default>());
         fixture.Register(services =>

@@ -27,7 +27,7 @@ public sealed class CupboardHostBuilder
                 services.AddModule<ResourcesModule>();
                 services.AddModule<WindowsModule>();
 
-                services.AddSingleton<IAnsiConsole>(_console);
+                services.AddSingleton(_console);
                 services.AddSingleton<IPlatform, Platform>();
                 services.AddSingleton<ICupboardFileSystem, CupboardFileSystem>();
                 services.AddSingleton<ICupboardEnvironment, CupboardEnvironment>();

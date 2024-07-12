@@ -2,5 +2,5 @@ namespace Cupboard;
 
 public interface ISecurityPrincipal
 {
-    bool IsAdministrator();
+    bool IsAdministrator { get; }
 }

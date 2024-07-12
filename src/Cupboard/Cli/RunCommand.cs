@@ -164,7 +164,7 @@ internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
 
                 if (report.RequiresAdministrator)
                 {
-                    if (!_security.IsAdministrator())
+                    if (!_security.IsAdministrator)
                     {
                         _console.MarkupLine("[red]ERROR:[/] The current execution plan [yellow]require administrative permissions[/].");
                         _console.MarkupLine("[grey]Restart the application as administrator to execute plan.[/]");

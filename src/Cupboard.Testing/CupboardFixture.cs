@@ -27,7 +27,7 @@ public sealed class CupboardFixture
 
     public FactCollection Facts => _factBuilder.Facts;
 
-    public CupboardFixture(PlatformFamily family = PlatformFamily.Windows)
+    public CupboardFixture(PlatformFamily family = PlatformFamily.Windows, bool admin = false)
     {
         _catalogs = new List<LambdaCatalog>();
         _interceptor = new FakeReportSubscriber();
@@ -37,7 +37,7 @@ public sealed class CupboardFixture
         Console = new TestConsole();
         Logger = new FakeLogger();
         Process = new FakeProcessRunner();
-        Security = new FakeSecurityPrincipal();
+        Security = new FakeSecurityPrincipal(admin);
         EnvironmentRefresher = new FakeEnvironmentRefresher();
         Environment = new FakeCupboardEnvironment(family);
         FileSystem = new FakeCupboardFileSystem(Environment);
