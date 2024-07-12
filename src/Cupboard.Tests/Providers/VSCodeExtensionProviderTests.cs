@@ -12,7 +12,7 @@ public sealed class VSCodeExtensionProviderTests
         {
             public override void Execute(ManifestContext context)
             {
-                context.Resource<VSCodeExtension>(ExtensionName)
+                context.Resource<VsCodeExtension>(ExtensionName)
                     .Ensure(PackageState.Installed);
             }
         }
@@ -21,7 +21,7 @@ public sealed class VSCodeExtensionProviderTests
         {
             public override void Execute(ManifestContext context)
             {
-                context.Resource<VSCodeExtension>(ExtensionName)
+                context.Resource<VsCodeExtension>(ExtensionName)
                     .Ensure(PackageState.Uninstalled);
             }
         }
@@ -31,7 +31,7 @@ public sealed class VSCodeExtensionProviderTests
     {
         public sealed class EnsureInstalled
         {
-            [WindowsFact]
+            [Fact]
             public void Should_Install_Package_If_Missing()
             {
                 // Given
@@ -50,12 +50,12 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
                 fixture.Logger.WasLogged($"Installing VSCode extension [yellow]{ExtensionName}[/]");
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] was installed");
             }
 
-            [WindowsFact]
+            [Fact]
             public void Should_Not_Install_Package_If_Present()
             {
                 // Given
@@ -69,14 +69,14 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] is already installed");
             }
         }
 
         public sealed class EnsureUninstalled
         {
-            [WindowsFact]
+            [Fact]
             public void Should_Uninstall_Package_If_Present()
             {
                 // Given
@@ -94,12 +94,12 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
                 fixture.Logger.WasLogged($"Uninstalling VSCode extension [yellow]{ExtensionName}[/]");
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] was uninstalled");
             }
 
-            [WindowsFact]
+            [Fact]
             public void Should_Not_Uninstall_Package_If_Absent()
             {
                 // Given
@@ -113,7 +113,7 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] is already uninstalled");
             }
         }
@@ -123,7 +123,7 @@ public sealed class VSCodeExtensionProviderTests
     {
         public sealed class EnsureInstalled
         {
-            [WindowsFact]
+            [Fact]
             public void Should_Install_Package_If_Missing()
             {
                 // Given
@@ -142,12 +142,12 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
                 fixture.Logger.WasLogged($"Installing VSCode extension [yellow]{ExtensionName}[/]");
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] was installed");
             }
 
-            [WindowsFact]
+            [Fact]
             public void Should_Not_Install_Package_If_Present()
             {
                 // Given
@@ -161,14 +161,14 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] is already installed");
             }
         }
 
         public sealed class EnsureUninstalled
         {
-            [WindowsFact]
+            [Fact]
             public void Should_Uninstall_Package_If_Present()
             {
                 // Given
@@ -186,12 +186,12 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Changed);
                 fixture.Logger.WasLogged($"Uninstalling VSCode extension [yellow]{ExtensionName}[/]");
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] was uninstalled");
             }
 
-            [WindowsFact]
+            [Fact]
             public void Should_Not_Uninstall_Package_If_Absent()
             {
                 // Given
@@ -205,7 +205,7 @@ public sealed class VSCodeExtensionProviderTests
                 var result = fixture.Run("-y");
 
                 // Then
-                result.Report.GetState<VSCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
+                result.Report.GetState<VsCodeExtension>(ExtensionName).ShouldBe(ResourceState.Unchanged);
                 fixture.Logger.WasLogged($"The VSCode extension [yellow]{ExtensionName}[/] is already uninstalled");
             }
         }

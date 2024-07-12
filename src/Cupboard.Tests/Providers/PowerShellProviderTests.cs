@@ -44,7 +44,7 @@ public sealed class PowerShellProviderTests
             }
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Run_Script()
         {
             // Given
@@ -62,7 +62,7 @@ public sealed class PowerShellProviderTests
             fixture.Logger.WasLogged("Running PowerShell script [yellow]C:/lol.ps1[/]");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Run_Command()
         {
             // Given
@@ -80,7 +80,7 @@ public sealed class PowerShellProviderTests
             fixture.Logger.WasLogged("Running PowerShell command: [yellow]Not really executed, but must be present[/]");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Skip_Running_Skip_If_Condition_Script_Does_Not_Have_Exit_Code_1()
         {
             // Given
@@ -101,7 +101,7 @@ public sealed class PowerShellProviderTests
             fixture.Logger.WasLogged("Skipping PowerShell script since condition did not evaluate to 0 (zero)");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Return_Error_If_Script_Does_Not_Exist()
         {
             // Given
@@ -117,7 +117,7 @@ public sealed class PowerShellProviderTests
             fixture.Logger.WasLogged("PowerShell script path does not exist");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Run_Script_Using_PowerShell_Core_On_Windows_If_Specified()
         {
             // Given

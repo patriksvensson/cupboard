@@ -27,7 +27,7 @@ public sealed class WingetProviderTests
 
     public sealed class EnsureInstalled
     {
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Missing()
         {
             // Given
@@ -50,7 +50,7 @@ public sealed class WingetProviderTests
             fixture.Logger.WasLogged("The Winget package [yellow]GitHub.cli[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Install_Package_If_Present_lol()
         {
             // Given
@@ -71,7 +71,7 @@ public sealed class WingetProviderTests
 
     public sealed class EnsureUninstalled
     {
-        [WindowsFact]
+        [Fact]
         public void Should_Uninstall_Package_If_Present()
         {
             // Given
@@ -93,7 +93,7 @@ public sealed class WingetProviderTests
             fixture.Logger.WasLogged("The Winget package [yellow]GitHub.cli[/] was uninstalled");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Uninstall_Package_If_Absent()
         {
             // Given

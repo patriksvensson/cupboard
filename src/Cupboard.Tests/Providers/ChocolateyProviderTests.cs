@@ -50,7 +50,7 @@ public sealed class ChocolateyProviderTests
 
     public sealed class EnsureInstalled
     {
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Missing()
         {
             // Given
@@ -74,7 +74,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Install_Package_If_Present()
         {
             // Given
@@ -92,7 +92,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_Version_If_Missing()
         {
             // Given
@@ -116,7 +116,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Lower_Version()
         {
             // Given
@@ -140,7 +140,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Lower_Version_With_No_NewLine()
         {
             // Given
@@ -164,7 +164,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Install_Package_Of_Same_Version()
         {
             // Given
@@ -182,7 +182,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Install_Package_Of_Higher_Version()
         {
             // Given
@@ -200,7 +200,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] is already installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Higher_Version_With_Allow_Downgrade()
         {
             // Given
@@ -224,7 +224,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Install_Package_If_Lower_Version_With_Allow_Downgrade()
         {
             // Given
@@ -248,7 +248,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was installed");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Install_Package_Of_Same_Version_With_Allow_Downgrade()
         {
             // Given
@@ -269,7 +269,7 @@ public sealed class ChocolateyProviderTests
 
     public sealed class EnsureUninstalled
     {
-        [WindowsFact]
+        [Fact]
         public void Should_Uninstall_Package_If_Present()
         {
             // Given
@@ -291,7 +291,7 @@ public sealed class ChocolateyProviderTests
             fixture.Logger.WasLogged("The Chocolatey package [yellow]vscode[/] was uninstalled");
         }
 
-        [WindowsFact]
+        [Fact]
         public void Should_Not_Uninstall_Package_If_Absent()
         {
             // Given
