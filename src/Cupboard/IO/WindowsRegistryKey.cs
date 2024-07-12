@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 internal sealed class WindowsRegistryKey : IWindowsRegistryKey

@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 [Obsolete("Please use RegistryValueKindExtensions instead")]
 internal static class RegistryKeyValueKindExtensions

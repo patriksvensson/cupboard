@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 internal sealed class ColorPalette<T>
     where T : notnull

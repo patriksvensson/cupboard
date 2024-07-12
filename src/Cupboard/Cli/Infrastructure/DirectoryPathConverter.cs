@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 /// <summary>
 /// A type converter for <see cref="DirectoryPath"/>.

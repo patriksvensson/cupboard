@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 internal class EnvironmentRefresher : IEnvironmentRefresher
 {

@@ -9,7 +9,7 @@ global using System.Security.Principal;
 global using System.Text;
 global using CliWrap;
 global using CliWrap.EventStream;
-global using Cupboard.Internal;
+global using Cupboard;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Win32;

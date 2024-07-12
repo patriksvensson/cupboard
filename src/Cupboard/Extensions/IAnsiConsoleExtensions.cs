@@ -1,4 +1,4 @@
-namespace Cupboard.Internal;
+namespace Cupboard;
 
 internal static class IAnsiConsoleExtensions
 {
