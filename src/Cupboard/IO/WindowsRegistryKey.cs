@@ -47,12 +47,6 @@ internal sealed class WindowsRegistryKey : IWindowsRegistryKey
         return new WindowsRegistryKey(key);
     }
 
-    [Obsolete("Please use SetValue overload accepting a RegistryValueKind instead")]
-    public void SetValue(string name, object value, RegistryKeyValueKind kind)
-    {
-        _key.SetValue(name, value, kind.ToWin32());
-    }
-
     public void SetValue(string name, object value, RegistryValueKind kind)
     {
         _key.SetValue(name, value, kind.ToWin32());

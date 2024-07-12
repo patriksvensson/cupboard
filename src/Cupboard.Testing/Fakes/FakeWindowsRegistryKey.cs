@@ -39,12 +39,6 @@ public sealed class FakeWindowsRegistryKey : IWindowsRegistryKey
         throw new NotSupportedException();
     }
 
-    [Obsolete("Please use SetValue overload accepting a RegistryValueKind instead")]
-    public void SetValue(string name, object value, RegistryKeyValueKind registryValueKind)
-    {
-        throw new NotSupportedException();
-    }
-
     public void SetValue(string name, object value, RegistryValueKind kind)
     {
         throw new NotSupportedException();

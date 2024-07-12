@@ -14,10 +14,4 @@
     <ProjectReference Include="..\Cupboard.Core\Cupboard.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Apps\" />
-    <Folder Include="IO\" />
-    <Folder Include="Shell\" />
-  </ItemGroup>
-
 </Project>
