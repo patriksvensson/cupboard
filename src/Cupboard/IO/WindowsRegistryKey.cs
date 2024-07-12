@@ -1,8 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Win32RegistryKey = Microsoft.Win32.RegistryKey;
-
 namespace Cupboard.Internal;
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]

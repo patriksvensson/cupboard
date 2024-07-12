@@ -1,6 +1,3 @@
-using System;
-using Spectre.Console;
-
 namespace Cupboard;
 
 public interface IExecutionController

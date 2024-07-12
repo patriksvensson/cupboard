@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Spectre.Console.Cli;
-
 namespace Cupboard.Internal;
 
 internal sealed class FactBuilder : IFactBuilder

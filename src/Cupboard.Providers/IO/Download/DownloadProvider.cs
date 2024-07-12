@@ -1,10 +1,3 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class DownloadProvider : AsyncResourceProvider<Download>

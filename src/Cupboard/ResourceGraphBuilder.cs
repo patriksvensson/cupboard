@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Cupboard.Internal;
 
 internal static class ResourceGraphBuilder

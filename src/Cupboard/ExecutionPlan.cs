@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Cupboard.Internal;
 
 internal sealed class ExecutionPlan : IEnumerable<ExecutionPlanItem>

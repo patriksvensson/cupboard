@@ -1,6 +1,3 @@
-using System;
-using Spectre.Console.Cli;
-
 namespace Cupboard.Internal;
 
 internal sealed class TypeResolver : ITypeResolver

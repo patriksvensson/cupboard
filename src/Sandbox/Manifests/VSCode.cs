@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Cupboard;
 
-namespace Sandbox;
+namespace Cupboard.Sandbox;
 
 public sealed class VSCode : Manifest
 {

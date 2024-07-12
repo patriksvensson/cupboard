@@ -7,8 +7,8 @@
 /[Tt]ools/
 .ionide/
 
-# Cakeup
-cakeup-x86_64-latest.exe
+# macOS
+.DS_Store
 
 # .NET Core CLI
 /.dotnet/

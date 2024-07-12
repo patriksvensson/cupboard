@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Cupboard.Tests.Unit.IO;
 
 public sealed class ChmodParserTests

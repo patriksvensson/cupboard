@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Spectre.Console;
-
 namespace Cupboard.Internal;
 
 internal sealed class ColorPalette<T>

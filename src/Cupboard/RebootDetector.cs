@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-
 namespace Cupboard;
 
 internal sealed class RebootDetector : IRebootDetector

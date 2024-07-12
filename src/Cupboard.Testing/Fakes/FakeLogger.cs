@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Cupboard.Testing;
 
 public sealed class FakeLogger : ICupboardLogger

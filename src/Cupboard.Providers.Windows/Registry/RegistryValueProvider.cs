@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.InteropServices;
-
 namespace Cupboard;
 
 public sealed class RegistryValueProvider : WindowsResourceProvider<RegistryValue>

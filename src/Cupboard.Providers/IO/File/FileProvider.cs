@@ -1,7 +1,3 @@
-using System;
-using Spectre.IO;
-using FileAttributes = System.IO.FileAttributes;
-
 namespace Cupboard;
 
 public sealed class FileProvider : ResourceProvider<File>

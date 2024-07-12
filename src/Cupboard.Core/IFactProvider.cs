@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Spectre.Console.Cli;
-
 namespace Cupboard;
 
 public interface IFactProvider

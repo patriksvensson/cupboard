@@ -1,5 +1,3 @@
-using Spectre.Console;
-
 namespace Cupboard.Internal;
 
 internal static class IAnsiConsoleExtensions

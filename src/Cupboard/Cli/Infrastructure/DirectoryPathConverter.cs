@@ -1,8 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using Spectre.IO;
-
 namespace Cupboard.Internal;
 
 /// <summary>

@@ -1,9 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Spectre.Console;
-using Spectre.Console.Cli;
-
 namespace Cupboard.Internal;
 
 internal sealed class FactCommand : Command<FactCommand.Settings>

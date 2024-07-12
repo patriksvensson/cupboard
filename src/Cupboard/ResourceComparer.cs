@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Cupboard.Internal;
 
 internal sealed class ResourceComparer : IEqualityComparer<IResourceIdentity>

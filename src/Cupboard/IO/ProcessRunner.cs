@@ -1,10 +1,3 @@
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using CliWrap;
-using CliWrap.EventStream;
-using Spectre.Console;
-
 namespace Cupboard.Internal;
 
 internal sealed class ProcessRunner : IProcessRunner

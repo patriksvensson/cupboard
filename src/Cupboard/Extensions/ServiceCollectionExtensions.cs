@@ -1,10 +1,3 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using Cupboard.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console.Cli;
-
 namespace Cupboard;
 
 public static class ServiceCollectionExtensions
@@ -31,32 +24,23 @@ public static class ServiceCollectionExtensions
             ? new Assembly[] { assembly }
             : AppDomain.CurrentDomain.GetAssemblies();
 
-        foreach (var type in assemblies.SelectMany(assembly => assembly.GetTypes()))
+        foreach (var type in assemblies.SelectMany(a => a.GetTypes()))
         {
             if (isInterface && type.IsInterface)
             {
                 continue;
             }
 
-            if (!type.IsAbstract && serviceType.IsAssignableFrom(type))
+            if (type.IsAbstract || !serviceType.IsAssignableFrom(type))
             {
-                if (!services.Any(x => x.ImplementationType == type))
-                {
-                    services.AddSingleton(serviceType, type);
-                }
+                continue;
+            }
+
+            if (services.All(x => x.ImplementationType != type))
+            {
+                services.AddSingleton(serviceType, type);
             }
         }
-
-        return services;
-    }
-
-    internal static IServiceCollection AddCommandLine(
-        this IServiceCollection services,
-        Action<IConfigurator> configurator)
-    {
-        var app = new CommandApp(new TypeRegistrar(services));
-        app.Configure(configurator);
-        services.AddSingleton<ICommandApp>(app);
 
         return services;
     }

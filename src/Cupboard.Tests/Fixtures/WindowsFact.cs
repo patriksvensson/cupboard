@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using Xunit;
-
 namespace Cupboard.Tests.Unit;
 
 public sealed class WindowsFact : FactAttribute

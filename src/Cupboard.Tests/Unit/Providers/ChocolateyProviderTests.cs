@@ -1,6 +1,3 @@
-using Cupboard.Testing;
-using Shouldly;
-
 namespace Cupboard.Tests.Unit.Providers;
 
 public sealed class ChocolateyProviderTests

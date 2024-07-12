@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Cupboard;
 
 public sealed class ResourcesModule : ServiceModule

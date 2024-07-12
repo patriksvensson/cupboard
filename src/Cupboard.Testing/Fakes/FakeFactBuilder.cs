@@ -1,5 +1,3 @@
-using Spectre.Console.Cli;
-
 namespace Cupboard.Testing;
 
 public sealed class FakeFactBuilder : IFactBuilder

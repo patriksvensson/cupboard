@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard;
 
 public sealed class VSCodeExtension : Resource, IHasPackageName, IHasPackageState

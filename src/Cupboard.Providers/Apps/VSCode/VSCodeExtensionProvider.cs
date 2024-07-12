@@ -1,7 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class VSCodeExtensionProvider : PackageInstallerProvider<VSCodeExtension>

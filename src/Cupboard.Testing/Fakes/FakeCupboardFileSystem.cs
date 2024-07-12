@@ -1,7 +1,3 @@
-using System.IO;
-using Spectre.IO;
-using Spectre.IO.Testing;
-
 namespace Cupboard.Testing;
 
 public sealed class FakeCupboardFileSystem : ICupboardFileSystem

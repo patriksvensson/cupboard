@@ -1,6 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using Win32Registry = Microsoft.Win32.Registry;
-
 namespace Cupboard.Internal;
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]

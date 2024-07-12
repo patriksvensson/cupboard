@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Spectre.Console.Testing;
-using Spectre.IO;
-
 namespace Cupboard.Testing;
 
 public sealed class CupboardFixture

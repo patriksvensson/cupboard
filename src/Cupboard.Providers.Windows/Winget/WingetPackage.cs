@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard;
 
 public sealed class WingetPackage : Resource, IHasPackageName, IHasPackageState

@@ -1,6 +1,3 @@
-using Shouldly;
-using Xunit;
-
 namespace Cupboard.Tests.Unit.IO;
 
 public sealed class RegistryKeyPathTests

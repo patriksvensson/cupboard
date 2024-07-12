@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class DirectoryProvider : ResourceProvider<Directory>

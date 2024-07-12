@@ -1,5 +1,3 @@
-using Spectre.IO;
-
 namespace Cupboard;
 
 public static class FileExtensions

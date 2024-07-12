@@ -1,8 +1,3 @@
-using System;
-using System.Runtime.InteropServices;
-using Mono.Unix;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public static class PathExtensions

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Cupboard.Internal;
-using Mono.Unix;
-
 namespace Cupboard;
 
 public sealed class Chmod

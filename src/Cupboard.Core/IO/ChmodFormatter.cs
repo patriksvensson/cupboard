@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard.Internal;
 
 internal static class ChmodFormatter

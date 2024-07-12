@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Cupboard;
 
 public sealed class FactCollection : IEnumerable<Fact>

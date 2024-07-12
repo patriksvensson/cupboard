@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard.Internal;
 
 internal sealed class ResourceIdentity : IResourceIdentity

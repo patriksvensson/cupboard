@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Spectre.IO;
-
 namespace Cupboard.Internal;
 
 internal sealed class CupboardEnvironment : ICupboardEnvironment

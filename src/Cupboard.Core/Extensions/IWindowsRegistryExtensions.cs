@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard;
 
 public static class IWindowsRegistryExtensions

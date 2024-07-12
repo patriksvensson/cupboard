@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using Spectre.IO;
-using Spectre.IO.Testing;
-
 namespace Cupboard.Testing;
 
 public sealed class FakeCupboardEnvironment : ICupboardEnvironment

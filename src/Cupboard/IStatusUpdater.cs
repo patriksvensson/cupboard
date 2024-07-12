@@ -1,7 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using Spectre.Console;
-
 namespace Cupboard.Internal;
 
 internal interface IStatusUpdater

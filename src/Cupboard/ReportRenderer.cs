@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace Cupboard.Internal;
 
 internal sealed class ReportRenderer

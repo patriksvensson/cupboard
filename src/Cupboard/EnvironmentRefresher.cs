@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Microsoft.Win32;
-
 namespace Cupboard.Internal;
 
 internal class EnvironmentRefresher : IEnvironmentRefresher

@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Cupboard.Internal;
 
 internal static class RegistryValueKindExtensions

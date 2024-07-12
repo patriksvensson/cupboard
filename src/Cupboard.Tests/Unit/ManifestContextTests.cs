@@ -1,9 +1,3 @@
-using System;
-using Cupboard.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Xunit;
-
 namespace Cupboard.Tests.Unit;
 
 public sealed class ManifestContextTests

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Management;
-using System.Runtime.InteropServices;
-using Spectre.Console.Cli;
-
 namespace Cupboard;
 
 internal sealed class WmiFacts : IFactProvider

@@ -1,6 +1,4 @@
-using Cupboard;
-
-namespace Sandbox;
+namespace Cupboard.Sandbox;
 
 public static class Program
 {

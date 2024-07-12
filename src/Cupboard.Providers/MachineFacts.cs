@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Spectre.Console.Cli;
-using Spectre.IO;
-
 namespace Cupboard;
 
 internal sealed class MachineFacts : IFactProvider

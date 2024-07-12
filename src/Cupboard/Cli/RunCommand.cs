@@ -1,12 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.IO;
-
 namespace Cupboard.Internal;
 
 internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>

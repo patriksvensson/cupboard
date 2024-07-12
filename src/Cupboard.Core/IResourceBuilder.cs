@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard;
 
 public interface IResourceBuilder<out TResource>

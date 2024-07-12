@@ -1,0 +1,23 @@
+global using System.Collections;
+global using System.ComponentModel;
+global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
+global using System.Reflection;
+global using System.Runtime.InteropServices;
+global using System.Security.Principal;
+global using System.Text;
+global using CliWrap;
+global using CliWrap.EventStream;
+global using Cupboard.Internal;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Win32;
+global using Mono.Unix.Native;
+global using Spectre.Console;
+global using Spectre.Console.Cli;
+global using Spectre.Console.Rendering;
+global using Spectre.IO;
+
+global using Win32Registry = Microsoft.Win32.Registry;
+global using Win32RegistryKey = Microsoft.Win32.RegistryKey;

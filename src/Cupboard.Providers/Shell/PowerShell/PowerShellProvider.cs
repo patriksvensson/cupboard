@@ -1,8 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class PowerShellProvider : AsyncResourceProvider<PowerShell>

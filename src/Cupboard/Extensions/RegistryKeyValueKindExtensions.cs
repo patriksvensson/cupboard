@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-
 namespace Cupboard.Internal;
 
 [Obsolete("Please use RegistryValueKindExtensions instead")]

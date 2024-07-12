@@ -1,8 +1,3 @@
-using Cupboard.Testing;
-using Shouldly;
-using Spectre.IO;
-using Xunit;
-
 namespace Cupboard.Tests.Unit.Providers;
 
 public sealed class FileProviderTests

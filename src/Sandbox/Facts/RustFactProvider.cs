@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Cupboard;
 using Spectre.Console.Cli;
 using Spectre.IO;
 
-namespace Sandbox;
+namespace Cupboard.Sandbox;
 
 public sealed class RustFactProvider : IFactProvider
 {

@@ -1,6 +1,3 @@
-using System;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class Exec : Resource

@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard;
 
 [Obsolete("Please use the RegistryValue resource instead")]

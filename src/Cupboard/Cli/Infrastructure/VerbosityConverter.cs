@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-
 namespace Cupboard.Internal;
 
 internal sealed class VerbosityConverter : TypeConverter

@@ -1,6 +1,3 @@
-using System;
-using Spectre.Console;
-
 namespace Cupboard.Internal;
 
 internal sealed class CupboardLogger : ICupboardLogger

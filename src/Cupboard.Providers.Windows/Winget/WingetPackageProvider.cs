@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace Cupboard;
 
 public sealed class WingetPackageProvider : PackageInstallerProvider<WingetPackage>

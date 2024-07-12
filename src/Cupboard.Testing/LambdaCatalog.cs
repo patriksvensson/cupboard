@@ -1,5 +1,3 @@
-using System;
-
 namespace Cupboard.Testing;
 
 public sealed class LambdaCatalog : Catalog

@@ -1,6 +1,3 @@
-using Shouldly;
-using Xunit;
-
 namespace Cupboard.Tests.Unit;
 
 public sealed class FactCollectionTests

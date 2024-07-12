@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Cupboard.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class CupboardHostBuilder

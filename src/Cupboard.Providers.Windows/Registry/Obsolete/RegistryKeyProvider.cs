@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.InteropServices;
-
 namespace Cupboard;
 
 [Obsolete("Please use the RegistryValue resource instead")]

@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Spectre.IO;
-
 namespace Cupboard;
 
 public sealed class ExecProvider : AsyncResourceProvider<Exec>

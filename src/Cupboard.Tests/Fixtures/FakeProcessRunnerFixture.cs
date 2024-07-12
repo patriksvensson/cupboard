@@ -1,5 +1,3 @@
-using NSubstitute;
-
 namespace Cupboard.Tests.Resources;
 
 public sealed class FakeProcessRunnerFixture
