@@ -1,6 +1,7 @@
 namespace Cupboard;
 
 [Flags]
+[PublicAPI]
 public enum Permissions
 {
     None = 0,

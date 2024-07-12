@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class DirectoryExtensions
 {
     public static IResourceBuilder<Directory> Ensure(this IResourceBuilder<Directory> builder, DirectoryState state)

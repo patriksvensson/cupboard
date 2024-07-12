@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class RegistryValueProvider : WindowsResourceProvider<RegistryValue>
+internal sealed class RegistryValueProvider : WindowsResourceProvider<RegistryValue>
 {
     private readonly IWindowsRegistry _registry;
     private readonly ICupboardLogger _logger;

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public abstract class PackageInstallerProvider<T> : AsyncResourceProvider<T>
     where T : Resource, IHasPackageState, IHasPackageName
 {
@@ -83,7 +84,7 @@ public abstract class PackageInstallerProvider<T> : AsyncResourceProvider<T>
         }
 
         var result = await GetPackageState(resource).ConfigureAwait(false);
-        if (IsError(PackageInstallerOperation.RetriveState, result))
+        if (IsError(PackageInstallerOperation.RetrieveState, result))
         {
             _logger.Error($"An error occured while retrieving {Name} state");
             return PackageInstallerResult.Error;

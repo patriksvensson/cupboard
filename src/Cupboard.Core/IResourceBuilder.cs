@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public interface IResourceBuilder<out TResource>
     where TResource : Resource
 {

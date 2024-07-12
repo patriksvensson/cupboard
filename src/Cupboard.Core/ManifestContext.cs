@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class ManifestContext
 {
     private const BindingFlags Bindings = BindingFlags.Public | BindingFlags.Instance;
@@ -21,7 +22,7 @@ public sealed class ManifestContext
         // that are both readable and writable.
         var properties = typeof(TResource)
             .GetProperties(Bindings)
-            .Where(p => p.CanRead && p.CanWrite);
+            .Where(p => p is { CanRead: true, CanWrite: true });
 
         foreach (var resource in resources)
         {

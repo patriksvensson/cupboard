@@ -1,13 +1,11 @@
 namespace Cupboard;
+[PublicAPI]
 
 public static class ChmodParser
 {
     public static Chmod Parse(string pattern)
     {
-        if (pattern == null)
-        {
-            throw new ArgumentNullException(nameof(pattern));
-        }
+        ArgumentNullException.ThrowIfNull(pattern);
 
         if (pattern.Length != 3 && pattern.Length != 4)
         {

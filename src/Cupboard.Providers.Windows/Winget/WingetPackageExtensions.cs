@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class WingetPackageExtensions
 {
     public static IResourceBuilder<WingetPackage> Ensure(this IResourceBuilder<WingetPackage> builder, PackageState state)

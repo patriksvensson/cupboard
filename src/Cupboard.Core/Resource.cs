@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public abstract class Resource : IResourceIdentity
 {
     public Type ResourceType => GetType();

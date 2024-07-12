@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class ChocolateyPackageProvider : PackageInstallerProvider<ChocolateyPackage>
+internal sealed class ChocolateyPackageProvider : PackageInstallerProvider<ChocolateyPackage>
 {
     private readonly IProcessRunner _runner;
 

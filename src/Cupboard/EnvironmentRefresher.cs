@@ -33,7 +33,7 @@ internal class EnvironmentRefresher : IEnvironmentRefresher
                     {
                         result.TryGetValue(key, out var path);
                         path ??= string.Empty;
-                        result[key] = (path + ";" + root.GetValue(key)?.ToString() ?? string.Empty).TrimStart(';');
+                        result[key] = (path + ";" + root.GetValue(key)).TrimStart(';');
                     }
                     else
                     {

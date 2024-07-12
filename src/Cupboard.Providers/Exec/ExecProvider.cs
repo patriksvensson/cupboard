@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class ExecProvider : AsyncResourceProvider<Exec>
+internal sealed class ExecProvider : AsyncResourceProvider<Exec>
 {
     private readonly IProcessRunner _runner;
     private readonly ICupboardFileSystem _fileSystem;

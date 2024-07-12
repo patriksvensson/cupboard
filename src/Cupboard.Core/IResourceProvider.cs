@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public interface IResourceProvider
 {
     Type ResourceType { get; }

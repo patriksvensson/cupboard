@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Chmod
 {
     private static readonly Dictionary<Func<Chmod, Permissions>, Dictionary<Permissions, FileAccessPermissions>> _lookup;
@@ -13,19 +14,19 @@ public sealed class Chmod
     {
         _lookup = new Dictionary<Func<Chmod, Permissions>, Dictionary<Permissions, FileAccessPermissions>>
         {
-            [c => c.Owner] = new Dictionary<Permissions, FileAccessPermissions>
+            [c => c.Owner] = new()
             {
                 { Permissions.Read, FileAccessPermissions.UserRead },
                 { Permissions.Write, FileAccessPermissions.UserWrite },
                 { Permissions.Execute, FileAccessPermissions.UserExecute },
             },
-            [c => c.Group] = new Dictionary<Permissions, FileAccessPermissions>
+            [c => c.Group] = new()
             {
                 { Permissions.Read, FileAccessPermissions.GroupRead },
                 { Permissions.Write, FileAccessPermissions.GroupWrite },
                 { Permissions.Execute, FileAccessPermissions.GroupExecute },
             },
-            [c => c.Other] = new Dictionary<Permissions, FileAccessPermissions>
+            [c => c.Other] = new()
             {
                 { Permissions.Read, FileAccessPermissions.OtherRead },
                 { Permissions.Write, FileAccessPermissions.OtherWrite },

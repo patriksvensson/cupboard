@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class WindowsModule : ServiceModule
 {
     public override void Configure(IServiceCollection services)

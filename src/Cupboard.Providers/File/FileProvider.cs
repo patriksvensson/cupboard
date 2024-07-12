@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class FileProvider : ResourceProvider<File>
+internal sealed class FileProvider : ResourceProvider<File>
 {
     private readonly ICupboardFileSystem _fileSystem;
     private readonly ICupboardEnvironment _environment;

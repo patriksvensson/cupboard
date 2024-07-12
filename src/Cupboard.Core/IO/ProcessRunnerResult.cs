@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class ProcessRunnerResult
 {
     public int ExitCode { get; }

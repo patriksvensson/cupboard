@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class DirectoryProvider : ResourceProvider<Directory>
+internal sealed class DirectoryProvider : ResourceProvider<Directory>
 {
     private readonly ICupboardFileSystem _fileSystem;
     private readonly ICupboardEnvironment _environment;

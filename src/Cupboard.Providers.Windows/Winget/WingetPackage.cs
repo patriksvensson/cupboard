@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class WingetPackage : Resource, IHasPackageName, IHasPackageState
 {
     /// <summary>

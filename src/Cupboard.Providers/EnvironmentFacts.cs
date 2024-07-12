@@ -20,6 +20,7 @@ internal sealed class EnvironmentFacts : IFactProvider
     }
 }
 
+[PublicAPI]
 public static class EnvironmentFactsExtensions
 {
     public static bool HasEnvironmentVariable(this FactCollection facts, string key)

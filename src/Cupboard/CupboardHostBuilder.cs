@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class CupboardHostBuilder
 {
     private readonly List<Action<IHostBuilder>> _configurations;

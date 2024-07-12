@@ -81,7 +81,7 @@ internal sealed class ReportRenderer
         if (report.DryRun)
         {
             var breakdown = new BreakdownChart();
-            var groupedTypes = report.Items.GroupBy(x => x.Resource.GetType());
+            var groupedTypes = report.Items.GroupBy(x => x.Resource.GetType()).ToArray();
             var colors = new ColorPalette<Type>(groupedTypes.Select(g => g.Key));
 
             foreach (var group in groupedTypes)

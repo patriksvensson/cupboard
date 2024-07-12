@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class FactCollection : IEnumerable<Fact>
 {
     private readonly Fact _root;

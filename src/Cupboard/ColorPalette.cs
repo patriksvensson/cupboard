@@ -33,11 +33,6 @@ internal sealed class ColorPalette<T>
 
     public Color GetColor(T item)
     {
-        if (_colors.TryGetValue(item, out var color))
-        {
-            return color;
-        }
-
-        return Color.White;
+        return _colors.TryGetValue(item, out var color) ? color : Color.White;
     }
 }

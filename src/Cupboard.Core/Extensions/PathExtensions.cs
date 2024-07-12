@@ -1,13 +1,11 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class PathExtensions
 {
     public static void SetPermissions(this Path path, Chmod chmod)
     {
-        if (path is null)
-        {
-            throw new ArgumentNullException(nameof(path));
-        }
+        ArgumentNullException.ThrowIfNull(path);
 
         if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
         {

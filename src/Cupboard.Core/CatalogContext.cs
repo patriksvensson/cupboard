@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class CatalogContext
 {
     private readonly HashSet<Type> _manifests;

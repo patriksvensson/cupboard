@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ResourceExtensions
 {
     public static IResourceBuilder<T> OnError<T>(this IResourceBuilder<T> builder, ErrorOptions options)

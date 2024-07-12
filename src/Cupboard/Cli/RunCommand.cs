@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
 {
     private readonly ExecutionEngine _executor;
@@ -69,7 +70,7 @@ internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
         _interactiveController = new InteractiveExecutionController(_console);
     }
 
-    public override ValidationResult Validate([NotNull] CommandContext context, [NotNull] Settings settings)
+    public override ValidationResult Validate(CommandContext context, Settings settings)
     {
         if (settings.WorkingDirectory != null)
         {

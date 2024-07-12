@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class CupboardHost
 {
     private readonly IAnsiConsole _console;
@@ -18,7 +19,7 @@ public sealed class CupboardHost
         return new CupboardHostBuilder();
     }
 
-    public int Run(string[] args)
+    public int Run(IEnumerable<string> args)
     {
         try
         {

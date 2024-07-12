@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public static class ReportExtensions
 {
     public static ResourceState GetState<TResource>(this Report report, string name)

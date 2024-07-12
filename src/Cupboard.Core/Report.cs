@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Report : IEnumerable<ReportItem>
 {
     public IReadOnlyList<ReportItem> Items { get; }

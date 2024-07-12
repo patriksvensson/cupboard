@@ -1,4 +1,5 @@
 global using System.Text.RegularExpressions;
+global using JetBrains.Annotations;
 global using Microsoft.Extensions.DependencyInjection;
 global using Spectre.Console.Cli;
 global using Spectre.IO;

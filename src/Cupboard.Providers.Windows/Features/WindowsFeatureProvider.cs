@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class WindowsFeatureProvider : AsyncWindowsResourceProvider<WindowsFeature>
+internal sealed class WindowsFeatureProvider : AsyncWindowsResourceProvider<WindowsFeature>
 {
     private readonly IProcessRunner _runner;
     private readonly IEnvironmentRefresher _refresher;

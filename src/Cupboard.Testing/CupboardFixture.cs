@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class CupboardFixture
 {
     private readonly List<LambdaCatalog> _catalogs;

@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeFactBuilder : IFactBuilder
 {
     public FactCollection Facts { get; set; }

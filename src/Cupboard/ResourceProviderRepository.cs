@@ -9,13 +9,11 @@ internal sealed class ResourceProviderRepository
         _lookup = new Dictionary<Type, IResourceProvider>();
         foreach (var provider in providers)
         {
-            if (_lookup.ContainsKey(provider.ResourceType))
+            if (!_lookup.TryAdd(provider.ResourceType, provider))
             {
                 throw new InvalidOperationException(
                     $"Encountered duplicate providers for {provider.ResourceType}");
             }
-
-            _lookup.Add(provider.ResourceType, provider);
         }
     }
 

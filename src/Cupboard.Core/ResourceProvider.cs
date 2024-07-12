@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public abstract class ResourceProvider<TResource> : AsyncResourceProvider<TResource>
     where TResource : Resource
 {
@@ -11,6 +12,7 @@ public abstract class ResourceProvider<TResource> : AsyncResourceProvider<TResou
     }
 }
 
+[PublicAPI]
 public abstract class AsyncResourceProvider<TResource> : IResourceProvider
     where TResource : Resource
 {

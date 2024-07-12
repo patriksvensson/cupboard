@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeWindowsRegistry : IWindowsRegistry
 {
     public IWindowsRegistryKey ClassesRoot { get; }

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ExecExtensions
 {
     public static IResourceBuilder<Exec> Path(this IResourceBuilder<Exec> builder, FilePath file)

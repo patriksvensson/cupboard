@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeCupboardFileSystem : ICupboardFileSystem
 {
     private readonly FakeFileSystem _fileSystem;

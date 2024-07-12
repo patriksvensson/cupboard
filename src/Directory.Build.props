@@ -26,6 +26,12 @@
     <PackageReleaseNotes>https://github.com/patriksvensson/cupboard/releases</PackageReleaseNotes>
   </PropertyGroup>
 
+  <ItemGroup Label="Annotations">
+    <Compile Include="$(MSBuildThisFileDirectory)/Annotations.cs">
+      <Link>Properties/Annotations.cs</Link>
+    </Compile>
+  </ItemGroup>
+
   <PropertyGroup Label="Source Link">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ChocolateyPackageExtensions
 {
     public static IResourceBuilder<ChocolateyPackage> Ensure(this IResourceBuilder<ChocolateyPackage> builder, PackageState state)

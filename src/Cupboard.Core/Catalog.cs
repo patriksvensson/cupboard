@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public abstract class Catalog
 {
     public virtual bool CanRun(FactCollection facts)

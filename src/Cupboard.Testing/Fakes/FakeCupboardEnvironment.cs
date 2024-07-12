@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeCupboardEnvironment : ICupboardEnvironment
 {
     private readonly FakeEnvironment _environment;

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal sealed class FactCommand : Command<FactCommand.Settings>
 {
     private readonly IFactBuilder _builder;
@@ -17,7 +18,7 @@ internal sealed class FactCommand : Command<FactCommand.Settings>
         _console = console ?? throw new ArgumentNullException(nameof(console));
     }
 
-    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+    public override int Execute(CommandContext context, Settings settings)
     {
         var facts = _builder.Build(context.Remaining);
 

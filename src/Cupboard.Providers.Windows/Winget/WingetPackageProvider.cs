@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class WingetPackageProvider : PackageInstallerProvider<WingetPackage>
+internal sealed class WingetPackageProvider : PackageInstallerProvider<WingetPackage>
 {
     private readonly IProcessRunner _runner;
 
@@ -36,7 +36,7 @@ public sealed class WingetPackageProvider : PackageInstallerProvider<WingetPacka
 
     protected override bool IsError(PackageInstallerOperation operation, ProcessRunnerResult result)
     {
-        if (operation == PackageInstallerOperation.RetriveState)
+        if (operation == PackageInstallerOperation.RetrieveState)
         {
             return result.ExitCode != 0 && (!result.StandardOut?.EndsWith("No installed package found matching input criteria.") ?? true);
         }

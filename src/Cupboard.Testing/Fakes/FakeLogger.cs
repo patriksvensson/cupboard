@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeLogger : ICupboardLogger
 {
     private readonly List<LoggedMessage> _messages;

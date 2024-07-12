@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class ReportItem
 {
     public Resource Resource { get; }

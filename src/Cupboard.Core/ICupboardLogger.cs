@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public interface ICupboardLogger
 {
     Verbosity Verbosity { get; }

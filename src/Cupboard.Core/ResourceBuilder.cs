@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public abstract class ResourceBuilder
 {
     public string Name { get; }
@@ -22,6 +23,7 @@ public abstract class ResourceBuilder
     }
 }
 
+[PublicAPI]
 public sealed class ResourceBuilder<TResource> : ResourceBuilder, IResourceBuilder<TResource>
     where TResource : Resource
 {

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class WindowsFeature : Resource
 {
     public string? FeatureName { get; set; }

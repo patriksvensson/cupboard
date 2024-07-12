@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class RegistryPath
 {
     private static readonly Dictionary<string, string> _rootSubstitutions;

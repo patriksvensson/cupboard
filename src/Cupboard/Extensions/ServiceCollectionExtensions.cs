@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddModule<T>(this IServiceCollection services)
@@ -21,7 +22,7 @@ public static class ServiceCollectionExtensions
         var isInterface = serviceType.IsInterface;
 
         var assemblies = assembly != null
-            ? new Assembly[] { assembly }
+            ? new[] { assembly }
             : AppDomain.CurrentDomain.GetAssemblies();
 
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()))

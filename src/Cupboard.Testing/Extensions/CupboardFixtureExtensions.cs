@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public static class CupboardFixtureExtensions
 {
     public static void FileShouldExist(this CupboardFixture fixture, FilePath path)

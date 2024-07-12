@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class ChocolateyPackage : Resource, IHasPackageState, IHasPackageName
 {
     public string Package { get; set; }

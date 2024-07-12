@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Download : Resource
 {
     public Uri? Url { get; set; }

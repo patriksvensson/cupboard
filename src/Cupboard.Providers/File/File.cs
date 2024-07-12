@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class File : Resource
 {
     public FilePath? Destination { get; set; }

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class PowerShellScriptExtensions
 {
     public static IResourceBuilder<PowerShell> Script(this IResourceBuilder<PowerShell> builder, FilePath file)

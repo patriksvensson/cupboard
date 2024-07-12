@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class DownloadProvider : AsyncResourceProvider<Download>
+internal sealed class DownloadProvider : AsyncResourceProvider<Download>
 {
     private readonly ICupboardFileSystem _fileSystem;
     private readonly ICupboardEnvironment _environment;

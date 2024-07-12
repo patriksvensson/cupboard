@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class FileSystemExtensions
 {
     public static bool CreateSymbolicLinkSafe(this IFileProvider fileProvider, FilePath source, FilePath destination)

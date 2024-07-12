@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class IWindowsRegistryExtensions
 {
     public static IWindowsRegistryKey? GetKey(this IWindowsRegistry registry, RegistryPath path, bool writable)

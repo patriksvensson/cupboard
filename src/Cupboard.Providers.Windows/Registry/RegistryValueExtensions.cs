@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class RegistryValueExtensions
 {
     public static IResourceBuilder<RegistryValue> Ensure(this IResourceBuilder<RegistryValue> builder, RegistryKeyState state)

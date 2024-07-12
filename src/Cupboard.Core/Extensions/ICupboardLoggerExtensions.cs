@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ICupboardLoggerExtensions
 {
     public static void Fatal(this ICupboardLogger logger, string markup)

@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class RegistryValue : Resource
 {
     public RegistryPath? Path { get; set; }

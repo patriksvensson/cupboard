@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class FileExtensions
 {
     public static IResourceBuilder<File> Source(this IResourceBuilder<File> builder, FilePath path)

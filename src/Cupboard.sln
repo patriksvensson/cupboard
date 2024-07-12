@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9C3DA7B2
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		stylecop.json = stylecop.json
+		Annotations.cs = Annotations.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupboard", "Cupboard\Cupboard.csproj", "{58AE542D-C249-4230-8951-57988317CE87}"

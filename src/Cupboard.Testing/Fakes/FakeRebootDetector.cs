@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeRebootDetector : IRebootDetector
 {
     public bool PendingReboot { get; set; }

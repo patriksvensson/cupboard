@@ -36,17 +36,11 @@ internal sealed class InteractiveExecutionController : IExecutionController
             .AddChoice("a");
 
         var result = prompt.Show(_console);
-        if (result.Equals("y"))
+        return result switch
         {
-            return ExecutionAction.Run;
-        }
-        else if (result.Equals("a"))
-        {
-            return ExecutionAction.Abort;
-        }
-        else
-        {
-            return ExecutionAction.Skip;
-        }
+            "y" => ExecutionAction.Run,
+            "a" => ExecutionAction.Abort,
+            _ => ExecutionAction.Skip,
+        };
     }
 }

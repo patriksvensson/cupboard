@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Directory : Resource
 {
     public DirectoryPath Path { get; set; }

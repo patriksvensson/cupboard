@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class PowerShellProvider : AsyncResourceProvider<PowerShell>
+internal sealed class PowerShellProvider : AsyncResourceProvider<PowerShell>
 {
     private readonly ICupboardFileSystem _fileSystem;
     private readonly ICupboardEnvironment _environment;

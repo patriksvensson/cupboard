@@ -33,7 +33,7 @@ public sealed class VSCode : Manifest
         // Extensions
         foreach (var package in packages)
         {
-            context.Resource<VSCodeExtension>(package)
+            context.Resource<VsCodeExtension>(package)
                 .Ensure(PackageState.Installed)
                 .After<ChocolateyPackage>("vscode");
         }

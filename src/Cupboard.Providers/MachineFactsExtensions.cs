@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class MachineFactsExtensions
 {
     public static OSPlatform Platform(this FactCollection facts)

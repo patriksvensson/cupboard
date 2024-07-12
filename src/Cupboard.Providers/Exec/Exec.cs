@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Exec : Resource
 {
     public FilePath Path { get; set; }

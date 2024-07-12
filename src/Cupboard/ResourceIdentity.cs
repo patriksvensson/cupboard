@@ -5,12 +5,6 @@ internal sealed class ResourceIdentity : IResourceIdentity
     public Type ResourceType { get; }
     public string Name { get; }
 
-    public ResourceIdentity(Type resourceType, string name)
-    {
-        ResourceType = resourceType;
-        Name = name;
-    }
-
     public ResourceIdentity(Resource resource)
     {
         ResourceType = resource.ResourceType;

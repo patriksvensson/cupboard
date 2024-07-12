@@ -20,14 +20,14 @@ internal sealed class MachineFacts : IFactProvider
 
     IEnumerable<(string Name, object Value)> IFactProvider.GetFacts(IRemainingArguments args)
     {
-        yield return (Constants.OSArchitecture, GetOSArchitecture());
-        yield return (Constants.OSPlatform, GetOSPlatform());
+        yield return (Constants.OSArchitecture, GetArchitecture());
+        yield return (Constants.OSPlatform, GetPlatform());
         yield return (Constants.MachineName, System.Environment.MachineName);
         yield return (Constants.ComputerName, System.Environment.MachineName);
         yield return (Constants.UserName, System.Environment.UserName);
     }
 
-    private OSArchitecture GetOSArchitecture()
+    private OSArchitecture GetArchitecture()
     {
         return _platform.Architecture switch
         {
@@ -39,7 +39,7 @@ internal sealed class MachineFacts : IFactProvider
         };
     }
 
-    private OSPlatform GetOSPlatform()
+    private OSPlatform GetPlatform()
     {
         return _platform.Family switch
         {

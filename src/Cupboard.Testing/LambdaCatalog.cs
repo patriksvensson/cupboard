@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class LambdaCatalog : Catalog
 {
     private readonly Action<CatalogContext> _action;

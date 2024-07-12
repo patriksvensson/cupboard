@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class DownloadExtensions
 {
     public static IResourceBuilder<Download> FromUrl(this IResourceBuilder<Download> builder, string url)

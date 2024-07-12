@@ -13,8 +13,8 @@ internal sealed class ExecutionEngine
 
     public ExecutionEngine(
         IFactBuilder factBuilder,
-        IEnumerable<Catalog> specifications,
-        IEnumerable<Manifest> manifests,
+        IEnumerable<Catalog>? specifications,
+        IEnumerable<Manifest>? manifests,
         ExecutionPlanBuilder executionPlanBuilder,
         ISecurityPrincipal security,
         IRebootDetector reboot,

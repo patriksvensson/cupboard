@@ -1,6 +1,7 @@
 namespace Cupboard;
 
 [Flags]
+[PublicAPI]
 public enum SpecialMode
 {
     None = 0,

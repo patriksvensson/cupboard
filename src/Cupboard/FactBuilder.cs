@@ -16,7 +16,7 @@ internal sealed class FactBuilder : IFactBuilder
         {
             foreach (var (name, value) in provider.GetFacts(args))
             {
-                facts.Add(name, value ?? string.Empty);
+                facts.Add(name, value);
             }
         }
 

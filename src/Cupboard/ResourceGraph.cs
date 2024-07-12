@@ -19,11 +19,6 @@ internal sealed class ResourceGraph
         Configurations = new List<Action>();
     }
 
-    public void Add(Resource resource)
-    {
-        Resources.Add(resource);
-    }
-
     public void Connect(IResourceIdentity from, IResourceIdentity to)
     {
         if (from == null)
@@ -82,5 +77,10 @@ internal sealed class ResourceGraph
         }
 
         return graph;
+    }
+
+    private void Add(Resource resource)
+    {
+        Resources.Add(resource);
     }
 }

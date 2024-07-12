@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 internal sealed class FakeReportSubscriber : IReportSubscriber
 {
     public Report? Report { get; set; }

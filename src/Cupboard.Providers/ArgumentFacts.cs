@@ -13,6 +13,7 @@ internal sealed class ArgumentFacts : IFactProvider
     }
 }
 
+[PublicAPI]
 public static class ArgumentFactsExtensions
 {
     public static bool HasArgument(this FactCollection facts, string key)

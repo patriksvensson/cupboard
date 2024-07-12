@@ -1,5 +1,6 @@
 namespace Cupboard.Testing;
 
+[PublicAPI]
 public sealed class FakeProcessRunner : IProcessRunner
 {
     private readonly Dictionary<string, Queue<ProcessRunnerResult>> _registrations;

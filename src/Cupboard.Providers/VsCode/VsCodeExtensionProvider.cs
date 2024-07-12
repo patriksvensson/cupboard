@@ -1,6 +1,6 @@
 namespace Cupboard;
 
-public sealed class VSCodeExtensionProvider : PackageInstallerProvider<VSCodeExtension>
+internal sealed class VsCodeExtensionProvider : PackageInstallerProvider<VsCodeExtension>
 {
     private readonly IProcessRunner _runner;
     private readonly ICupboardEnvironment _environment;
@@ -9,7 +9,7 @@ public sealed class VSCodeExtensionProvider : PackageInstallerProvider<VSCodeExt
     protected override string Name { get; } = "VSCode";
     protected override string Kind { get; } = "extension";
 
-    public VSCodeExtensionProvider(
+    public VsCodeExtensionProvider(
         IProcessRunner runner,
         ICupboardEnvironment environment,
         ICupboardLogger logger,
@@ -20,33 +20,33 @@ public sealed class VSCodeExtensionProvider : PackageInstallerProvider<VSCodeExt
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
     }
 
-    public override VSCodeExtension Create(string name)
+    public override VsCodeExtension Create(string name)
     {
-        return new VSCodeExtension(name)
+        return new VsCodeExtension(name)
         {
             Package = name,
         };
     }
 
-    protected override bool IsPackageInstalled(VSCodeExtension resource, string output)
+    protected override bool IsPackageInstalled(VsCodeExtension resource, string output)
     {
         return output.Contains(resource.Package, StringComparison.OrdinalIgnoreCase);
     }
 
-    protected override async Task<ProcessRunnerResult> GetPackageState(VSCodeExtension resource)
+    protected override async Task<ProcessRunnerResult> GetPackageState(VsCodeExtension resource)
     {
         var executable = GetCodeExecutable();
         return await _runner.Run(executable, "--list-extensions", supressOutput: true).ConfigureAwait(false);
     }
 
-    protected override async Task<ProcessRunnerResult> InstallPackage(VSCodeExtension resource)
+    protected override async Task<ProcessRunnerResult> InstallPackage(VsCodeExtension resource)
     {
         var executable = GetCodeExecutable();
         var arguments = $"--install-extension {resource.Package}";
         return await _runner.Run(executable, arguments).ConfigureAwait(false);
     }
 
-    protected override async Task<ProcessRunnerResult> UninstallPackage(VSCodeExtension resource)
+    protected override async Task<ProcessRunnerResult> UninstallPackage(VsCodeExtension resource)
     {
         var executable = GetCodeExecutable();
         var arguments = $"--uninstall-extension {resource.Package}";

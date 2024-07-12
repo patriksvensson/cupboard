@@ -3,6 +3,7 @@ namespace Cupboard;
 /// <summary>
 /// A type converter for <see cref="DirectoryPath"/>.
 /// </summary>
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal sealed class DirectoryPathConverter : TypeConverter
 {
     /// <inheritdoc/>

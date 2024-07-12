@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class ResourcesModule : ServiceModule
 {
     public override void Configure(IServiceCollection services)
@@ -10,7 +11,7 @@ public sealed class ResourcesModule : ServiceModule
         services.AddSingleton<IResourceProvider, ExecProvider>();
         services.AddSingleton<IResourceProvider, FileProvider>();
         services.AddSingleton<IResourceProvider, PowerShellProvider>();
-        services.AddSingleton<IResourceProvider, VSCodeExtensionProvider>();
+        services.AddSingleton<IResourceProvider, VsCodeExtensionProvider>();
 
         // Facts
         services.AddSingleton<IFactProvider, ArgumentFacts>();

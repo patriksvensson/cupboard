@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public sealed class Fact
 {
     private static Fact DefaultFact { get; } = new Fact(null, string.Empty);

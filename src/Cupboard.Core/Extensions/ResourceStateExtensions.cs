@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public static class ResourceStateExtensions
 {
     public static bool IsError(this ResourceState state)

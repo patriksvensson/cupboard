@@ -3,24 +3,23 @@ namespace Cupboard;
 internal sealed class CupboardLogger : ICupboardLogger
 {
     private readonly IAnsiConsole _console;
-    private Verbosity _verbosity;
 
-    public Verbosity Verbosity => _verbosity;
+    public Verbosity Verbosity { get; private set; }
 
     public CupboardLogger(IAnsiConsole console)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
-        _verbosity = Verbosity.Normal;
+        Verbosity = Verbosity.Normal;
     }
 
     public void SetVerbosity(Verbosity verbosity)
     {
-        _verbosity = verbosity;
+        Verbosity = verbosity;
     }
 
     public void Log(Verbosity verbosity, LogLevel level, string text)
     {
-        if (verbosity > _verbosity)
+        if (verbosity > Verbosity)
         {
             return;
         }
@@ -46,7 +45,7 @@ internal sealed class CupboardLogger : ICupboardLogger
 
     public void Log(Verbosity verbosity, LogLevel level, string title, string text)
     {
-        if (verbosity > _verbosity)
+        if (verbosity > Verbosity)
         {
             return;
         }

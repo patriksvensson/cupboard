@@ -1,5 +1,6 @@
 ﻿namespace Cupboard;
 
+[PublicAPI]
 public static class WindowsFeatureExtensions
 {
     public static IResourceBuilder<WindowsFeature> Ensure(this IResourceBuilder<WindowsFeature> builder, WindowsFeatureState state)

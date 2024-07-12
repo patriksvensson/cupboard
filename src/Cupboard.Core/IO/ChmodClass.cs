@@ -1,5 +1,6 @@
 namespace Cupboard;
 
+[PublicAPI]
 public enum ChmodClass
 {
     Owner = 0,
