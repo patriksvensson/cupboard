@@ -12,6 +12,6 @@ internal sealed class SecurityPrincipal : ISecurityPrincipal
             RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows)
                 ? new WindowsPrincipal(WindowsIdentity.GetCurrent())
                     .IsInRole(WindowsBuiltInRole.Administrator)
-                : Syscall.geteuid() == 0);
+                : System.Environment.IsPrivilegedProcess);
     }
 }

@@ -3,7 +3,7 @@ namespace Cupboard;
 [PublicAPI]
 public sealed class Chmod
 {
-    private static readonly Dictionary<Func<Chmod, Permissions>, Dictionary<Permissions, FileAccessPermissions>> _lookup;
+    private static readonly Dictionary<Func<Chmod, Permissions>, Dictionary<Permissions, UnixFileMode>> _lookup;
 
     public SpecialMode Mode { get; }
     public Permissions Owner { get; }
@@ -12,25 +12,25 @@ public sealed class Chmod
 
     static Chmod()
     {
-        _lookup = new Dictionary<Func<Chmod, Permissions>, Dictionary<Permissions, FileAccessPermissions>>
+        _lookup = new()
         {
             [c => c.Owner] = new()
             {
-                { Permissions.Read, FileAccessPermissions.UserRead },
-                { Permissions.Write, FileAccessPermissions.UserWrite },
-                { Permissions.Execute, FileAccessPermissions.UserExecute },
+                { Permissions.Read, UnixFileMode.UserRead },
+                { Permissions.Write, UnixFileMode.UserWrite },
+                { Permissions.Execute, UnixFileMode.UserExecute },
             },
             [c => c.Group] = new()
             {
-                { Permissions.Read, FileAccessPermissions.GroupRead },
-                { Permissions.Write, FileAccessPermissions.GroupWrite },
-                { Permissions.Execute, FileAccessPermissions.GroupExecute },
+                { Permissions.Read, UnixFileMode.GroupRead },
+                { Permissions.Write, UnixFileMode.GroupWrite },
+                { Permissions.Execute, UnixFileMode.GroupExecute },
             },
             [c => c.Other] = new()
             {
-                { Permissions.Read, FileAccessPermissions.OtherRead },
-                { Permissions.Write, FileAccessPermissions.OtherWrite },
-                { Permissions.Execute, FileAccessPermissions.OtherExecute },
+                { Permissions.Read, UnixFileMode.OtherRead },
+                { Permissions.Write, UnixFileMode.OtherWrite },
+                { Permissions.Execute, UnixFileMode.OtherExecute },
             },
         };
     }
@@ -64,9 +64,9 @@ public sealed class Chmod
         };
     }
 
-    public FileAccessPermissions ToFileAccessPermissions()
+    public UnixFileMode ToFileAccessPermissions()
     {
-        var permissions = default(FileAccessPermissions);
+        var permissions = default(UnixFileMode);
         foreach (var map in _lookup)
         {
             var permission = map.Key(this);

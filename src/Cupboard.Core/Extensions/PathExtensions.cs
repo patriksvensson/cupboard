@@ -12,7 +12,6 @@ public static class PathExtensions
             return;
         }
 
-        var info = UnixFileSystemInfo.GetFileSystemEntry(path.FullPath);
-        info.FileAccessPermissions = chmod.ToFileAccessPermissions();
+        File.SetUnixFileMode(path.FullPath, chmod.ToFileAccessPermissions());
     }
 }

@@ -13,7 +13,6 @@ global using JetBrains.Annotations;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Win32;
-global using Mono.Unix.Native;
 global using Spectre.Console;
 global using Spectre.Console.Cli;
 global using Spectre.Console.Rendering;
