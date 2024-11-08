@@ -15,9 +15,9 @@ public sealed class ChmodTests
 
             // Then
             result.ShouldBe(
-                FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite | FileAccessPermissions.UserExecute |
-                FileAccessPermissions.GroupRead | FileAccessPermissions.GroupWrite |
-                FileAccessPermissions.OtherRead | FileAccessPermissions.OtherWrite);
+                UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+                UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
+                UnixFileMode.OtherRead | UnixFileMode.OtherWrite);
         }
 
         [Fact]
@@ -30,11 +30,10 @@ public sealed class ChmodTests
             var result = chmod.ToFileAccessPermissions();
 
             // Then
-            result.ShouldBe(FileAccessPermissions.DefaultPermissions);
             result.ShouldBe(
-                FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite |
-                FileAccessPermissions.GroupRead | FileAccessPermissions.GroupWrite |
-                FileAccessPermissions.OtherRead | FileAccessPermissions.OtherWrite);
+                UnixFileMode.UserRead | UnixFileMode.UserWrite |
+                UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
+                UnixFileMode.OtherRead | UnixFileMode.OtherWrite);
         }
     }
 
