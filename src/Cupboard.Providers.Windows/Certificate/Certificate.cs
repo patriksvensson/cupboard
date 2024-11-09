@@ -25,6 +25,14 @@ public sealed class Certificate : Resource
 
     public string? RemoteRootThumbprint { get; set; }
 
+    public string TokenScheme { get; set; } = "Bearer";
+
+    public string? Token { get; set; }
+
+    public string? Username { get; set; }
+
+    public string? Password { get; set; }
+
     public Certificate(string name)
         : base(name)
     {

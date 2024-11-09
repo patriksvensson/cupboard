@@ -37,4 +37,16 @@ public static class CertificateExtensions
 
     public static IResourceBuilder<Certificate> StoreLocation(this IResourceBuilder<Certificate> builder, StoreLocation storeLocation) =>
         builder.Configure(cert => cert.StoreLocation = storeLocation);
+
+    public static IResourceBuilder<Certificate> TokenScheme(this IResourceBuilder<Certificate> builder, string scheme) =>
+        builder.Configure(cert => cert.TokenScheme = scheme);
+
+    public static IResourceBuilder<Certificate> Token(this IResourceBuilder<Certificate> builder, string token) =>
+        builder.Configure(cert => cert.Token = token);
+
+    public static IResourceBuilder<Certificate> Username(this IResourceBuilder<Certificate> builder, string username) =>
+        builder.Configure(cert => cert.Username = username);
+
+    public static IResourceBuilder<Certificate> Password(this IResourceBuilder<Certificate> builder, string password) =>
+        builder.Configure(cert => cert.Password = password);
 }

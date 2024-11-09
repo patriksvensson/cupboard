@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Spectre.IO;
 
 namespace Cupboard;
@@ -96,42 +97,59 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
 
         if (resource.Url is not null && resource.FilePath is null)
         {
-            HttpClientHandler? handler = null;
-            if (resource.RemoteInsecure)
-            {
-                handler = new()
-                {
-                    ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
-                };
-            }
-
-            if (resource.RemoteThumbprint is not null)
-            {
-                handler ??= new()
-                {
-                    ServerCertificateCustomValidationCallback = (_, remoteCertificate, _, _) =>
-                        remoteCertificate?.Thumbprint.Equals(resource.RemoteThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
-                };
-            }
-
-            if (resource.RemoteRootThumbprint is not null)
-            {
-                handler ??= new()
-                {
-                    ServerCertificateCustomValidationCallback = (_, _, chain, _) =>
-                        chain?.ChainElements[^1].Certificate.Thumbprint.Equals(resource.RemoteRootThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
-                };
-            }
-
-            using HttpClient httpClient = handler is null ? new() : new(handler);
-            using var request = new HttpRequestMessage(HttpMethod.Get, resource.Url);
-            using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            var certificateBytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            certificate = new X509Certificate2(certificateBytes);
+            certificate = await RetrieveRemoteCertificate(resource);
         }
 
         certificate ??= FindCertificateInStore(resource, store);
 
+        return certificate;
+    }
+
+    private static async Task<X509Certificate2> RetrieveRemoteCertificate(Certificate resource)
+    {
+        HttpClientHandler? handler = null;
+        if (resource.RemoteInsecure)
+        {
+            handler = new()
+            {
+                ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+            };
+        }
+
+        if (resource.RemoteThumbprint is not null)
+        {
+            handler ??= new()
+            {
+                ServerCertificateCustomValidationCallback = (_, remoteCertificate, _, _) =>
+                    remoteCertificate?.Thumbprint.Equals(resource.RemoteThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
+            };
+        }
+
+        if (resource.RemoteRootThumbprint is not null)
+        {
+            handler ??= new()
+            {
+                ServerCertificateCustomValidationCallback = (_, _, chain, _) =>
+                    chain?.ChainElements[^1].Certificate.Thumbprint.Equals(resource.RemoteRootThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
+            };
+        }
+
+        using HttpClient httpClient = handler is null ? new() : new(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, resource.Url);
+
+        if (resource.Username is not null && resource.Password is not null)
+        {
+            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{resource.Username}:{resource.Password}"));
+            request.Headers.Authorization = new("Basic", credentials);
+        }
+        else if (resource.Token is not null)
+        {
+            request.Headers.Authorization = new(resource.TokenScheme, resource.Token);
+        }
+
+        using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+        var certificateBytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+        var certificate = new X509Certificate2(certificateBytes);
         return certificate;
     }
 
