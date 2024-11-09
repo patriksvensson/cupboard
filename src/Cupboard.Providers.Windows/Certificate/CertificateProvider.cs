@@ -8,7 +8,6 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
     private readonly ICupboardFileSystem _fileSystem;
     private readonly ICupboardEnvironment _environment;
     private readonly ICupboardLogger _logger;
-    private readonly HttpClient _http;
 
     public CertificateProvider(
         ICupboardFileSystem fileSystem,
@@ -18,7 +17,6 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         _environment = environment;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _http = new HttpClient();
     }
 
     public override Certificate Create(string name)
@@ -98,8 +96,34 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
 
         if (resource.Url is not null && resource.FilePath is null)
         {
+            HttpClientHandler? handler = null;
+            if (resource.RemoteInsecure)
+            {
+                handler = new()
+                {
+                    ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+                };
+            }
+
+            if (resource.RemoteThumbprint is not null) {
+                handler ??= new()
+                {
+                    ServerCertificateCustomValidationCallback = (_, remoteCertificate, _, _) =>
+                        remoteCertificate?.Thumbprint.Equals(resource.RemoteThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
+                };
+            }
+
+            if (resource.RemoteRootThumbprint is not null) {
+                handler ??= new()
+                {
+                    ServerCertificateCustomValidationCallback = (_, _, chain, _) =>
+                        chain?.ChainElements[^1].Certificate.Thumbprint.Equals(resource.RemoteRootThumbprint, StringComparison.OrdinalIgnoreCase) ?? false,
+                };
+            }
+
+            using HttpClient httpClient = handler is null ? new() : new(handler);
             using var request = new HttpRequestMessage(HttpMethod.Get, resource.Url);
-            using var response = await _http.SendAsync(request).ConfigureAwait(false);
+            using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
             var certificateBytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             certificate = new X509Certificate2(certificateBytes);
         }

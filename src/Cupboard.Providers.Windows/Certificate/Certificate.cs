@@ -19,6 +19,12 @@ public sealed class Certificate : Resource
 
     public bool ValidateThumbprint { get; set; }
 
+    public bool RemoteInsecure { get; set; }
+
+    public string? RemoteThumbprint { get; set; }
+
+    public string? RemoteRootThumbprint { get; set; }
+
     public Certificate(string name)
         : base(name)
     {

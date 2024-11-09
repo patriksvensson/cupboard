@@ -17,8 +17,9 @@ public sealed class EnsureCertificates : Manifest
 
         context.Resource<Certificate>("ISRG Root X1")
             .Thumbprint("cabd2a79a1076a31f21d253635cb039d4329a5e8")
+            .RemoteRootThumbprint("cabd2a79a1076a31f21d253635cb039d4329a5e8") // Validate the https://x1.i.lencr.org/ root certificate
             .ValidateThumbprint()
-            .FromUrl("http://x1.i.lencr.org/") // use HTTP since HTTPS uses the ISRG Root X1 in the chain 😮
+            .FromUrl("https://x1.i.lencr.org/")
             .Ensure(CertificateState.Present)
             .StoreName(StoreName.Root)
             .StoreLocation(StoreLocation.LocalMachine)

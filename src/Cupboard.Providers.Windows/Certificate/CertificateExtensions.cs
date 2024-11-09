@@ -14,6 +14,15 @@ public static class CertificateExtensions
     public static IResourceBuilder<Certificate> Thumbprint(this IResourceBuilder<Certificate> builder, string thumbprint) =>
         builder.Configure(cert => cert.Thumbprint = thumbprint);
 
+    public static IResourceBuilder<Certificate> RemoteInsecure(this IResourceBuilder<Certificate> builder) =>
+        builder.Configure(cert => cert.RemoteInsecure = true);
+
+    public static IResourceBuilder<Certificate> RemoteThumbprint(this IResourceBuilder<Certificate> builder, string thumbprint) =>
+        builder.Configure(cert => cert.RemoteThumbprint = thumbprint);
+
+    public static IResourceBuilder<Certificate> RemoteRootThumbprint(this IResourceBuilder<Certificate> builder, string thumbprint) =>
+        builder.Configure(cert => cert.RemoteRootThumbprint = thumbprint);
+
     public static IResourceBuilder<Certificate> FromUrl(this IResourceBuilder<Certificate> builder, string url) =>
         builder.Configure(cert => cert.Url = new Uri(url));
 
