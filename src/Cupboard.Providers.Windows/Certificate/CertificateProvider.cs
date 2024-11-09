@@ -105,7 +105,8 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
                 };
             }
 
-            if (resource.RemoteThumbprint is not null) {
+            if (resource.RemoteThumbprint is not null)
+            {
                 handler ??= new()
                 {
                     ServerCertificateCustomValidationCallback = (_, remoteCertificate, _, _) =>
@@ -113,7 +114,8 @@ public class CertificateProvider : AsyncResourceProvider<Certificate>
                 };
             }
 
-            if (resource.RemoteRootThumbprint is not null) {
+            if (resource.RemoteRootThumbprint is not null)
+            {
                 handler ??= new()
                 {
                     ServerCertificateCustomValidationCallback = (_, _, chain, _) =>
