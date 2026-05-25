@@ -25,21 +25,29 @@ public static class ServiceCollectionExtensions
             ? new[] { assembly }
             : AppDomain.CurrentDomain.GetAssemblies();
 
-        foreach (var type in assemblies.SelectMany(a => a.GetTypes()))
+        foreach (var ass in assemblies)
         {
-            if (isInterface && type.IsInterface)
+            if (!ass.TryGetTypes(out var types))
             {
                 continue;
             }
 
-            if (type.IsAbstract || !serviceType.IsAssignableFrom(type))
+            foreach (var type in types)
             {
-                continue;
-            }
+                if (isInterface && type.IsInterface)
+                {
+                    continue;
+                }
 
-            if (services.All(x => x.ImplementationType != type))
-            {
-                services.AddSingleton(serviceType, type);
+                if (type.IsAbstract || !serviceType.IsAssignableFrom(type))
+                {
+                    continue;
+                }
+
+                if (services.All(x => x.ImplementationType != type))
+                {
+                    services.AddSingleton(serviceType, type);
+                }
             }
         }
 

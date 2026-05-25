@@ -1,3 +1,5 @@
+#:sdk Cake.Sdk@6.2.0
+
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
@@ -7,7 +9,7 @@ var configuration = Argument("configuration", "Release");
 Task("Build")
     .Does(context =>
 {
-    DotNetBuild("./src/Cupboard.sln", new DotNetBuildSettings {
+    DotNetBuild("./src/Cupboard.slnx", new DotNetBuildSettings {
         Configuration = configuration,
         NoIncremental = context.HasArgument("rebuild"),
         MSBuildSettings = new DotNetMSBuildSettings()
@@ -19,7 +21,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(context =>
 {
-    DotNetTest("./src/Cupboard.sln", new DotNetTestSettings {
+    DotNetTest("./src/Cupboard.slnx", new DotNetTestSettings {
         Configuration = configuration,
         NoRestore = true,
         NoBuild = true,
@@ -32,7 +34,7 @@ Task("Package")
 {
     context.CleanDirectory("./.artifacts");
 
-    context.DotNetPack($"./src/Cupboard.sln", new DotNetPackSettings {
+    context.DotNetPack($"./src/Cupboard.slnx", new DotNetPackSettings {
         Configuration = configuration,
         NoRestore = true,
         NoBuild = true,
@@ -47,7 +49,7 @@ Task("Publish-NuGet")
     .IsDependentOn("Package")
     .Does(context =>
 {
-    var apiKey = Argument<string>("nuget-key", null);
+    var apiKey = Argument<string?>("nuget-key");
     if(string.IsNullOrWhiteSpace(apiKey)) {
         throw new CakeException("No NuGet API key was provided.");
     }
@@ -76,4 +78,4 @@ Task("Default")
 ////////////////////////////////////////////////////////////////
 // Execution
 
-RunTarget(target)
+RunTarget(target);

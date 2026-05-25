@@ -20,23 +20,18 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: 'Get Git tags'
-        run: git fetch --tags
-        shell: bash
-
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
 
       - name: Publish
         shell: bash
         run: |
           dotnet tool restore
-          dotnet cake --target="publish" \
-            --nuget-key="${{secrets.NUGET_API_KEY}}"
+          dotnet make publish --nuget-key="${{secrets.NUGET_API_KEY}}"

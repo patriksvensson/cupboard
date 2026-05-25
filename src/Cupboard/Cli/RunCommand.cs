@@ -70,7 +70,7 @@ internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
         _interactiveController = new InteractiveExecutionController(_console);
     }
 
-    public override ValidationResult Validate(CommandContext context, Settings settings)
+    protected override ValidationResult Validate(CommandContext context, Settings settings)
     {
         if (settings.WorkingDirectory != null)
         {
@@ -84,7 +84,7 @@ internal sealed class RunCommand : AsyncCommand<RunCommand.Settings>
         return ValidationResult.Success();
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         if (context is null)
         {

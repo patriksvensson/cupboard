@@ -45,4 +45,9 @@ public sealed class FakeCupboardFileSystem : ICupboardFileSystem
     {
         return _fileSystem.GetFakeFile(path);
     }
+
+    public IFile GetTempFile(IEnvironment environment)
+    {
+        return _fileSystem.GetTempFile(environment);
+    }
 }

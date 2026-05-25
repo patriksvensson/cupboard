@@ -18,7 +18,7 @@ internal sealed class FactCommand : Command<FactCommand.Settings>
         _console = console ?? throw new ArgumentNullException(nameof(console));
     }
 
-    public override int Execute(CommandContext context, Settings settings)
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         var facts = _builder.Build(context.Remaining);
 

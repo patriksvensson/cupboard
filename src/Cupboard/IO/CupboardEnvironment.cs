@@ -28,8 +28,14 @@ internal sealed class CupboardEnvironment : ICupboardEnvironment
         _environment.SetWorkingDirectory(path);
     }
 
+    public DirectoryPath GetTempDirectory()
+    {
+        return _environment.GetTempDirectory();
+    }
+
     public FilePath GetTempFilePath()
     {
-        return new FilePath(System.IO.Path.GetTempFileName()).MakeAbsolute(this);
+        return new FilePath(System.IO.Path.GetTempFileName())
+            .MakeAbsolute(this);
     }
 }

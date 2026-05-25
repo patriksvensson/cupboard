@@ -1,30 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json" />
+    <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="NSubstitute" Version="5.1.0" />
-    <PackageReference Include="Shouldly" Version="4.2.1" />
-    <PackageReference Include="Spectre.Verify.Extensions" Version="22.3.1" />
-    <PackageReference Include="Verify.Xunit" Version="25.3.1" />
-    <PackageReference Include="xunit" Version="2.9.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="NSubstitute"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="Spectre.Verify.Extensions"/>
+    <PackageReference Include="Verify.Xunit"/>
+    <PackageReference Include="xunit"/>
+    <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cupboard.Testing\Cupboard.Testing.csproj" />
-    <ProjectReference Include="..\Cupboard\Cupboard.csproj" />
+    <ProjectReference Include="..\Cupboard.Testing\Cupboard.Testing.csproj"/>
+    <ProjectReference Include="..\Cupboard\Cupboard.csproj"/>
   </ItemGroup>
 
 </Project>

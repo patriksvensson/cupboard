@@ -48,6 +48,11 @@ public sealed class FakeCupboardEnvironment : ICupboardEnvironment
         return _environment.GetEnvironmentVariables();
     }
 
+    public DirectoryPath GetTempDirectory()
+    {
+        return _environment.GetTempDirectory();
+    }
+
     public FilePath GetTempFilePath()
     {
         lock (_lock)
